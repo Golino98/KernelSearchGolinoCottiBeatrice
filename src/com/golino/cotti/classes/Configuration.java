@@ -14,9 +14,6 @@ public class Configuration {
     private int numIterations;
     private int timeLimitBucket;
 
-    public Configuration() {
-    }
-
     /**
      * Metodo getters per la variabile bucketBuilder
      *

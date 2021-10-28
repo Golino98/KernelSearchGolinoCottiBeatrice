@@ -30,9 +30,9 @@ public class KernelSearch {
     private Instant startTime;
 
     /**
-     * @param instPath
-     * @param logPath
-     * @param config
+     * @param instPath stringa del path per le istanze
+     * @param logPath  stringa del path per il log
+     * @param config   {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
      */
     public KernelSearch(String instPath, String logPath, Configuration config) {
         this.instPath = instPath;
@@ -47,7 +47,7 @@ public class KernelSearch {
      * Per quale motivo utilizziamo direttamente il valore della config passato dal metodo costruttore e non utilizziamo
      * quello passato come parametro all'interno del metodo?
      *
-     * @param configuration
+     * @param configuration {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
      */
     private void configure(Configuration configuration) {
         sorter = config.getItemSorter();

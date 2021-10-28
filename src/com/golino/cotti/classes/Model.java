@@ -5,10 +5,15 @@ import gurobi.GRB.DoubleAttr;
 import gurobi.GRB.IntAttr;
 import gurobi.GRB.StringAttr;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Model {
     private final String mpsFilePath;
@@ -34,12 +39,49 @@ public class Model {
         try {
             env = new GRBEnv();
             setParameters();
-            model = new GRBModel(env, mpsFilePath);
+            //model = new GRBModel(env, mpsFilePath);
+            model = new GRBModel(env);
             if (lpRelaxation)
                 model = model.relax();
         } catch (GRBException e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * Da controllare con Cotti
+     */
+    private void addVariables() {
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(mpsFilePath))) {
+            List<String> lines = new ArrayList<>();
+            lines = br.lines().collect(Collectors.toList());
+
+            int number_of_knapsacks = Integer.parseInt(lines.get(0));
+            int number_of_items = Integer.parseInt(lines.get(1));
+
+            //for che legge tutte le capacità dei knapsack
+            for (String line : lines.subList(2, 2+number_of_knapsacks))
+            {
+                throw new IOException("Errore, il file di il file di configurazione non contiene tutte le capacità dei knapsack");
+            }
+
+            //for che passa tutte le righe contenenti peso e profitto di ogni item
+            for (String line : lines.subList(number_of_knapsacks, number_of_items + number_of_knapsacks))
+            {
+                String[] splitLine = line.split("\\s+");
+                if(splitLine[0].isBlank() || splitLine[1].isBlank())
+                {
+                    throw new IOException("Errore, il file di configurazione non contiene tutti i pesi o i profitti degli item");
+                }else
+                {
+                    //Andare a settare gli item con il loro peso e profitto
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
     private void setParameters() throws GRBException {

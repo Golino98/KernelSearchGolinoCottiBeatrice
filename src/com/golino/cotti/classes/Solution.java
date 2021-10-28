@@ -34,7 +34,4 @@ public class Solution {
         return empty;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
 }
