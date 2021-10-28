@@ -27,12 +27,28 @@ public class Configuration {
     }
 
     /**
+     * @param bucketBuilder, di tipo {@link BucketBuilder} utilizzata per andare a
+     *                       settare/modificare il valore della variabile bucketBuilder
+     */
+    public void setBucketBuilder(BucketBuilder bucketBuilder) {
+        this.bucketBuilder = bucketBuilder;
+    }
+
+    /**
      * Metodo getters per la variabile bucketSize
      *
      * @return della variabile bucketSize, di tipo double
      */
     public double getBucketSize() {
         return bucketSize;
+    }
+
+    /**
+     * @param bucketSize, di tipo double utilizzata per andare a
+     *                    settare/modificare il valore della variabile bucketSize
+     */
+    public void setBucketSize(double bucketSize) {
+        this.bucketSize = bucketSize;
     }
 
     /**
@@ -45,12 +61,28 @@ public class Configuration {
     }
 
     /**
+     * @param sorter, di tipo {@link ItemSorter} utilizzata per andare a
+     *                settare/modificare il valore della variabile sorter
+     */
+    public void setItemSorter(ItemSorter sorter) {
+        this.sorter = sorter;
+    }
+
+    /**
      * Metodo getters per la variabile kernelBuilder
      *
      * @return della variabile kernelBuilder, di tipo KernelBuilder
      */
     public KernelBuilder getKernelBuilder() {
         return kernelBuilder;
+    }
+
+    /**
+     * @param kernelBuilder, di tipo {@link KernelBuilder} utilizzata per andare a
+     *                       settare/modificare il valore della variabile kernelBuilder
+     */
+    public void setKernelBuilder(KernelBuilder kernelBuilder) {
+        this.kernelBuilder = kernelBuilder;
     }
 
     /**
@@ -63,12 +95,28 @@ public class Configuration {
     }
 
     /**
+     * @param kernelSize, di tipo double utilizzata per andare a
+     *                    settare/modificare il valore della variabile kernelSize
+     */
+    public void setKernelSize(double kernelSize) {
+        this.kernelSize = kernelSize;
+    }
+
+    /**
      * Metodo getters per la variabile mipGap
      *
      * @return della variabile mipGap, di tipo double
      */
     public double getMipGap() {
         return mipGap;
+    }
+
+    /**
+     * @param mipGap, di tipo double utilizzata per andare a
+     *                settare/modificare il valore della variabile mipGap
+     */
+    public void setMipGap(double mipGap) {
+        this.mipGap = mipGap;
     }
 
     /**
@@ -81,12 +129,28 @@ public class Configuration {
     }
 
     /**
+     * @param numIterations, di tipo int utilizzata per andare a
+     *                       settare/modificare il valore della variabile numIterations
+     */
+    public void setNumIterations(int numIterations) {
+        this.numIterations = numIterations;
+    }
+
+    /**
      * Metodo getters per la variabile numThreads
      *
      * @return della variabile numThreads, di tipo int
      */
     public int getNumThreads() {
         return numThreads;
+    }
+
+    /**
+     * @param numThreads, di tipo int utilizzata per andare a
+     *                    settare/modificare il valore della variabile bucketBuilder
+     */
+    public void setNumThreads(int numThreads) {
+        this.numThreads = numThreads;
     }
 
     /**
@@ -99,12 +163,28 @@ public class Configuration {
     }
 
     /**
+     * @param presolve, di tipo int utilizzata per andare a
+     *                  settare/modificare il valore della variabile presolve
+     */
+    public void setPresolve(int presolve) {
+        this.presolve = presolve;
+    }
+
+    /**
      * Metodo getters per la variabile timeLimit
      *
      * @return della variabile timeLimit, di tipo int (espresso in secondi)
      */
     public int getTimeLimit() {
         return timeLimit;
+    }
+
+    /**
+     * @param timeLimit, di tipo int utilizzata per andare a
+     *                   settare/modificare il valore della variabile timeLimit (espresso in secondi)
+     */
+    public void setTimeLimit(int timeLimit) {
+        this.timeLimit = timeLimit;
     }
 
     /**
@@ -117,100 +197,20 @@ public class Configuration {
     }
 
     /**
+     * @param timeLimitBucket, di tipo int utilizzata per andare a
+     *                         settare/modificare il valore della variabile timeLimitBucket (espresso in secondi)
+     */
+    public void setTimeLimitBucket(int timeLimitBucket) {
+        this.timeLimitBucket = timeLimitBucket;
+    }
+
+    /**
      * Metodo getters per la variabile timeLimitKernel
      *
      * @return della variabile timeLimitKernel, di tipo int (espresso in secondi)
      */
     public int getTimeLimitKernel() {
         return timeLimitKernel;
-    }
-
-    /**
-     * @param bucketBuilder, di tipo {@link BucketBuilder} utilizzata per andare a
-     *                       settare/modificare il valore della variabile bucketBuilder
-     */
-    public void setBucketBuilder(BucketBuilder bucketBuilder) {
-        this.bucketBuilder = bucketBuilder;
-    }
-
-    /**
-     * @param bucketSize, di tipo double utilizzata per andare a
-     *                    settare/modificare il valore della variabile bucketSize
-     */
-    public void setBucketSize(double bucketSize) {
-        this.bucketSize = bucketSize;
-    }
-
-    /**
-     * @param sorter, di tipo {@link ItemSorter} utilizzata per andare a
-     *                settare/modificare il valore della variabile sorter
-     */
-    public void setItemSorter(ItemSorter sorter) {
-        this.sorter = sorter;
-    }
-
-    /**
-     * @param kernelBuilder, di tipo {@link KernelBuilder} utilizzata per andare a
-     *                       settare/modificare il valore della variabile kernelBuilder
-     */
-    public void setKernelBuilder(KernelBuilder kernelBuilder) {
-        this.kernelBuilder = kernelBuilder;
-    }
-
-    /**
-     * @param kernelSize, di tipo double utilizzata per andare a
-     *                    settare/modificare il valore della variabile kernelSize
-     */
-    public void setKernelSize(double kernelSize) {
-        this.kernelSize = kernelSize;
-    }
-
-    /**
-     * @param mipGap, di tipo double utilizzata per andare a
-     *                settare/modificare il valore della variabile mipGap
-     */
-    public void setMipGap(double mipGap) {
-        this.mipGap = mipGap;
-    }
-
-    /**
-     * @param numIterations, di tipo int utilizzata per andare a
-     *                       settare/modificare il valore della variabile numIterations
-     */
-    public void setNumIterations(int numIterations) {
-        this.numIterations = numIterations;
-    }
-
-    /**
-     * @param numThreads, di tipo int utilizzata per andare a
-     *                    settare/modificare il valore della variabile bucketBuilder
-     */
-    public void setNumThreads(int numThreads) {
-        this.numThreads = numThreads;
-    }
-
-    /**
-     * @param presolve, di tipo int utilizzata per andare a
-     *                  settare/modificare il valore della variabile presolve
-     */
-    public void setPresolve(int presolve) {
-        this.presolve = presolve;
-    }
-
-    /**
-     * @param timeLimit, di tipo int utilizzata per andare a
-     *                   settare/modificare il valore della variabile timeLimit (espresso in secondi)
-     */
-    public void setTimeLimit(int timeLimit) {
-        this.timeLimit = timeLimit;
-    }
-
-    /**
-     * @param timeLimitBucket, di tipo int utilizzata per andare a
-     *                         settare/modificare il valore della variabile timeLimitBucket (espresso in secondi)
-     */
-    public void setTimeLimitBucket(int timeLimitBucket) {
-        this.timeLimitBucket = timeLimitBucket;
     }
 
     /**

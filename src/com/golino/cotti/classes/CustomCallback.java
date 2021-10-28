@@ -1,5 +1,9 @@
 package com.golino.cotti.classes;
 
+import gurobi.GRB;
+import gurobi.GRBCallback;
+import gurobi.GRBException;
+
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -7,12 +11,10 @@ import java.io.PrintStream;
 import java.time.Duration;
 import java.time.Instant;
 
-import gurobi.*;
-
 public class CustomCallback extends GRBCallback {
-    private String path;
+    private final String path;
     private PrintStream log;
-    private Instant startTime;
+    private final Instant startTime;
     private double bestObj;
 
     /**

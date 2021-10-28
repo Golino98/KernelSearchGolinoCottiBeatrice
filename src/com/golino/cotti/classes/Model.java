@@ -1,31 +1,25 @@
 package com.golino.cotti.classes;
 
+import gurobi.*;
+import gurobi.GRB.DoubleAttr;
+import gurobi.GRB.IntAttr;
+import gurobi.GRB.StringAttr;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import gurobi.*;
-import gurobi.GRBEnv;
-import gurobi.GRBException;
-import gurobi.GRBLinExpr;
-import gurobi.GRBModel;
-import gurobi.GRBVar;
-import gurobi.GRB.DoubleAttr;
-import gurobi.GRB.IntAttr;
-import gurobi.GRB.StringAttr;
-import gurobi.GRBCallback;
-
 public class Model {
-    private String mpsFilePath;
-    private String logPath;
-    private int timeLimit;
-    private Configuration config;
-    private boolean lpRelaxation;
+    private final String mpsFilePath;
+    private final String logPath;
+    private final int timeLimit;
+    private final Configuration config;
+    private final boolean lpRelaxation;
     private GRBEnv env;
     private GRBModel model;
     private boolean hasSolution;
-    private double positiveThreshold = 1e-5;
+    private final double positiveThreshold = 1e-5;
 
     public Model(String mpsFilePath, String logPath, int timeLimit, Configuration config, boolean lpRelaxation) {
         this.mpsFilePath = mpsFilePath;

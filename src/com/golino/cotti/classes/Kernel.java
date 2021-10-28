@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Kernel {
-    private List<Item> items;
+    private final List<Item> items;
 
     /**
      * Metodo costruttore della classe {@link Kernel}

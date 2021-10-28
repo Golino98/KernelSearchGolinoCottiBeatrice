@@ -1,9 +1,9 @@
 package com.golino.cotti.classes;
 
 public class Item {
-    private String name;
-    private double rc;
-    private double xr;
+    private final String name;
+    private final double rc;
+    private final double xr;
 
     /**
      * Metodo costruttore della classe {@link Item}

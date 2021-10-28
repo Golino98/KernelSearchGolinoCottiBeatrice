@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Bucket {
 
-    private List<Item> items;
+    private final List<Item> items;
 
     /**
      * Metodo costruttore per {@link Bucket}

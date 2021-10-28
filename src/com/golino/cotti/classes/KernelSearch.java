@@ -1,17 +1,17 @@
 package com.golino.cotti.classes;
 
+import gurobi.GRBCallback;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import gurobi.GRBCallback;
-
 public class KernelSearch {
-    private String instPath;
-    private String logPath;
-    private Configuration config;
+    private final String instPath;
+    private final String logPath;
+    private final Configuration config;
     private List<Item> items;
     private ItemSorter sorter;
     private BucketBuilder bucketBuilder;
@@ -24,13 +24,12 @@ public class KernelSearch {
     private int tlimBucket;
     private int numIterations;
     private GRBCallback callback;
-    private int timeThreshold = 5;
-    private List<List<Double>> objValues;
+    private final int timeThreshold = 5;
+    private final List<List<Double>> objValues;
 
     private Instant startTime;
 
     /**
-     *
      * @param instPath
      * @param logPath
      * @param config
@@ -47,6 +46,7 @@ public class KernelSearch {
     /**
      * Per quale motivo utilizziamo direttamente il valore della config passato dal metodo costruttore e non utilizziamo
      * quello passato come parametro all'interno del metodo?
+     *
      * @param configuration
      */
     private void configure(Configuration configuration) {

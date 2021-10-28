@@ -17,12 +17,12 @@ public class Solution {
         return obj;
     }
 
-    public double getVarValue(String name) {
-        return vars.get(name);
-    }
-
     public void setObj(double obj) {
         this.obj = obj;
+    }
+
+    public double getVarValue(String name) {
+        return vars.get(name);
     }
 
     public void setVars(Map<String, Double> vars) {
@@ -30,11 +30,11 @@ public class Solution {
         empty = false;
     }
 
-    public void setEmpty(boolean empty) {
-        this.empty = empty;
-    }
-
     public boolean isEmpty() {
         return empty;
+    }
+
+    public void setEmpty(boolean empty) {
+        this.empty = empty;
     }
 }
