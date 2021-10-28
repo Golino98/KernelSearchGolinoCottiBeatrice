@@ -62,7 +62,7 @@ public class Model {
             //for che legge tutte le capacità dei knapsack
             for (String line : lines.subList(2, 2+number_of_knapsacks))
             {
-                throw new IOException("Errore, il file di il file di configurazione non contiene tutte le capacità dei knapsack");
+                throw new IOException("Errore, il file delle istanze utilizzato non contiene tutte le capacità dei knapsack");
             }
 
             //for che passa tutte le righe contenenti peso e profitto di ogni item
@@ -71,7 +71,7 @@ public class Model {
                 String[] splitLine = line.split("\\s+");
                 if(splitLine[0].isBlank() || splitLine[1].isBlank())
                 {
-                    throw new IOException("Errore, il file di configurazione non contiene tutti i pesi o i profitti degli item");
+                    throw new IOException("Errore, il file delle istanze utilizzato non contiene tutti i pesi o i profitti degli item");
                 }else
                 {
                     //Andare a settare gli item con il loro peso e profitto
