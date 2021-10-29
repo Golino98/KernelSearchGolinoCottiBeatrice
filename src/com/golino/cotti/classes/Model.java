@@ -106,7 +106,7 @@ public class Model {
                     throw new IOException(ERRORE_ITEM_PROFITTO);
                 }else if (Integer.parseInt(splitLine[1])<=0)
                 {
-                    throw new InvalidAttributeValueException(ERRORE_ITEM_PESO_VALORE);
+                    throw new InvalidAttributeValueException(ERRORE_ITEM_PROFITTO_VALORE);
                 }
             }
 
