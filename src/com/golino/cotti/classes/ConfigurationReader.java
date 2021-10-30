@@ -4,34 +4,33 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class ConfigurationReader {
+    private final String instPath;
+    private final String logPath;
+    private final String configPath;
+    private final Configuration config = new Configuration();
+
+    public ConfigurationReader(String instPath, String logPath,String configPath) {
+        this.instPath = instPath;
+        this.logPath = logPath;
+        this.configPath = configPath;
+    }
 
     /**
      * Metodo utilizzato inizialmente nel main per la creazione della configurazione.
      *
-     * @param path di configurazione passato dal main
      * @return la variabile config di tipo {@link Configuration}
      * Questa configurazione viene genereata automaticamente grazie ad un insieme di switch vanno a leggere
      * il contenuto di un array di String contentente ogni parola contenuta nella variabile lines ({@link List<String>}
      */
-
-    public static Configuration read(String path) {
-
-        Configuration config = new Configuration();
-        List<String> lines = new ArrayList<>();
-
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(path))) {
-            lines = br.lines().collect(Collectors.toList());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public Configuration read() throws IOException {
+        BufferedReader br = Files.newBufferedReader(Paths.get(configPath));
+        var lines = br.lines().collect(Collectors.toList());
 
         for (String line : lines) {
-
             //Comando che divide la stringa in un array di stringhe, il carattere utilizzato per la separazione è lo
             //lo spazio (anche multipli)
             String[] splitLine = line.split("\\s+");
@@ -44,20 +43,18 @@ public class ConfigurationReader {
                 case "PRESOLVE" -> config.setPresolve(Integer.parseInt(splitLine[1]));
                 case "TIMELIMIT" -> config.setTimeLimit(Integer.parseInt(splitLine[1]));
                 case "SORTER" -> {
-                    if (Integer.parseInt(splitLine[1]) == 0) {
-                        config.setItemSorter(new ItemSorterByValueAndAbsoluteRC());
-                    } else {
-                        System.out.println("Unrecognized item sorter.");
+                    if (Integer.parseInt(splitLine[1]) != 0) {
+                        throw new IllegalStateException("Unrecognized item sorter.");
                     }
+                    config.setItemSorter(new ItemSorterByValueAndAbsoluteRC());
                 }
                 case "KERNELSIZE" -> config.setKernelSize(Double.parseDouble(splitLine[1]));
                 case "BUCKETSIZE" -> config.setBucketSize(Double.parseDouble(splitLine[1]));
                 case "BUCKETBUILDER" -> {
-                    if (Integer.parseInt(splitLine[1]) == 0) {
-                        config.setBucketBuilder(new DefaultBucketBuilder());
-                    } else {
-                        System.out.println("Unrecognized bucket builder.");
+                    if (Integer.parseInt(splitLine[1]) != 0) {
+                        throw new IllegalStateException("Unrecognized bucket builder.");
                     }
+                    config.setBucketBuilder(new DefaultBucketBuilder());
                 }
                 case "TIMELIMITKERNEL" -> config.setTimeLimitKernel(Integer.parseInt(splitLine[1]));
                 case "NUMITERATIONS" -> config.setNumIterations(Integer.parseInt(splitLine[1]));
@@ -66,12 +63,15 @@ public class ConfigurationReader {
                     switch (Integer.parseInt(splitLine[1])) {
                         case 0 -> config.setKernelBuilder(new KernelBuilderPositive());
                         case 1 -> config.setKernelBuilder(new KernelBuilderPercentage());
-                        default -> System.out.println("Unrecognized kernel builder.");
+                        default -> throw new IllegalStateException("Unrecognized kernel builder.");
                     }
                 }
                 default -> System.out.println("Unrecognized parameter name.");
             }
         }
+
+        config.setInstPath(instPath);
+        config.setLogPath(logPath);
         return config;
     }
 }

@@ -1,18 +1,21 @@
 package com.golino.cotti.classes;
 
+import java.io.IOException;
 import java.util.List;
 
 public class Start {
     public static void main(String[] args) {
+        String instPath = args[0];
+        String logPath = args[1];
+        String configPath = args[2];
 
-        String pathtxt = ".\\istances\\SMALL\\probT1_0U_R50_T002_M010_N0020_seed01.txt";
-        String pathmps = args[0];
-        String pathlog = args[1];
-        String pathConfig = args[2];
-        Configuration config = ConfigurationReader.read(pathConfig);
-        KernelSearch ks = new KernelSearch(pathmps, pathlog, config);
-        ks.start();
-
-        List<List<Double>> objValues = ks.getObjValues();
+        try {
+            var config = new ConfigurationReader(instPath,logPath,configPath).read();
+            KernelSearch ks = new KernelSearch(config);
+            ks.start();
+            List<List<Double>> objValues = ks.getObjValues();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

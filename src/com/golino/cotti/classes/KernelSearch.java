@@ -9,70 +9,46 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class KernelSearch {
-    private final String instPath;
-    private final String logPath;
     private final Configuration config;
     private List<Item> items;
-    private ItemSorter sorter;
-    private BucketBuilder bucketBuilder;
-    private KernelBuilder kernelBuilder;
-    private int tlim;
     private Solution bestSolution;
     private List<Bucket> buckets;
     private Kernel kernel;
-    private int tlimKernel;
-    private int tlimBucket;
-    private int numIterations;
     private GRBCallback callback;
     private final int timeThreshold = 5;
     private final List<List<Double>> objValues;
-
     private Instant startTime;
 
     /**
-     * @param instPath stringa del path per le istanze
-     * @param logPath  stringa del path per il log
-     * @param config   {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
+     * @param config {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
      */
-    public KernelSearch(String instPath, String logPath, Configuration config) {
-        this.instPath = instPath;
-        this.logPath = logPath;
+    public KernelSearch(Configuration config) {
         this.config = config;
         bestSolution = new Solution();
         objValues = new ArrayList<>();
-        configure(config);
-    }
-
-    /**
-     * Per quale motivo utilizziamo direttamente il valore della config passato dal metodo costruttore e non utilizziamo
-     * quello passato come parametro all'interno del metodo?
-     *
-     * @param configuration {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
-     */
-    private void configure(Configuration configuration) {
-        sorter = config.getItemSorter();
-        tlim = config.getTimeLimit();
-        bucketBuilder = config.getBucketBuilder();
-        kernelBuilder = config.getKernelBuilder();
-        tlimKernel = config.getTimeLimitKernel();
-        numIterations = config.getNumIterations();
-        tlimBucket = config.getTimeLimitBucket();
     }
 
     public Solution start() {
         startTime = Instant.now();
-        callback = new CustomCallback(logPath, startTime);
+
+        var sorter = config.getItemSorter();
+        var kernelBuilder = config.getKernelBuilder();
+        var bucketBuilder = config.getBucketBuilder();
+        callback = new CustomCallback(config.getLogPath(), startTime);
         items = buildItems();
+
         sorter.sort(items);
         kernel = kernelBuilder.build(items, config);
-        buckets = bucketBuilder.build(items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
+        buckets = bucketBuilder.build(items.stream()
+                .filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
         solveKernel();
         iterateBuckets();
+
         return bestSolution;
     }
 
     List<Item> buildItems() {
-        Model model = new Model(instPath, logPath, config.getTimeLimit(), config, true); // time limit equal to the global time limit
+        Model model = new Model(config.getTimeLimit(), config, true); // time limit equal to the global time limit
         model.buildModel();
         model.solve();
         List<Item> items = new ArrayList<>();
@@ -87,7 +63,7 @@ public class KernelSearch {
     }
 
     private void solveKernel() {
-        Model model = new Model(instPath, logPath, Math.min(tlimKernel, getRemainingTime()), config, false);
+        Model model = new Model(Math.min(config.getTimeLimitKernel(), getRemainingTime()), config, false);
         model.buildModel();
         if (!bestSolution.isEmpty()) {
             model.readSolution(bestSolution);
@@ -108,7 +84,7 @@ public class KernelSearch {
     }
 
     private void iterateBuckets() {
-        for (int i = 0; i < numIterations; i++) {
+        for (int i = 0; i < config.getNumIterations(); i++) {
             if (getRemainingTime() <= timeThreshold)
                 return;
             if (i != 0)
@@ -126,7 +102,7 @@ public class KernelSearch {
             System.out.println("\n\n\n\n\t\t** Solving bucket " + count++ + " **\n");
             List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it) && !b.contains(it)).collect(Collectors.toList());
 
-            Model model = new Model(instPath, logPath, Math.min(tlimBucket, getRemainingTime()), config, false);
+            Model model = new Model(Math.min(config.getTimeLimitBucket(), getRemainingTime()), config, false);
             model.buildModel();
 
             model.disableItems(toDisable);
@@ -143,8 +119,8 @@ public class KernelSearch {
             if (model.hasSolution()) {
                 bestSolution = model.getSolution();
                 List<Item> selected = model.getSelectedItems(b.getItems());
-                selected.forEach(it -> kernel.addItem(it));
-                selected.forEach(it -> b.removeItem(it));
+                selected.forEach(kernel::addItem);
+                selected.forEach(b::removeItem);
                 model.exportSolution();
             }
             if (!bestSolution.isEmpty())
@@ -159,7 +135,7 @@ public class KernelSearch {
     }
 
     private int getRemainingTime() {
-        return (int) (tlim - Duration.between(startTime, Instant.now()).getSeconds());
+        return (int) (config.getTimeLimit() - Duration.between(startTime, Instant.now()).getSeconds());
     }
 
     public List<List<Double>> getObjValues() {

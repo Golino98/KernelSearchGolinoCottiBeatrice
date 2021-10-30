@@ -19,8 +19,6 @@ import java.util.stream.Collectors;
 import static com.golino.cotti.classes.Costanti.*;
 
 public class Model {
-    private final String mpsFilePath;
-    private final String logPath;
     private final int timeLimit;
     private final Configuration config;
     private final boolean lpRelaxation;
@@ -29,9 +27,7 @@ public class Model {
     private boolean hasSolution;
     private final double positiveThreshold = 1e-5;
 
-    public Model(String mpsFilePath, String logPath, int timeLimit, Configuration config, boolean lpRelaxation) {
-        this.mpsFilePath = mpsFilePath;
-        this.logPath = logPath;
+    public Model(int timeLimit, Configuration config, boolean lpRelaxation) {
         this.timeLimit = timeLimit;
         this.config = config;
         this.lpRelaxation = lpRelaxation;
@@ -51,18 +47,17 @@ public class Model {
         }
     }
 
-    /**
+    /*
      * Da controllare con Cotti
      */
     private void addVariables() {
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(mpsFilePath))) {
-            List<String> lines = new ArrayList<>();
-            lines = br.lines().collect(Collectors.toList());
+        try (BufferedReader br = Files.newBufferedReader(Paths.get(config.getInstPath()))) {
+            var lines = br.lines().collect(Collectors.toList());
 
             int number_of_knapsacks = Integer.parseInt(lines.get(0));
             int number_of_items = Integer.parseInt(lines.get(1));
 
-            /**
+            /*
              * Il seguente ciclo va a suddividere la {@link List<String>} in una sottostringa, prendendo come primo riferimento
              * l'elemento in posizione due della lista (capacità del primo knapsack) e come ultimo riferimento l'ultima capacità
              * dell'ultimo knapsack, presente in posizione 2 + (numero dei knapsack presenti).
@@ -71,19 +66,15 @@ public class Model {
              * Inoltre viene effettuato un controllo di correttezza dei dati, ovvero, devono essere stati inseriti tutti e devono
              * essere tutti maggiori di zero
              */
-
-            for (String line : lines.subList(2, 2+number_of_knapsacks))
-            {
-                if(line.isBlank())
-                {
+            for (String line : lines.subList(2, 2 + number_of_knapsacks)) {
+                if (line.isBlank()) {
                     throw new IOException(ERRORE_KNAPSACK_CAPACITA);
-                }else if(Integer.parseInt(line)<=0)
-                {
+                } else if (Integer.parseInt(line) <= 0) {
                     throw new InvalidAttributeValueException(ERRORE_KNAPSACK_VALORE);
                 }
             }
 
-            /**
+            /*
              * Il seguente ciclo va a suddividere la {@link List<String>} in una sottostringa, prendendo come primo riferimento
              * il numero dei knapsacks presenti e sommandogli due (in quanto le prime due righe sono utilizzate per la definizione
              * del numero di knapsacks e di items) e come ultimo riferimento l'elemento in posizione finale, ovvero quella
@@ -92,20 +83,15 @@ public class Model {
              * Inoltre viene effettuato un controllo di correttezza dei dati, ovvero, devono essere stati inseriti tutti e devono
              * essere tutti maggiori di zero
              */
-            for (String line : lines.subList(number_of_knapsacks + 2, number_of_items + number_of_knapsacks + 2 ))
-            {
+            for (String line : lines.subList(number_of_knapsacks + 2, number_of_items + number_of_knapsacks + 2)) {
                 String[] splitLine = line.split("\\s+");
-                if(splitLine[0].isBlank())
-                {
+                if (splitLine[0].isBlank()) {
                     throw new IOException(ERRORE_ITEM_PESO);
-                }else if(Integer.parseInt(splitLine[0])<=0)
-                {
+                } else if (Integer.parseInt(splitLine[0]) <= 0) {
                     throw new InvalidAttributeValueException(ERRORE_ITEM_PESO_VALORE);
-                }else if(splitLine[1].isBlank())
-                {
+                } else if (splitLine[1].isBlank()) {
                     throw new IOException(ERRORE_ITEM_PROFITTO);
-                }else if (Integer.parseInt(splitLine[1])<=0)
-                {
+                } else if (Integer.parseInt(splitLine[1]) <= 0) {
                     throw new InvalidAttributeValueException(ERRORE_ITEM_PROFITTO_VALORE);
                 }
             }
@@ -113,20 +99,16 @@ public class Model {
         } catch (IOException | InvalidAttributeValueException e) {
             e.printStackTrace();
         }
-
     }
 
     private void setParameters() throws GRBException {
-        env.set(GRB.StringParam.LogFile, logPath + "log.txt");
+        env.set(GRB.StringParam.LogFile, config.getLogPath());
         env.set(GRB.IntParam.Threads, config.getNumThreads());
         env.set(GRB.IntParam.Presolve, config.getPresolve());
         env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
         if (timeLimit > 0) {
             env.set(GRB.DoubleParam.TimeLimit, timeLimit);
         }
-        //env.set(GRB.IntParam.Method, 0);
-        //env.set(IntParam.OutputFlag, 0);
-
     }
 
     public void solve() {

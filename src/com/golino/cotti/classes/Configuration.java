@@ -13,9 +13,11 @@ public class Configuration {
     private int timeLimitKernel;
     private int numIterations;
     private int timeLimitBucket;
+    private String instPath;
+    private String logPath;
 
     /**
-     * Metodo getters per la variabile bucketBuilder
+     * Metodo getter per la variabile bucketBuilder
      *
      * @return della variabile bucketBuilder, di tipo BucketBuilder
      */
@@ -32,7 +34,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile bucketSize
+     * Metodo getter per la variabile bucketSize
      *
      * @return della variabile bucketSize, di tipo double
      */
@@ -49,7 +51,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile sorter
+     * Metodo getter per la variabile sorter
      *
      * @return della variabile sorter, di tipo ItemSorter
      */
@@ -66,7 +68,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile kernelBuilder
+     * Metodo getter per la variabile kernelBuilder
      *
      * @return della variabile kernelBuilder, di tipo KernelBuilder
      */
@@ -83,7 +85,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile kernelSize
+     * Metodo getter per la variabile kernelSize
      *
      * @return della variabile bucketBuilder, di tipo double
      */
@@ -100,7 +102,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile mipGap
+     * Metodo getter per la variabile mipGap
      *
      * @return della variabile mipGap, di tipo double
      */
@@ -117,7 +119,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile numIterations
+     * Metodo getter per la variabile numIterations
      *
      * @return della variabile numIterations, di tipo int
      */
@@ -134,7 +136,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile numThreads
+     * Metodo getter per la variabile numThreads
      *
      * @return della variabile numThreads, di tipo int
      */
@@ -151,7 +153,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile presolve
+     * Metodo getter per la variabile presolve
      *
      * @return della variabile presolve, di tipo int
      */
@@ -168,7 +170,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile timeLimit
+     * Metodo getter per la variabile timeLimit
      *
      * @return della variabile timeLimit, di tipo int (espresso in secondi)
      */
@@ -185,7 +187,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile timeLimitBucket
+     * Metodo getter per la variabile timeLimitBucket
      *
      * @return della variabile timeLimitBucket, di tipo int (espresso in secondi)
      */
@@ -202,7 +204,7 @@ public class Configuration {
     }
 
     /**
-     * Metodo getters per la variabile timeLimitKernel
+     * Metodo getter per la variabile timeLimitKernel
      *
      * @return della variabile timeLimitKernel, di tipo int (espresso in secondi)
      */
@@ -217,4 +219,12 @@ public class Configuration {
     public void setTimeLimitKernel(int timeLimitKernel) {
         this.timeLimitKernel = timeLimitKernel;
     }
+
+    public String getInstPath() {return instPath;}
+
+    public void setInstPath(String instPath) {this.instPath=instPath;}
+
+    public String getLogPath() {return logPath;}
+
+    public void setLogPath(String logPath) {this.logPath=logPath;}
 }
