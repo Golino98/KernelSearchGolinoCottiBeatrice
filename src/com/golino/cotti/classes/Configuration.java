@@ -1,20 +1,20 @@
 package com.golino.cotti.classes;
 
 public class Configuration {
+    private String logPath;
+    private String instPath;
     private int numThreads;
-    private double mipGap;
     private int presolve;
+    private double mipGap;
+    private int numIterations;
     private int timeLimit;
-    private ItemSorter sorter;
+    private int timeLimitKernel;
+    private int timeLimitBucket;
     private double kernelSize;
     private double bucketSize;
+    private ItemSorter sorter;
     private BucketBuilder bucketBuilder;
     private KernelBuilder kernelBuilder;
-    private int timeLimitKernel;
-    private int numIterations;
-    private int timeLimitBucket;
-    private String instPath;
-    private String logPath;
 
     /**
      * Metodo getter per la variabile bucketBuilder
@@ -220,11 +220,19 @@ public class Configuration {
         this.timeLimitKernel = timeLimitKernel;
     }
 
-    public String getInstPath() {return instPath;}
+    public String getInstPath() {
+        return instPath;
+    }
 
-    public void setInstPath(String instPath) {this.instPath=instPath;}
+    public void setInstPath(String instPath) {
+        this.instPath=instPath;
+    }
 
-    public String getLogPath() {return logPath;}
+    public String getLogPath() {
+        return logPath;
+    }
 
-    public void setLogPath(String logPath) {this.logPath=logPath;}
+    public void setLogPath(String logPath) {
+        this.logPath=logPath;
+    }
 }

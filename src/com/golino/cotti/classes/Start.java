@@ -1,5 +1,7 @@
 package com.golino.cotti.classes;
 
+import gurobi.GRBException;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -14,7 +16,7 @@ public class Start {
             KernelSearch ks = new KernelSearch(config);
             ks.start();
             List<List<Double>> objValues = ks.getObjValues();
-        } catch (IOException e) {
+        } catch (IOException | GRBException e) {
             e.printStackTrace();
         }
     }

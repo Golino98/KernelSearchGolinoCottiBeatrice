@@ -1,6 +1,7 @@
 package com.golino.cotti.classes;
 
 import gurobi.GRBCallback;
+import gurobi.GRBException;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -28,7 +29,7 @@ public class KernelSearch {
         objValues = new ArrayList<>();
     }
 
-    public Solution start() {
+    public Solution start() throws GRBException {
         startTime = Instant.now();
 
         var sorter = config.getItemSorter();
@@ -47,24 +48,25 @@ public class KernelSearch {
         return bestSolution;
     }
 
-    List<Item> buildItems() {
-        Model model = new Model(config.getTimeLimit(), config, true); // time limit equal to the global time limit
-        model.buildModel();
+    List<Item> buildItems() throws GRBException {
+        Model model = new Model(new ModelConfiguration(config, config.getTimeLimit(), true));
         model.solve();
+
         List<Item> items = new ArrayList<>();
-        List<String> varNames = model.getVarNames();
-        for (String v : varNames) {
+        for (String v : model.getVarNames()) {
             double value = model.getVarValue(v);
             double rc = model.getVarRC(v); // can be called only after solving the LP relaxation
             Item it = new Item(v, value, rc);
             items.add(it);
         }
+
         return items;
     }
 
-    private void solveKernel() {
-        Model model = new Model(Math.min(config.getTimeLimitKernel(), getRemainingTime()), config, false);
-        model.buildModel();
+    private void solveKernel() throws GRBException {
+        var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
+        Model model = new Model(new ModelConfiguration(config, timeLimit, false));
+
         if (!bestSolution.isEmpty()) {
             model.readSolution(bestSolution);
         }
@@ -83,7 +85,7 @@ public class KernelSearch {
         }
     }
 
-    private void iterateBuckets() {
+    private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
             if (getRemainingTime() <= timeThreshold)
                 return;
@@ -95,16 +97,15 @@ public class KernelSearch {
         }
     }
 
-    private void solveBuckets() {
+    private void solveBuckets() throws GRBException {
         int count = 0;
 
         for (Bucket b : buckets) {
             System.out.println("\n\n\n\n\t\t** Solving bucket " + count++ + " **\n");
             List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it) && !b.contains(it)).collect(Collectors.toList());
 
-            Model model = new Model(Math.min(config.getTimeLimitBucket(), getRemainingTime()), config, false);
-            model.buildModel();
-
+            var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
+            Model model = new Model(new ModelConfiguration(config, timeLimit, false));
             model.disableItems(toDisable);
             model.addBucketConstraint(b.getItems()); // can we use this constraint regardless of the type of variables chosen as items?
 
