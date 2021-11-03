@@ -36,50 +36,82 @@ public class Model {
 
     private void addVariables() {
         /*
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(config.getInstPath()))) {
-            var lines = br.lines().collect(Collectors.toList());
+       try (BufferedReader br = Files.newBufferedReader(Paths.get("C:\\Users\\giaco\\IdeaProjects\\TestFunzioniCodice\\src\\com\\giacomo\\golino\\test.txt"))) {
+
+            List<String> lines;
+            lines = br.lines().collect(Collectors.toList());
 
             int number_of_knapsacks = Integer.parseInt(lines.get(0));
+
+            //int capacita[] = new int[number_of_knapsacks];
+            ArrayList<Integer> cap = new ArrayList<>();
+
             int number_of_items = Integer.parseInt(lines.get(1));
 
-             * Il seguente ciclo va a suddividere la {@link List<String>} in una sottostringa, prendendo come primo riferimento
-             * l'elemento in posizione due della lista (capacità del primo knapsack) e come ultimo riferimento l'ultima capacità
-             * dell'ultimo knapsack, presente in posizione 2 + (numero dei knapsack presenti).
-             * Si va a sommare il valore due in quanto le prime due righe del file contenente i dati contengono il numero dei
-             * knapsacks e degli items.
-             * Inoltre viene effettuato un controllo di correttezza dei dati, ovvero, devono essere stati inseriti tutti e devono
-             * essere tutti maggiori di zero
-            for (String line : lines.subList(2, 2 + number_of_knapsacks)) {
-                if (line.isBlank()) {
-                    throw new IOException(ERRORE_KNAPSACK_CAPACITA);
-                } else if (Integer.parseInt(line) <= 0) {
-                    throw new InvalidAttributeValueException(ERRORE_KNAPSACK_VALORE);
-                }
+            for (String line : lines.subList(2, number_of_knapsacks + 2)) {
+                //capacita[k] = Integer.parseInt(line);
+                cap.add(Integer.parseInt(line));
             }
 
-             * Il seguente ciclo va a suddividere la {@link List<String>} in una sottostringa, prendendo come primo riferimento
-             * il numero dei knapsacks presenti e sommandogli due (in quanto le prime due righe sono utilizzate per la definizione
-             * del numero di knapsacks e di items) e come ultimo riferimento l'elemento in posizione finale, ovvero quella
-             * corrispondente al numero di item sommata al numero dei knapsack e a due (prime due righe per la definizione del numero
-             * di knapsacks e items).
-             * Inoltre viene effettuato un controllo di correttezza dei dati, ovvero, devono essere stati inseriti tutti e devono
-             * essere tutti maggiori di zero
+            ArrayList<Item> items = new ArrayList<>();
+            //Item items[] = new Item[number_of_items];
+
             for (String line : lines.subList(number_of_knapsacks + 2, number_of_items + number_of_knapsacks + 2)) {
+
                 String[] splitLine = line.split("\\s+");
-                if (splitLine[0].isBlank()) {
-                    throw new IOException(ERRORE_ITEM_PESO);
-                } else if (Integer.parseInt(splitLine[0]) <= 0) {
-                    throw new InvalidAttributeValueException(ERRORE_ITEM_PESO_VALORE);
-                } else if (splitLine[1].isBlank()) {
-                    throw new IOException(ERRORE_ITEM_PROFITTO);
-                } else if (Integer.parseInt(splitLine[1]) <= 0) {
-                    throw new InvalidAttributeValueException(ERRORE_ITEM_PROFITTO_VALORE);
+                items.add(new Item(Integer.parseInt(splitLine[0]), Integer.parseInt(splitLine[1])));
+            }
+
+            GRBEnv env = new GRBEnv("test.log");
+
+            env.set(GRB.IntParam.Presolve, 2);
+            env.set(GRB.IntParam.Method, 0);
+            env.set(GRB.IntParam.Threads, 0);
+
+            GRBModel model = new GRBModel(env);
+
+            GRBVar[][] x = new GRBVar[number_of_knapsacks][number_of_items];
+            for (int i = 0; i < number_of_knapsacks; i++) {
+                for (int j = 0; j < number_of_items; j++) {
+                    x[i][j] = model.addVar(0, 1, 0, GRB.BINARY, "x_" + i + "_" + j);
                 }
             }
 
-        } catch (IOException | InvalidAttributeValueException e) {
-            e.printStackTrace();
-        }
+            GRBLinExpr linExpr;
+
+            //Sommatoria peso * variabile <= capacità dello zaino
+            int nu = 1;
+            for (int i = 0; i < number_of_knapsacks; i++) {
+                linExpr = new GRBLinExpr();
+                for (int j = 0; j < number_of_items; j++) {
+                    //linExpr.addTerm(items[j].getPeso(), x[i][j]);
+                    linExpr.addTerm(items.get(j).getPeso(), x[i][j]);
+                }
+                model.addConstr(linExpr, GRB.LESS_EQUAL, cap.get(i), "c2_" + i + "_" + nu);
+                nu++;
+            }
+
+            //Sommatoria da i = 1 fino a m di xij <= 1
+            nu = 1;
+            for (int j = 0; j < number_of_items; j++) {
+                linExpr = new GRBLinExpr();
+                for (int i = 0; i < number_of_knapsacks; i++) {
+                    linExpr.addTerm(1, x[i][j]);
+                }
+                model.addConstr(linExpr, GRB.LESS_EQUAL, 1, "c_" + nu++ + "_" + j);
+            }
+
+            linExpr = new GRBLinExpr();
+            for(int i = 0; i < number_of_knapsacks; i++)
+            {
+                for(int j = 0; j < number_of_items; j++)
+                {
+                    linExpr.addTerm(items.get(j).getProfitto(), x[i][j]);
+                }
+            }
+
+            model.setObjective(linExpr,GRB.MAXIMIZE);
+            model.optimize();
         */
     }
 
