@@ -172,7 +172,7 @@ public class Model {
         x = new GRBVar[number_of_knapsacks][number_of_items];
         for (int i = 0; i < number_of_knapsacks; i++) {
             for (int j = 0; j < number_of_items; j++) {
-                x[i][j] = model.addVar(0, 1, 0, GRB.BINARY, "x_" + i + 1 + "_" + j + 1);
+                x[i][j] = model.addVar(0, 1, 0, GRB.BINARY, "x_" + i + "_" + j);
             }
         }
     }
@@ -197,7 +197,7 @@ public class Model {
             for (int j = 0; j < number_of_items; j++) {
                 linExpr.addTerm(items.get(j).getWeight(), x[i][j]);
             }
-            model.addConstr(linExpr, GRB.LESS_EQUAL, capacities.get(i), VINCOLO_CAPACITA + i+1);
+            model.addConstr(linExpr, GRB.LESS_EQUAL, capacities.get(i), VINCOLO_CAPACITA + i);
         }
     }
 
@@ -210,7 +210,7 @@ public class Model {
             {
                 linExpr.addTerm(1, x[i][j]);
             }
-            model.addConstr(linExpr, GRB.LESS_EQUAL, 1, VINCOLO_SELEZIONE_ZAINO + j+1);
+            model.addConstr(linExpr, GRB.LESS_EQUAL, 1, VINCOLO_SELEZIONE_ZAINO + j);
         }
     }
 
