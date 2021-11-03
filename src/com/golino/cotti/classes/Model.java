@@ -87,7 +87,7 @@ public class Model {
             hasSolution = true;
         }
     }
- //
+
     public List<String> getVarNames() throws GRBException {
         List<String> varNames = new ArrayList<>();
         for (GRBVar v : model.getVars()) {
