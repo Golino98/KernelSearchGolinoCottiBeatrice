@@ -9,7 +9,7 @@ public class Start {
     public static void main(String[] args) {
 
         /**
-         * @param configPath -> path per il file di configurazione config.txt (in cui sono presenti tutti i dati per il
+         * @ configPath -> path per il file di configurazione config.txt (in cui sono presenti tutti i dati per il
          *                      settaggio del numero di bucket e così via)
          */
         String instPath = args[0];

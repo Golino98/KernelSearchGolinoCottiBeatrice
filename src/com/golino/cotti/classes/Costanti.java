@@ -10,4 +10,7 @@ public class Costanti {
 
     static final String ERRORE_ITEM_PROFITTO = "Attenzione, non sono stati definiti tutti i profitti degli items.";
     static final String ERRORE_ITEM_PROFITTO_VALORE = "Attenzione, è stata inserita un profitto di un item negativo o uguale a zero.";
+
+    static final String FORMATTED_ITERATION = "\n\n\n\t\t******** Iteration %d ********\n\n\n";
+    static final String FORMATTED_SOLVE_BUCKET = "\n\n\n\n\t\t** Solving bucket %d ** \n ";
 }

@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.golino.cotti.classes.Costanti.*;
+
 public class KernelSearch {
     private final Configuration config;
     private List<Item> items;
@@ -92,7 +94,7 @@ public class KernelSearch {
             if (i != 0)
                 objValues.add(new ArrayList<>());
 
-            System.out.println("\n\n\n\t\t******** Iteration " + i + " ********\n\n\n");
+            System.out.format(FORMATTED_ITERATION, i);
             solveBuckets();
         }
     }
@@ -101,7 +103,7 @@ public class KernelSearch {
         int count = 0;
 
         for (Bucket b : buckets) {
-            System.out.println("\n\n\n\n\t\t** Solving bucket " + count++ + " **\n");
+            System.out.format(FORMATTED_SOLVE_BUCKET, count++);
             List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it) && !b.contains(it)).collect(Collectors.toList());
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
@@ -128,7 +130,6 @@ public class KernelSearch {
                 objValues.get(objValues.size() - 1).add(bestSolution.getObj());
             else
                 objValues.get(objValues.size() - 1).add(0.0);
-
 
             if (getRemainingTime() <= timeThreshold)
                 return;
