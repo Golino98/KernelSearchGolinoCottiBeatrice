@@ -13,7 +13,7 @@ public class ConfigurationReader {
     private final String configPath;
     private final Configuration config = new Configuration();
 
-    public ConfigurationReader(String instPath, String logPath,String configPath) {
+    public ConfigurationReader(String instPath, String logPath, String configPath) {
         this.instPath = instPath;
         this.logPath = logPath;
         this.configPath = configPath;
@@ -37,6 +37,10 @@ public class ConfigurationReader {
 
             //Prendo la prima parola inserita nell'array e vado a settare la configurazione in base ai parametri (salvati
             //nella seconda cella dell'array)
+
+            //Implemento una abstract class per il setting, estendo le classi per la configurazioni con un metodo per il settaggio
+            //nel momento in cui vado a fare ad esempio un qualcosa come splitLine[0].set mi va a richiamare in automatico il metodo
+            //senza dover andare a fare milioni di controlli
             switch (splitLine[0]) {
                 case "THREADS" -> config.setNumThreads(Integer.parseInt(splitLine[1]));
                 case "MIPGAP" -> config.setMipGap(Double.parseDouble(splitLine[1]));

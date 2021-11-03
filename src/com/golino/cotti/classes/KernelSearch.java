@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.golino.cotti.classes.Costanti.*;
+import static com.golino.cotti.classes.Costanti.FORMATTED_ITERATION;
+import static com.golino.cotti.classes.Costanti.FORMATTED_SOLVE_BUCKET;
 
 public class KernelSearch {
     private final Configuration config;
