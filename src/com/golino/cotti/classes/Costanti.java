@@ -1,5 +1,6 @@
 package com.golino.cotti.classes;
 
+
 public class Costanti {
 
     static final String ERRORE_KNAPSACK_CAPACITA = "Attenzione, non sono state definite tutte le capacità per i knapsacks.";
@@ -13,4 +14,7 @@ public class Costanti {
 
     static final String FORMATTED_ITERATION = "\n\n\n\t\t******** Iteration %d ********\n\n\n";
     static final String FORMATTED_SOLVE_BUCKET = "\n\n\n\n\t\t** Solving bucket %d ** \n ";
+
+    static final String VINCOLO_CAPACITA = "Vincolo sulla capacità per zaino_";
+    static final String VINCOLO_SELEZIONE_ZAINO = "Vincolo massima selezione zaino n_ ";
 }

@@ -5,6 +5,9 @@ public class Item {
     private final double rc;
     private final double xr;
 
+    private final int weight;
+    private final int profit;
+
     /**
      * Metodo costruttore della classe {@link Item}
      *
@@ -16,6 +19,26 @@ public class Item {
         this.name = name;
         this.xr = xr;
         this.rc = rc;
+
+        this.weight = 0;
+        this.profit = 0;
+    }
+
+    public int getWeight() {
+        return weight;
+    }
+
+    public int getProfit() {
+        return profit;
+    }
+
+    public Item(int weight, int profit)
+    {
+        this.name=null;
+        this.rc = 0;
+        this.xr = 0;
+        this.weight = weight;
+        this.profit = profit;
     }
 
     /**
