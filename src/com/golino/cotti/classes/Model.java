@@ -198,5 +198,6 @@ public class Model {
 
     public void setCallback(GRBCallback callback) {
         model.setCallback(callback);
+        //
     }
 }
