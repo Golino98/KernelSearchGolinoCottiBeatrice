@@ -12,9 +12,12 @@ public class Start {
          * @ configPath -> path per il file di configurazione config.txt (in cui sono presenti tutti i dati per il
          *                      settaggio del numero di bucket e così via)
          */
-        String instPath = args[0];
-        String logPath = args[1];
-        String configPath = args[2];
+        /**
+         * Da controllare
+         */
+        String instPath = "C:\\Users\\giaco\\IdeaProjects\\KernelSearchGolinoCotti\\istances\\test_res_395.txt";
+        String logPath = "C:\\Users\\giaco\\IdeaProjects\\KernelSearchGolinoCotti\\log";
+        String configPath = "C:\\Users\\giaco\\IdeaProjects\\KernelSearchGolinoCotti\\configurations\\config.txt";
 
         try {
             var config = new ConfigurationReader(instPath, logPath, configPath).read();
