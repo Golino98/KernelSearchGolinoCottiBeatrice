@@ -1,5 +1,6 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.instance.Instance;
 import gurobi.*;
 import gurobi.GRB.DoubleAttr;
 import gurobi.GRB.IntAttr;
@@ -7,32 +8,24 @@ import gurobi.GRB.StringAttr;
 
 import static com.golino.cotti.classes.Costanti.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 
 public class Model {
     private final ModelConfiguration config;
+    private Instance instance;
     private GRBModel model;
     private GRBLinExpr linExpr;
     private boolean hasSolution;
 
     private GRBVar[][] x;
-    private List<String> lines;
-    private int number_of_knapsacks;
-    private int number_of_items;
-    private ArrayList<Integer> capacities;
-    private ArrayList<Item> items;
 
     public Model(ModelConfiguration config) throws GRBException {
         this.config = config;
+        this.instance =config.getInstance();
         this.hasSolution = false;
 
         var env = new GRBEnv();
@@ -51,34 +44,14 @@ public class Model {
         }
     }
 
-    private void readAndSetData() {
+    private void readAndSetData() throws GRBException {
+        createCapacityContraints();
+        createSelectionContraint();
 
-        try (BufferedReader br = Files.newBufferedReader(Paths.get(config.getInstPath()))) {
+        setObjectiveFunction();
 
-            lines = br.lines().collect(Collectors.toList());
-
-            number_of_knapsacks = Integer.parseInt(lines.get(0));
-            number_of_items = Integer.parseInt(lines.get(1));
-
-            capacities = new ArrayList<>();
-            items = new ArrayList<>();
-
-            fillKnapsacksCapacities();
-            fillItems();
-
-            setVariables(number_of_knapsacks, number_of_items);
-
-            createCapacityContraints();
-            createSelectionContraint();
-
-            setObjectiveFunction();
-
-            model.setObjective(linExpr, GRB.MAXIMIZE);
-            model.optimize();
-
-        } catch (IOException | GRBException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
+        model.setObjective(linExpr, GRB.MAXIMIZE);
+        model.optimize();
     }
 
     public void solve() throws GRBException {
@@ -177,49 +150,31 @@ public class Model {
         }
     }
 
-    private void fillKnapsacksCapacities() {
-        for (String line : lines.subList(2, number_of_knapsacks + 2)) {
-            capacities.add(Integer.parseInt(line));
-        }
-    }
-
-    private void fillItems() {
-        for (String line : lines.subList(number_of_knapsacks + 2, number_of_items + number_of_knapsacks + 2)) {
-            String[] splitLine = line.split("\\s+");
-            items.add(new Item(Integer.parseInt(splitLine[0]), Integer.parseInt(splitLine[1])));
-        }
-    }
-
     private void createCapacityContraints() throws GRBException {
-        for (int i = 0; i < number_of_knapsacks; i++)
-        {
+        for (int i = 0; i < instance.getNumKnapsacks(); i++) {
             linExpr = new GRBLinExpr();
-            for (int j = 0; j < number_of_items; j++) {
-                linExpr.addTerm(items.get(j).getWeight(), x[i][j]);
+            for (int j = 0; j < instance.getNumItems(); j++) {
+                linExpr.addTerm(instance.getItems().get(j).getWeight(), x[i][j]);
             }
-            model.addConstr(linExpr, GRB.LESS_EQUAL, capacities.get(i), VINCOLO_CAPACITA + i);
+            model.addConstr(linExpr, GRB.LESS_EQUAL, instance.getCapacities().get(i), VINCOLO_CAPACITA + i);
         }
     }
 
-    private void createSelectionContraint() throws GRBException
-    {
-        for (int j = 0; j < number_of_items; j++)
-        {
+    private void createSelectionContraint() throws GRBException {
+        for (int j = 0; j < instance.getNumItems(); j++) {
             linExpr = new GRBLinExpr();
-            for (int i = 0; i < number_of_knapsacks; i++)
-            {
+            for (int i = 0; i < instance.getNumKnapsacks(); i++) {
                 linExpr.addTerm(1, x[i][j]);
             }
             model.addConstr(linExpr, GRB.LESS_EQUAL, 1, VINCOLO_SELEZIONE_ZAINO + j);
         }
     }
 
-    private void setObjectiveFunction() throws GRBException
-    {
+    private void setObjectiveFunction() throws GRBException {
         linExpr = new GRBLinExpr();
-        for (int i = 0; i < number_of_knapsacks; i++) {
-            for (int j = 0; j < number_of_items; j++) {
-                linExpr.addTerm(items.get(j).getProfit(), x[i][j]);
+        for (int i = 0; i < instance.getNumKnapsacks(); i++) {
+            for (int j = 0; j < instance.getNumItems(); j++) {
+                linExpr.addTerm(instance.getItems().get(j).getProfit(), x[i][j]);
             }
         }
     }

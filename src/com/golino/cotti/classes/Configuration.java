@@ -1,5 +1,7 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.instance.Instance;
+
 /**
  * Contenitore per le informazione di configurazione del progetto.
  */
@@ -8,6 +10,7 @@ public class Configuration {
     private int numThreads;
     private int presolve;
     private double mipGap;
+    private String logPath;
 
     // Limiti di tempo
     private int timeLimit;
@@ -21,12 +24,7 @@ public class Configuration {
     private ItemSorter sorter;
     private BucketBuilder bucketBuilder;
     private KernelBuilder kernelBuilder;
-
-    // File di output di Gurobi
-    private String logPath;
-
-    // File contenente l'istanza del problema
-    private String instPath;
+    private Instance instance;
 
     public BucketBuilder getBucketBuilder() {
         return bucketBuilder;
@@ -124,19 +122,19 @@ public class Configuration {
         this.timeLimitKernel = timeLimitKernel;
     }
 
-    public String getInstPath() {
-        return instPath;
-    }
-
-    public void setInstPath(String instPath) {
-        this.instPath = instPath;
-    }
-
     public String getLogPath() {
         return logPath;
     }
 
     public void setLogPath(String logPath) {
         this.logPath = logPath;
+    }
+
+    public Instance getInstance() {
+        return instance;
+    }
+
+    public void setInstance(Instance instance) {
+        this.instance = instance;
     }
 }

@@ -1,5 +1,7 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.instance.InstanceReader;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -9,7 +11,7 @@ import java.util.stream.Collectors;
 /**
  * Lettore per la configurazione contenuta in un file txt.
  * Per informazioni sul formato del file di configurazione,
- * vedi /configurations/spiegazioneConfig.txt.
+ * vedi la documentazione.
  */
 public class ConfigurationReader {
     private final String configPath;
@@ -73,7 +75,7 @@ public class ConfigurationReader {
                         default -> throw new IllegalStateException("Unrecognized kernel builder.");
                     }
                 }
-                case "INSTPATH" -> config.setInstPath(value);
+                case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
                 case "LOGPATH" -> config.setLogPath(value);
 
                 default -> System.out.println("Unrecognized parameter name.");

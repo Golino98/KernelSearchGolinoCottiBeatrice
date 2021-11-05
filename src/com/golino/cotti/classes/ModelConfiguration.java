@@ -1,24 +1,25 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.instance.Instance;
+
 public class ModelConfiguration {
     private String logPath;
-    private String instPath;
+    private Instance instance;
     private int numThreads;
     private int presolve;
     private double mipGap;
     private int timeLimit;
     private boolean lpRelaxation;
-    @SuppressWarnings("FieldCanBeLocal")
-    private final double positiveThreshold = 1e-5;
+    private static final double positiveThreshold = 1e-5;
 
-    public ModelConfiguration(Configuration config, int timelimit,boolean lpRelaxation){
-        this.logPath=config.getLogPath();
-        this.instPath=config.getInstPath();
-        this.numThreads=config.getNumThreads();
-        this.presolve=config.getPresolve();
-        this.mipGap=config.getMipGap();
-        this.timeLimit=timelimit;
-        this.lpRelaxation=lpRelaxation;
+    public ModelConfiguration(Configuration config, int timelimit, boolean lpRelaxation) {
+        this.logPath = config.getLogPath();
+        this.instance = config.getInstance();
+        this.numThreads = config.getNumThreads();
+        this.presolve = config.getPresolve();
+        this.mipGap = config.getMipGap();
+        this.timeLimit = timelimit;
+        this.lpRelaxation = lpRelaxation;
     }
 
     public String getLogPath() {
@@ -27,14 +28,6 @@ public class ModelConfiguration {
 
     public void setLogPath(String logPath) {
         this.logPath = logPath;
-    }
-
-    public String getInstPath() {
-        return instPath;
-    }
-
-    public void setInstPath(String instPath) {
-        this.instPath = instPath;
     }
 
     public int getNumThreads() {
@@ -79,5 +72,13 @@ public class ModelConfiguration {
 
     public double getPositiveThreshold() {
         return positiveThreshold;
+    }
+
+    public Instance getInstance() {
+        return instance;
+    }
+
+    public void setInstance(Instance instance) {
+        this.instance = instance;
     }
 }

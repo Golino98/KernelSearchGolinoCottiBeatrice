@@ -1,5 +1,8 @@
 package com.golino.cotti.classes;
 
+/**
+ * Rappresenta un elemento del problema da risolvere.
+ */
 public class Item {
     private final String name;
     private final double rc;
@@ -24,23 +27,6 @@ public class Item {
         this.profit = 0;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
-    public int getProfit() {
-        return profit;
-    }
-
-    public Item(int weight, int profit)
-    {
-        this.name=null;
-        this.rc = 0;
-        this.xr = 0;
-        this.weight = weight;
-        this.profit = profit;
-    }
-
     /**
      * Metodo getters della variabile name
      *
@@ -50,28 +36,11 @@ public class Item {
         return name;
     }
 
-    /**
-     * Metodo getters della variabile rc
-     *
-     * @return un double contentente il valore della variabile rc
-     */
     public double getRc() {
         return rc;
     }
 
-    /**
-     * Metodo getters della variabile xr
-     *
-     * @return un double contentente il valore della variabile xr
-     */
     public double getXr() {
         return xr;
-    }
-
-    /**
-     * @return il valore assoluto della variabile rc
-     */
-    public double getAbsoluteRC() {
-        return Math.abs(rc);
     }
 }
