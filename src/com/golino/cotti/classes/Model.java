@@ -25,7 +25,7 @@ public class Model {
 
     public Model(ModelConfiguration config) throws GRBException {
         this.config = config;
-        this.instance =config.getInstance();
+        this.instance = config.getInstance();
         this.hasSolution = false;
 
         var env = new GRBEnv();
@@ -145,7 +145,7 @@ public class Model {
         x = new GRBVar[number_of_knapsacks][number_of_items];
         for (int i = 0; i < number_of_knapsacks; i++) {
             for (int j = 0; j < number_of_items; j++) {
-                x[i][j] = model.addVar(0, 1, 0, GRB.BINARY, "x_" + i + "_" + j);
+                x[i][j] = model.addVar(0, 1, 0, GRB.BINARY, "x_" + (i + 1) + "_" + (j + 1));
             }
         }
     }
@@ -156,7 +156,7 @@ public class Model {
             for (int j = 0; j < instance.getNumItems(); j++) {
                 linExpr.addTerm(instance.getItems().get(j).getWeight(), x[i][j]);
             }
-            model.addConstr(linExpr, GRB.LESS_EQUAL, instance.getCapacities().get(i), VINCOLO_CAPACITA + i);
+            model.addConstr(linExpr, GRB.LESS_EQUAL, instance.getCapacities().get(i), VINCOLO_CAPACITA + (i + 1));
         }
     }
 
@@ -166,7 +166,7 @@ public class Model {
             for (int i = 0; i < instance.getNumKnapsacks(); i++) {
                 linExpr.addTerm(1, x[i][j]);
             }
-            model.addConstr(linExpr, GRB.LESS_EQUAL, 1, VINCOLO_SELEZIONE_ZAINO + j);
+            model.addConstr(linExpr, GRB.LESS_EQUAL, 1, VINCOLO_SELEZIONE_ZAINO + (j + 1));
         }
     }
 
