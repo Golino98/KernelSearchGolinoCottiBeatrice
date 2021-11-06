@@ -1,1 +1,0 @@
-# Objective value = 0

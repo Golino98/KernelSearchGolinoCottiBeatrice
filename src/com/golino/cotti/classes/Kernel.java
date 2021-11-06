@@ -3,39 +3,41 @@ package com.golino.cotti.classes;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Rappresenta il kernel set del problema.
+ */
 public class Kernel {
     private final List<Item> items;
 
     /**
-     * Metodo costruttore della classe {@link Kernel}
+     * Crea un nuovo kernel set.
      *
-     * @param items
+     * @param items Gli item da includere nel kernel set.
      */
     public Kernel(List<Item> items) {
         this.items = items;
     }
 
     /**
-     * Metoco costruttore per la classe {@link Kernel} che non richiede parametri in ingersso
-     * Definisce in maniera automatica la {@link List<Item>} come un {@link ArrayList}
+     * Crea un nuovo kernel set vuoto.
      */
     public Kernel() {
         this.items = new ArrayList<>();
     }
 
     /**
-     * Metodo che permette di aggiungere un {@link Item} alla lista
+     * Aggiunge un {@link Item} alla lista.
      *
-     * @param it {@link Item} da aggiungere alla lista
+     * @param it {@link Item} da aggiungere alla lista.
      */
     public void addItem(Item it) {
         items.add(it);
     }
 
     /**
-     * Metodo utilizzato per verificare la presenza di un {@link Item} all'interno della nostra lista
+     * Verifica la presenza di un {@link Item} all'interno della lista.
      *
-     * @param it {@link Item} di cui verificare la presenza all'interno della lista
+     * @param it {@link Item} di cui verificare la presenza all'interno della lista.
      * @return <code>true</code> se viene trovato un qualunque tipo di match tramite nome (in maniera case insensitive
      * fra il nostro item it e la lista items), <code>false</code> altrimenti.
      */
@@ -44,7 +46,7 @@ public class Kernel {
     }
 
     /**
-     * @return la dimensione della {@link List<Item>} items
+     * @return la dimensione della {@link List<Item>} di item.
      */
     public int size() {
         return items.size();
