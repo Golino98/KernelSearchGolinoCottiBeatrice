@@ -46,13 +46,13 @@ public class InstanceReader {
             capacities.add(Integer.parseInt(line));
         }
 
-        var items = new ArrayList<Item>(nItems);
+        var items = new ArrayList<InstanceItem>(nItems);
         // Le righe dalla nKnapsacks+2 alla nItems+nKnapsacks+1 contengono gli oggetti
         for (var line : lines.subList(nKnapsacks + 2, nItems + nKnapsacks + 2)) {
             var splitLine = line.split(separator);
             var weight = Integer.parseInt(splitLine[0]);
             var profit = Integer.parseInt(splitLine[1]);
-            items.add(new Item(weight, profit));
+            items.add(new InstanceItem(weight, profit));
         }
 
         return new Instance(capacities, items);
