@@ -1,62 +1,44 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.solver.Variable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Bucket {
+    private final List<Variable> variables = new ArrayList<>();
 
-    private final List<Item> items;
-
-    /**
-     * Metodo costruttore per {@link Bucket}
-     */
-    public Bucket() {
-        items = new ArrayList<>();
+    public void addVariable(Variable v) {
+        variables.add(v);
     }
 
-    /**
-     * Metodo che permette di aggiungere un {@link Item} alla lista items
-     *
-     * @param it parametro di tipo {@link Item} da aggiungere alla lista
-     */
-    public void addItem(Item it) {
-        items.add(it);
-    }
-
-    /**
-     * @return lunghezza della List<{@link Item}> items
-     */
     public int size() {
-        return items.size();
+        return variables.size();
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
     }
 
     /**
-     * @return di items, ovvero una List<{@link Item}>
-     */
-    public List<Item> getItems() {
-        return items;
-    }
-
-    /**
-     * Modifica da far controllare alla profe
+     * //TODO: Modifica da far controllare alla profe
      *
-     * @param it variabile di tipo {@link Item} di cui controllare l'esistenza all'interno della lista items.
-     *           Il controllo viene fatto in maniera case Insensitive in modo tale da non avere problemi con le maiuscole.
-     * @return <code>true</code> se l'item it è presente all'interno della lista items, in caso contrario <code>false</code>
+     * @param v variabile di tipo {@link Variable} di cui controllare l'esistenza all'interno della lista variables.
+     *          Il controllo viene fatto in maniera case insensitive in modo tale da non avere problemi con le maiuscole.
+     * @return <code>true</code> se la variabile v è presente all'interno della lista, in caso contrario <code>false</code>
      */
-    public boolean contains(Item it) {
-        return items.stream().anyMatch(it2 -> it2.getName().equalsIgnoreCase(it.getName()));
+    public boolean contains(Variable v) {
+        return variables.stream().anyMatch(v2 -> v2.getName().equalsIgnoreCase(v.getName()));
     }
 
     /**
-     * @param it1 parametro da andare a rimuovere all'interno della lista.
-     *            Il controllo viene effettuato tramite il nome in maniera case insensitive, in modo tale da non avere problemi con le maiuscole
+     * @param v parametro da andare a rimuovere all'interno della lista.
+     *          Il controllo viene effettuato tramite il nome in maniera case insensitive, in modo tale da non avere problemi con le maiuscole
      */
-    public void removeItem(Item it1) {
-        for (int i = 0; i < items.size(); i++) {
-            Item it2 = items.get(i);
-            if (it2.getName().equalsIgnoreCase(it1.getName())) {
-                items.remove(it2);
+    public void removeItem(Variable v) {
+        for (var v2 : variables) {
+            if (v2.getName().equalsIgnoreCase(v.getName())) {
+                variables.remove(v2);
                 break;
             }
         }

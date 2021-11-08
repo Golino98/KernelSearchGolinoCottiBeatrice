@@ -1,8 +1,13 @@
-package com.golino.cotti.classes;
+package com.golino.cotti.classes.solver;
 
+import com.golino.cotti.classes.Configuration;
 import com.golino.cotti.classes.instance.Instance;
 
-public class ModelConfiguration {
+/**
+ * Rappresenta la configurazione necessaria al risolutore
+ * del problema.
+ */
+public class SolverConfiguration {
     private String logPath;
     private Instance instance;
     private int numThreads;
@@ -12,7 +17,7 @@ public class ModelConfiguration {
     private boolean lpRelaxation;
     private static final double positiveThreshold = 1e-5;
 
-    public ModelConfiguration(Configuration config, int timelimit, boolean lpRelaxation) {
+    public SolverConfiguration(Configuration config, int timelimit, boolean lpRelaxation) {
         this.logPath = config.getLogPath();
         this.instance = config.getInstance();
         this.numThreads = config.getNumThreads();

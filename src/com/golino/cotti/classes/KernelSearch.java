@@ -1,5 +1,9 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.solver.Variable;
+import com.golino.cotti.classes.solver.Solver;
+import com.golino.cotti.classes.solver.SolverConfiguration;
+import com.golino.cotti.classes.solver.Solution;
 import gurobi.GRBCallback;
 import gurobi.GRBException;
 
@@ -11,9 +15,13 @@ import java.util.stream.Collectors;
 
 import static com.golino.cotti.classes.Costanti.*;
 
+/**
+ * Implementa il metodo della kernel search, usando Gurobi come risolutore.
+ * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
+ */
 public class KernelSearch {
     private final Configuration config;
-    private List<Item> items;
+    private List<Variable> variables;
     private Solution bestSolution;
     private List<Bucket> buckets;
     private Kernel kernel;
@@ -23,76 +31,75 @@ public class KernelSearch {
     private Instant startTime;
 
     /**
-     * @param config {@link Configuration} passata per all'inizio. Utilizzata per settare i parametri della kernel search
+     * Crea una nuova istanza di kernel search.
+     *
+     * @param config La configurazione del metodo.
      */
     public KernelSearch(Configuration config) {
         this.config = config;
-        bestSolution = new Solution();
         objValues = new ArrayList<>();
     }
 
+    /**
+     * Avvia la kernel search.
+     *
+     * @return La soluzione trovata.
+     * @throws GRBException Errore di Gurobi.
+     */
     public Solution start() throws GRBException {
+        // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
         startTime = Instant.now();
 
-        var sorter = config.getItemSorter();
+        var sorter = config.getVariableSorter();
         var kernelBuilder = config.getKernelBuilder();
         var bucketBuilder = config.getBucketBuilder();
+        // TODO: vedere cos'è la callback
         callback = new CustomCallback(config.getLogPath(), startTime);
-        items = buildItems();
 
-        sorter.sort(items);
-        kernel = kernelBuilder.build(items, config);
-        buckets = bucketBuilder.build(items.stream()
-                .filter(it -> !kernel.contains(it)).collect(Collectors.toList()), config);
+        buildItems();
+        sorter.sort(variables);
+
+        kernel = kernelBuilder.build(variables, config);
+        buckets = bucketBuilder.build(variables.stream()
+                .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
         solveKernel();
         iterateBuckets();
 
         return bestSolution;
     }
 
-    List<Item> buildItems() throws GRBException {
-        Model model = new Model(new ModelConfiguration(config, config.getTimeLimit(), true));
-        model.solve();
-
-        List<Item> items = new ArrayList<>();
-        for (String v : model.getVarNames()) {
-            double value = model.getVarValue(v);
-            double rc = model.getVarRC(v); // can be called only after solving the LP relaxation
-            Item it = new Item(v, value, rc);
-            items.add(it);
-        }
-
-        return items;
+    private void buildItems() throws GRBException {
+        var solver = new Solver(new SolverConfiguration(config, config.getTimeLimit(), true));
+        var solution = solver.solve();
+        variables = solution.getVariables();
     }
 
     private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
-        Model model = new Model(new ModelConfiguration(config, timeLimit, false));
+        var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
 
-        if (!bestSolution.isEmpty()) {
-            model.readSolution(bestSolution);
-        }
+        var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
+        solver.disableVariables(toDisable);
+        solver.setCallback(callback);
 
-        List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it)).collect(Collectors.toList());
-        model.disableItems(toDisable);
-        model.setCallback(callback);
-        model.solve();
-        if (model.hasSolution()) {
-            bestSolution = model.getSolution();
-            model.exportSolution();
-
-            objValues.get(objValues.size() - 1).add(bestSolution.getObj());
-        } else {
-            objValues.get(objValues.size() - 1).add(0.0);
-        }
+        bestSolution = solver.solve();
+        var objs = new ArrayList<Double>();
+        objs.add(bestSolution.getObjective());
+        objValues.add(objs);
+        // TODO: what
+        // model.exportSolution();
     }
 
     private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
-            if (getRemainingTime() <= timeThreshold)
+            if (getRemainingTime() <= timeThreshold) {
                 return;
-            if (i != 0)
+            }
+
+            // TODO: che è sta merda
+            if (i != 0) {
                 objValues.add(new ArrayList<>());
+            }
 
             System.out.format(FORMATTED_ITERATION, i);
             solveBuckets();
@@ -104,30 +111,31 @@ public class KernelSearch {
 
         for (Bucket b : buckets) {
             System.out.format(FORMATTED_SOLVE_BUCKET, count++);
-            List<Item> toDisable = items.stream().filter(it -> !kernel.contains(it) && !b.contains(it)).collect(Collectors.toList());
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            Model model = new Model(new ModelConfiguration(config, timeLimit, false));
-            model.disableItems(toDisable);
-            model.addBucketConstraint(b.getItems()); // can we use this constraint regardless of the type of variables chosen as items?
+            var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
+
+            var toDisable = variables.stream().filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
+            solver.disableVariables(toDisable);
+            solver.addBucketConstraint(b.getVariables());
 
             if (!bestSolution.isEmpty()) {
-                model.addObjConstraint(bestSolution.getObj());
-                model.readSolution(bestSolution);
+                solver.addObjConstraint(bestSolution.getObjective());
+                solver.readSolution(bestSolution);
             }
 
-            model.setCallback(callback);
-            model.solve();
+            solver.setCallback(callback);
+            var solution = solver.solve();
 
-            if (model.hasSolution()) {
-                bestSolution = model.getSolution();
-                List<Item> selected = model.getSelectedItems(b.getItems());
+            if (!solution.isEmpty()) {
+                bestSolution = solution;
+                var selected = solver.getSelectedVariables(b.getVariables());
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
-                model.exportSolution();
+                solver.exportSolution();
             }
             if (!bestSolution.isEmpty())
-                objValues.get(objValues.size() - 1).add(bestSolution.getObj());
+                objValues.get(objValues.size() - 1).add(bestSolution.getObjective());
             else
                 objValues.get(objValues.size() - 1).add(0.0);
 

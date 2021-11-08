@@ -1,5 +1,7 @@
 package com.golino.cotti.classes;
 
+import com.golino.cotti.classes.solver.Variable;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -7,48 +9,48 @@ import java.util.List;
  * Rappresenta il kernel set del problema.
  */
 public class Kernel {
-    private final List<Item> items;
+    private final List<Variable> variables;
 
     /**
      * Crea un nuovo kernel set.
      *
-     * @param items Gli item da includere nel kernel set.
+     * @param variables Le variabili da includere nel kernel set.
      */
-    public Kernel(List<Item> items) {
-        this.items = items;
+    public Kernel(List<Variable> variables) {
+        this.variables = variables;
     }
 
     /**
      * Crea un nuovo kernel set vuoto.
      */
     public Kernel() {
-        this.items = new ArrayList<>();
+        this.variables = new ArrayList<>();
     }
 
     /**
-     * Aggiunge un {@link Item} alla lista.
+     * Aggiunge un {@link Variable} alla lista.
      *
-     * @param it {@link Item} da aggiungere alla lista.
+     * @param v {@link Variable} da aggiungere alla lista.
      */
-    public void addItem(Item it) {
-        items.add(it);
+    public void addItem(Variable v) {
+        variables.add(v);
     }
 
     /**
-     * Verifica la presenza di un {@link Item} all'interno della lista.
+     * Verifica la presenza di un {@link Variable} all'interno della lista.
      *
-     * @param it {@link Item} di cui verificare la presenza all'interno della lista.
+     * @param v {@link Variable} di cui verificare la presenza all'interno della lista.
      * @return <code>true</code> se viene trovato un qualunque tipo di match tramite nome (in maniera case insensitive
-     * fra il nostro item it e la lista items), <code>false</code> altrimenti.
+     * fra la variabile v e la lista delle variabili), <code>false</code> altrimenti.
      */
-    public boolean contains(Item it) {
-        return items.stream().anyMatch(it2 -> it2.getName().equalsIgnoreCase(it.getName()));
+    public boolean contains(Variable v) {
+        return variables.stream().anyMatch(v2 -> v2.getName().equalsIgnoreCase(v.getName()));
     }
 
     /**
-     * @return la dimensione della {@link List<Item>} di item.
+     * @return la dimensione della {@link List<Variable>} di variabili.
      */
     public int size() {
-        return items.size();
+        return variables.size();
     }
 }

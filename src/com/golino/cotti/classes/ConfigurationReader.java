@@ -55,7 +55,7 @@ public class ConfigurationReader {
                     if (Integer.parseInt(value) != 0) {
                         throw new IllegalStateException("Unrecognized item sorter.");
                     }
-                    config.setItemSorter(new ItemSorterByValueAndAbsoluteRC());
+                    config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
                 }
                 case "KERNELSIZE" -> config.setKernelSize(Double.parseDouble(value));
                 case "BUCKETSIZE" -> config.setBucketSize(Double.parseDouble(value));

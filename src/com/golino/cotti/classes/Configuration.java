@@ -21,7 +21,7 @@ public class Configuration {
     private int numIterations;
     private double kernelSize;
     private double bucketSize;
-    private ItemSorter sorter;
+    private VariableSorter sorter;
     private BucketBuilder bucketBuilder;
     private KernelBuilder kernelBuilder;
     private Instance instance;
@@ -42,11 +42,11 @@ public class Configuration {
         this.bucketSize = bucketSize;
     }
 
-    public ItemSorter getItemSorter() {
+    public VariableSorter getVariableSorter() {
         return sorter;
     }
 
-    public void setItemSorter(ItemSorter sorter) {
+    public void setVariableSorter(VariableSorter sorter) {
         this.sorter = sorter;
     }
 
