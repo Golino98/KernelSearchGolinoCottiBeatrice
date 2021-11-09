@@ -1,6 +1,6 @@
-package com.golino.cotti.classes.solver;
+package com.golinocottibeatrice.kernelsearch.solver;
 
-import com.golino.cotti.classes.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import gurobi.*;
 
 /**

@@ -1,6 +1,6 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
-import com.golino.cotti.classes.instance.InstanceReader;
+import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
 
 import java.io.BufferedReader;
 import java.io.IOException;

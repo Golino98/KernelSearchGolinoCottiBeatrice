@@ -1,19 +1,18 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
-import com.golino.cotti.classes.solver.Variable;
-import com.golino.cotti.classes.solver.Solver;
-import com.golino.cotti.classes.solver.SolverConfiguration;
-import com.golino.cotti.classes.solver.Solution;
+import com.golinocottibeatrice.kernelsearch.solver.Variable;
+import com.golinocottibeatrice.kernelsearch.solver.Solver;
+import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
+import com.golinocottibeatrice.kernelsearch.solver.Solution;
 import gurobi.GRBCallback;
 import gurobi.GRBException;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.golino.cotti.classes.Costanti.*;
+import static com.golinocottibeatrice.kernelsearch.Costanti.*;
 
 /**
  * Implementa il metodo della kernel search, usando Gurobi come risolutore.

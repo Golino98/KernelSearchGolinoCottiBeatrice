@@ -1,4 +1,4 @@
-package com.golino.cotti.classes.instance;
+package com.golinocottibeatrice.kernelsearch.instance;
 
 import java.io.IOException;
 import java.nio.file.Files;

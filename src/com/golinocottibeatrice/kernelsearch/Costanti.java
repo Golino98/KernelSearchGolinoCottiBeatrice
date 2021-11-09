@@ -1,4 +1,4 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
 public class Costanti {
     static final String ERRORE_KNAPSACK_CAPACITA = "Attenzione, non sono state definite tutte le capacità per i knapsacks.";

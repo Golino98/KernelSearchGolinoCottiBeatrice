@@ -1,4 +1,4 @@
-package com.golino.cotti.classes.instance;
+package com.golinocottibeatrice.kernelsearch.instance;
 
 import java.util.Collections;
 import java.util.List;

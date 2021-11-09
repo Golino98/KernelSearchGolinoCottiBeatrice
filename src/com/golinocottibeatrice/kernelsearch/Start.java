@@ -1,4 +1,4 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
 import gurobi.GRBException;
 

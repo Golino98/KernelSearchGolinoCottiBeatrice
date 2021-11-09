@@ -1,4 +1,4 @@
-package com.golino.cotti.classes.solver;
+package com.golinocottibeatrice.kernelsearch.solver;
 
 /**
  * Rappresenta una variabile x(i,j) del problema.

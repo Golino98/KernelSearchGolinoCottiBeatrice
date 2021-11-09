@@ -1,6 +1,6 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
-import com.golino.cotti.classes.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.instance.Instance;
 
 /**
  * Contenitore per le informazione di configurazione del progetto.

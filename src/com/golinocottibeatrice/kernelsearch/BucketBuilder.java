@@ -1,6 +1,6 @@
-package com.golino.cotti.classes;
+package com.golinocottibeatrice.kernelsearch;
 
-import com.golino.cotti.classes.solver.Variable;
+import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.List;
 
