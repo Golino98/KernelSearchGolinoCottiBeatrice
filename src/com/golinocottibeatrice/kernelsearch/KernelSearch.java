@@ -81,7 +81,6 @@ public class KernelSearch {
         solver.setCallback(callback);
 
         bestSolution = solver.solve();
-        solver.exportSolution();
     }
 
     private void iterateBuckets() throws GRBException {
@@ -121,7 +120,6 @@ public class KernelSearch {
                 var selected = solver.getSelectedVariables(b.getVariables());
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
-                solver.exportSolution();
             }
 
             if (getRemainingTime() <= timeThreshold) {

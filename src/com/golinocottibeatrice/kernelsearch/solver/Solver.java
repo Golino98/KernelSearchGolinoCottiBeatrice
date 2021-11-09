@@ -99,10 +99,6 @@ public class Solver {
         model.setCallback(callback);
     }
 
-    public void exportSolution() throws GRBException {
-        model.write("bestSolution.sol");
-    }
-
     public List<Variable> getSelectedVariables(List<Variable> variables) throws GRBException {
         var selected = new ArrayList<Variable>();
         for (var v : variables) {
