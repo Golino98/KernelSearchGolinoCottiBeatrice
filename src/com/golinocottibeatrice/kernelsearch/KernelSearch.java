@@ -26,7 +26,6 @@ public class KernelSearch {
     private Solution bestSolution;
     private List<Bucket> buckets;
     private Kernel kernel;
-    private GRBCallback callback;
     private Instant startTime;
 
     /**
@@ -51,8 +50,6 @@ public class KernelSearch {
         var sorter = config.getVariableSorter();
         var kernelBuilder = config.getKernelBuilder();
         var bucketBuilder = config.getBucketBuilder();
-        // TODO: vedere cos'è la callback
-        callback = new CustomCallback(config.getLogPath(), startTime);
 
         solveRelaxation();
         sorter.sort(variables);
@@ -78,9 +75,9 @@ public class KernelSearch {
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         solver.disableVariables(toDisable);
-        solver.setCallback(callback);
 
         bestSolution = solver.solve();
+        solver.dispose();
     }
 
     private void iterateBuckets() throws GRBException {
@@ -112,7 +109,6 @@ public class KernelSearch {
                 solver.readSolution(bestSolution);
             }
 
-            solver.setCallback(callback);
             var solution = solver.solve();
 
             if (!solution.isEmpty()) {
@@ -125,6 +121,8 @@ public class KernelSearch {
             if (getRemainingTime() <= timeThreshold) {
                 return;
             }
+
+            solver.dispose();
         }
     }
 

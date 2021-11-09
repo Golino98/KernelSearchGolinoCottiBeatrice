@@ -108,4 +108,8 @@ public class Solver {
         }
         return selected;
     }
+
+    public void dispose() {
+        model.dispose();
+    }
 }
