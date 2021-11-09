@@ -43,8 +43,12 @@ public class Solver {
         var objective = model.get(DoubleAttr.ObjVal);
         var variables = new ArrayList<Variable>();
         for (var v : model.getVars()) {
-            // TODO: test RC
-            var variable = new Variable(v.get(StringAttr.VarName), v.get(DoubleAttr.X), v.get(DoubleAttr.RC));
+            Variable variable;
+            if (config.isLpRelaxation()) {
+                variable = new Variable(v.get(StringAttr.VarName), v.get(DoubleAttr.X), v.get(DoubleAttr.RC));
+            } else {
+                variable = new Variable(v.get(StringAttr.VarName), v.get(DoubleAttr.X));
+            }
             variables.add(variable);
         }
         return new Solution(objective, variables);
@@ -52,15 +56,18 @@ public class Solver {
 
     /**
      * Disabilita una variabile, fissando il suo valore a 0.
+     *
      * @param v La variabile da disabilitare
      * @throws GRBException Errore di GUROBI.
      */
     public void disableVariable(Variable v) throws GRBException {
+        var test = model.getVarByName(v.getName());
         model.addConstr(model.getVarByName(v.getName()), GRB.EQUAL, 0, "FIX_VAR_" + v.getName());
     }
 
     /**
      * Disabilita delle variabili, fissando il loro valore a 0.
+     *
      * @param variables Le variabili da disabilitare.
      * @throws GRBException Errore di GUROBI.
      */

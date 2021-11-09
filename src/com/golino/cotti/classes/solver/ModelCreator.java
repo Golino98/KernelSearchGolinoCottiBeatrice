@@ -10,7 +10,7 @@ import gurobi.*;
 class ModelCreator {
     private static final String FORMATO_NOME_VARIABILE = "x_%d_%d";
     private static final String FORMATO_VINCOLO_CAPACITA = "Vincolo sulla capacità per zaino %d";
-    private static final String FORMATO_VINCOLO_SELEZIONE= "Vincolo massima selezione per item %d";
+    private static final String FORMATO_VINCOLO_SELEZIONE = "Vincolo massima selezione per item %d";
 
     private final SolverConfiguration config;
     private final Instance instance;
@@ -52,6 +52,7 @@ class ModelCreator {
         createSelectionContraints();
         setObjectiveFunction();
 
+        model.update();
         if (config.isLpRelaxation()) {
             model = model.relax();
         }
@@ -100,7 +101,7 @@ class ModelCreator {
         var objective = new GRBLinExpr();
         for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
             for (int item = 0; item < instance.getNumItems(); item++) {
-                objective.addTerm(instance.getProfit(item), variables[item][knapsack]);
+                objective.addTerm(instance.getProfit(item), variables[knapsack][item]);
             }
         }
         model.setObjective(objective, GRB.MAXIMIZE);

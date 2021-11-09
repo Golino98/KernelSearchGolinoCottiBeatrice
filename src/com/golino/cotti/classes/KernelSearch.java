@@ -20,14 +20,14 @@ import static com.golino.cotti.classes.Costanti.*;
  * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
  */
 public class KernelSearch {
+    private static final int timeThreshold = 5;
+
     private final Configuration config;
     private List<Variable> variables;
     private Solution bestSolution;
     private List<Bucket> buckets;
     private Kernel kernel;
     private GRBCallback callback;
-    private final int timeThreshold = 5;
-    private final List<List<Double>> objValues;
     private Instant startTime;
 
     /**
@@ -37,7 +37,6 @@ public class KernelSearch {
      */
     public KernelSearch(Configuration config) {
         this.config = config;
-        objValues = new ArrayList<>();
     }
 
     /**
@@ -56,7 +55,7 @@ public class KernelSearch {
         // TODO: vedere cos'è la callback
         callback = new CustomCallback(config.getLogPath(), startTime);
 
-        buildItems();
+        solveRelaxation();
         sorter.sort(variables);
 
         kernel = kernelBuilder.build(variables, config);
@@ -68,7 +67,7 @@ public class KernelSearch {
         return bestSolution;
     }
 
-    private void buildItems() throws GRBException {
+    private void solveRelaxation() throws GRBException {
         var solver = new Solver(new SolverConfiguration(config, config.getTimeLimit(), true));
         var solution = solver.solve();
         variables = solution.getVariables();
@@ -83,22 +82,13 @@ public class KernelSearch {
         solver.setCallback(callback);
 
         bestSolution = solver.solve();
-        var objs = new ArrayList<Double>();
-        objs.add(bestSolution.getObjective());
-        objValues.add(objs);
-        // TODO: what
-        // model.exportSolution();
+        solver.exportSolution();
     }
 
     private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
             if (getRemainingTime() <= timeThreshold) {
                 return;
-            }
-
-            // TODO: che è sta merda
-            if (i != 0) {
-                objValues.add(new ArrayList<>());
             }
 
             System.out.format(FORMATTED_ITERATION, i);
@@ -134,21 +124,14 @@ public class KernelSearch {
                 selected.forEach(b::removeItem);
                 solver.exportSolution();
             }
-            if (!bestSolution.isEmpty())
-                objValues.get(objValues.size() - 1).add(bestSolution.getObjective());
-            else
-                objValues.get(objValues.size() - 1).add(0.0);
 
-            if (getRemainingTime() <= timeThreshold)
+            if (getRemainingTime() <= timeThreshold) {
                 return;
+            }
         }
     }
 
     private int getRemainingTime() {
         return (int) (config.getTimeLimit() - Duration.between(startTime, Instant.now()).getSeconds());
-    }
-
-    public List<List<Double>> getObjValues() {
-        return objValues;
     }
 }

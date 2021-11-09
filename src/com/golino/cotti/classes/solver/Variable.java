@@ -21,6 +21,16 @@ public class Variable {
         this.rc = rc;
     }
 
+    /**
+     * Crea una nuova variabile.
+     *
+     * @param name  Il nome della variabile.
+     * @param value Il valore assegnato alla variabile (non necessariamente binario).
+     */
+    public Variable(String name, double value) {
+        this(name, value, 0);
+    }
+
     public String getName() {
         return name;
     }
