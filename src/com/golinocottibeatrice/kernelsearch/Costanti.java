@@ -12,4 +12,6 @@ public class Costanti {
 
     static final String FORMATTED_ITERATION = "\n\n\n\t\t******** Iteration %d ********\n\n\n";
     static final String FORMATTED_SOLVE_BUCKET = "\n\n\n\n\t\t** Solving bucket %d ** \n ";
+
+    static final String FORMAT_TXT = ".txt";
 }

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
+import static com.golinocottibeatrice.kernelsearch.Costanti.*;
 
 /**
  * Lettore per la configurazione contenuta in un file txt.
@@ -34,7 +35,7 @@ public class ConfigurationReader {
      * @return Un'istanza di {@link Configuration} contenente la configurazione letta.
      * @throws IOException Errore nella lettura del file.
      */
-    public Configuration read() throws IOException {
+    public Configuration read(int i) throws IOException {
         BufferedReader br = Files.newBufferedReader(Paths.get(configPath));
         var lines = br.lines().collect(Collectors.toList());
 
@@ -75,8 +76,8 @@ public class ConfigurationReader {
                         default -> throw new IllegalStateException("Unrecognized kernel builder.");
                     }
                 }
-                case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
-                case "LOGPATH" -> config.setLogPath(value);
+                case "INSTPATH" -> config.setInstance(new InstanceReader(value + i + FORMAT_TXT).read());
+                case "LOGPATH" -> config.setLogPath(value + i + FORMAT_TXT);
 
                 default -> System.out.println("Unrecognized parameter name.");
             }
