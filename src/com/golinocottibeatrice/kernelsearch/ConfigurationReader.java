@@ -81,7 +81,6 @@ public class ConfigurationReader {
                 default -> System.out.println("Unrecognized parameter name.");
             }
         }
-
         return config;
     }
 }
