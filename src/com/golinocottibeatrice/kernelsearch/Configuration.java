@@ -11,6 +11,7 @@ public class Configuration {
     private int presolve;
     private double mipGap;
     private String logPath;
+    private String solPath;
 
     // Limiti di tempo
     private int timeLimit;
@@ -136,5 +137,13 @@ public class Configuration {
 
     public void setInstance(Instance instance) {
         this.instance = instance;
+    }
+
+    public String getSolPath() {
+        return solPath;
+    }
+
+    public void setSolPath(String solPath) {
+        this.solPath = solPath;
     }
 }

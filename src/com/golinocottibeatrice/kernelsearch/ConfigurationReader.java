@@ -78,6 +78,7 @@ public class ConfigurationReader {
                 }
                 case "INSTPATH" -> config.setInstance(new InstanceReader(value + i + FORMAT_TXT).read());
                 case "LOGPATH" -> config.setLogPath(value + i + FORMAT_TXT);
+                case "SOLPATH" -> config.setSolPath(value + i + FORMAT_TXT);
 
                 default -> System.out.println("Unrecognized parameter name.");
             }

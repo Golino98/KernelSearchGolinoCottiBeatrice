@@ -41,10 +41,6 @@ public class Instance {
         return capacities.get(i);
     }
 
-    public List<InstanceItem> getItems() {
-        return Collections.unmodifiableList(items);
-    }
-
     public InstanceItem getItem(int i) {
         return items.get(i);
     }

@@ -1,7 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
 import gurobi.GRBException;
-import gurobi.GRBVar;
 
 import java.io.IOException;
 
@@ -22,7 +21,6 @@ public class Start {
                 var config = new ConfigurationReader(configPath).read(i);
                 KernelSearch ks = new KernelSearch(config);
                 ks.start();
-
             } catch (IOException | GRBException e) {
                 e.printStackTrace();
             }

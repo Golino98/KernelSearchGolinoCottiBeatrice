@@ -9,6 +9,7 @@ import com.golinocottibeatrice.kernelsearch.instance.Instance;
  */
 public class SolverConfiguration {
     private String logPath;
+    private String solPath;
     private Instance instance;
     private int numThreads;
     private int presolve;
@@ -19,6 +20,7 @@ public class SolverConfiguration {
 
     public SolverConfiguration(Configuration config, int timelimit, boolean lpRelaxation) {
         this.logPath = config.getLogPath();
+        this.solPath = config.getSolPath();
         this.instance = config.getInstance();
         this.numThreads = config.getNumThreads();
         this.presolve = config.getPresolve();
@@ -85,5 +87,9 @@ public class SolverConfiguration {
 
     public void setInstance(Instance instance) {
         this.instance = instance;
+    }
+
+    public String getSolPath() {
+        return solPath;
     }
 }
