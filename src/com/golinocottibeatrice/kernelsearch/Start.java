@@ -12,7 +12,7 @@ public class Start {
     private static final String defaultConfigPath = ".\\config.txt";
 
     public static void main(String[] args) {
-        for (int i = 54; i <= 180; i++) {
+        for (int i = 1; i <= 480; i++) {
             String configPath = defaultConfigPath;
             if (args.length != 0 && !args[0].isEmpty()) {
                 configPath = args[0];
