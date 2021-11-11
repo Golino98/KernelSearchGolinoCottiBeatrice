@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
-import static com.golinocottibeatrice.kernelsearch.Costanti.*;
 
 /**
  * Lettore per la configurazione contenuta in un file txt.
@@ -19,6 +18,7 @@ public class ConfigurationReader {
     private final Configuration config = new Configuration();
     // Carattere usato per la separazione del nome del parametro dal valore
     private static final String separator = "\\s+";
+    private static final String FORMAT_TXT = ".txt";
 
     /**
      * Crea una nuova istanza di ConfigurationReader.

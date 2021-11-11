@@ -35,6 +35,7 @@ class ModelCreator {
         var env = new GRBEnv();
         env.set(GRB.StringParam.LogFile, config.getLogPath());
         env.set(GRB.StringParam.ResultFile, "./log/best.sol");
+        env.set(GRB.IntParam.LogToConsole, 0);
         env.set(GRB.IntParam.Threads, config.getNumThreads());
         env.set(GRB.IntParam.Presolve, config.getPresolve());
         env.set(GRB.DoubleParam.MIPGap, config.getMipGap());

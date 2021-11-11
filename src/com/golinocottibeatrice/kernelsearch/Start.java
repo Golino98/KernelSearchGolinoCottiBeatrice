@@ -9,7 +9,7 @@ public class Start {
 
     // Path per il file di configurazione (in cui sono presenti tutti i dati per il
     // settaggio del numero di bucket e così via)
-    private static final String defaultConfigPath = ".\\config.txt";
+    private static final String defaultConfigPath = "./config.txt";
 
     public static void main(String[] args) {
         for (int i = 1; i <= 480; i++) {
