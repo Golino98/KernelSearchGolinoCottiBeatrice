@@ -1,10 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.solver.Variable;
-import com.golinocottibeatrice.kernelsearch.solver.Solver;
-import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
-import com.golinocottibeatrice.kernelsearch.solver.Solution;
-import gurobi.GRBCallback;
+import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;
 
 import java.time.Duration;
@@ -12,14 +8,14 @@ import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.golinocottibeatrice.kernelsearch.Costanti.*;
-
 /**
  * Implementa il metodo della kernel search, usando Gurobi come risolutore.
  * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
  */
 public class KernelSearch {
     private static final int timeThreshold = 5;
+    static final String FORMATTED_ITERATION = "\n\n[Iteration %d]\n";
+    static final String FORMATTED_SOLVE_BUCKET = "\n<Solving bucket %d>\n";
 
     private final Configuration config;
     private List<Variable> variables;
@@ -65,6 +61,7 @@ public class KernelSearch {
 
     private void solveRelaxation() throws GRBException {
         var solver = new Solver(new SolverConfiguration(config, config.getTimeLimit(), true));
+        solver.setCallback(new LogCallback(startTime));
         var solution = solver.solve();
         variables = solution.getVariables();
     }
@@ -99,6 +96,7 @@ public class KernelSearch {
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
             var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
+            solver.setCallback(new LogCallback(startTime));
 
             var toDisable = variables.stream().filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
             solver.disableVariables(toDisable);
