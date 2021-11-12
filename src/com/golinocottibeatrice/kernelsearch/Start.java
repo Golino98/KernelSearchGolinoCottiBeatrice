@@ -1,7 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
 import gurobi.GRBException;
-import gurobi.GRBVar;
 
 import java.io.IOException;
 
@@ -11,6 +10,7 @@ public class Start {
     // settaggio del numero di bucket e così via)
     private static final String defaultConfigPath = "./config.txt";
 
+    //TODO Modificare in modo che non ci sia più il ciclo in questo modo ma che legga tutti i file presenti in una cartella automaticamente
     public static void main(String[] args) {
         for (int i = 1; i <= 480; i++) {
             String configPath = defaultConfigPath;
@@ -25,6 +25,7 @@ public class Start {
 
             } catch (IOException | GRBException e) {
                 e.printStackTrace();
+
             }
         }
     }
