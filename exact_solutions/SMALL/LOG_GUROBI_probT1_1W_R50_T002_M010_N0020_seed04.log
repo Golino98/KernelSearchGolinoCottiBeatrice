@@ -1,0 +1,48 @@
+
+Gurobi 9.1.2 (win64, Java) logging started Fri Nov 12 00:55:36 2021
+
+Academic license - for non-commercial use only - expires 2022-10-30
+Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (win64)
+Thread count: 6 physical cores, 12 logical processors, using up to 12 threads
+Optimize a model with 30 rows, 200 columns and 400 nonzeros
+Model fingerprint: 0x5641b9db
+Variable types: 0 continuous, 200 integer (200 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 9e+02]
+  Objective range  [7e+01, 9e+02]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 8e+02]
+Found heuristic solution: objective 4738.0000000
+Presolve removed 5 rows and 95 columns
+Presolve time: 0.00s
+Presolved: 25 rows, 105 columns, 210 nonzeros
+Variable types: 0 continuous, 105 integer (105 binary)
+Presolved: 25 rows, 105 columns, 210 nonzeros
+
+
+Root relaxation: objective 6.136442e+03, 71 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 6136.44187    0   10 4738.00000 6136.44187  29.5%     -    0s
+H    0     0                    5595.0000000 6136.44187  9.68%     -    0s
+     0     0 6118.62369    0   26 5595.00000 6118.62369  9.36%     -    0s
+H    0     0                    5958.0000000 6118.62369  2.70%     -    0s
+H    0     0                    6043.0000000 6118.62369  1.25%     -    0s
+     0     0     cutoff    0      6043.00000 6043.00000  0.00%     -    0s
+
+Cutting planes:
+  Gomory: 20
+  Cover: 10
+  Clique: 3
+  MIR: 8
+  StrongCG: 9
+
+Explored 1 nodes (150 simplex iterations) in 0.05 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 4: 6043 5958 5595 4738 
+
+Optimal solution found (tolerance 1.00e-12)
+Best objective 6.043000000000e+03, best bound 6.043000000000e+03, gap 0.0000%
