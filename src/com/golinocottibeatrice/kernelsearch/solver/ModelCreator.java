@@ -4,15 +4,14 @@ import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import gurobi.*;
 
 /**
- * Creatore del modello GUROBI con vincoli e funzione obiettivo,
- * sulla base dell'istanza del problema multiple knapsack.
+ * Creatore di un nuovo modello, impostato per risolvere il problema MKP.
  */
-class ModelCreator {
-    private static final String FORMATO_NOME_VARIABILE = "x_%d_%d";
-    private static final String FORMATO_VINCOLO_CAPACITA = "Vincolo sulla capacità per zaino %d";
-    private static final String FORMATO_VINCOLO_SELEZIONE = "Vincolo massima selezione per item %d";
+public class ModelCreator {
+    private static final String FORMAT_VAR_NAME = "x_%d_%d";
+    private static final String FORMAT_CAPACITY = "Vincolo sulla capacità per zaino %d";
+    private static final String FORMAT_SELECTION = "Vincolo massima selezione per item %d";
 
-    private final SolverConfiguration config;
+    private final ModelConfiguration config;
     private final Instance instance;
 
     // Modello GUROBI
@@ -20,7 +19,7 @@ class ModelCreator {
     // Variabili binarie x(i,j) che indicano se l'oggetto i viene collocato nel knapsack j
     private GRBVar[][] variables;
 
-    public ModelCreator(SolverConfiguration config) {
+    public ModelCreator(ModelConfiguration config) {
         this.config = config;
         this.instance = config.getInstance();
     }
@@ -31,33 +30,21 @@ class ModelCreator {
      * @return Il modello GUROBI.
      * @throws GRBException Errore nella creazione del modello.
      */
-    public GRBModel create() throws GRBException {
-        var env = new GRBEnv();
-        env.set(GRB.StringParam.LogFile, config.getLogPath());
-        env.set(GRB.StringParam.ResultFile, config.getSolPath());
-        env.set(GRB.IntParam.LogToConsole, 0);
-        env.set(GRB.IntParam.Threads, config.getNumThreads());
-        env.set(GRB.IntParam.Presolve, config.getPresolve());
-        env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
-        if (config.getTimeLimit() > 0) {
-            env.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
-        }
-
-        model = new GRBModel(env);
+    public Model create() throws GRBException {
+        model = new GRBModel(config.getEnv());
         buildModel();
-        return model;
+        return new Model(model, config.isLpRelaxation());
     }
 
     private void buildModel() throws GRBException {
+        model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
+
         initializeVariables();
         createCapacityContraints();
         createSelectionContraints();
         setObjectiveFunction();
 
         model.update();
-        if (config.isLpRelaxation()) {
-            model = model.relax();
-        }
     }
 
     // Crea le di variabili binarie x(i,j)
@@ -68,7 +55,7 @@ class ModelCreator {
 
         for (var knapsack = 0; knapsack < nk; knapsack++) {
             for (int item = 0; item < ni; item++) {
-                var name = String.format(FORMATO_NOME_VARIABILE, knapsack + 1, item + 1);
+                var name = String.format(FORMAT_VAR_NAME, knapsack + 1, item + 1);
                 variables[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
             }
         }
@@ -81,7 +68,7 @@ class ModelCreator {
             for (int item = 0; item < instance.getNumItems(); item++) {
                 constraint.addTerm(instance.getWeight(item), variables[knapsack][item]);
             }
-            var name = String.format(FORMATO_VINCOLO_CAPACITA, knapsack + 1);
+            var name = String.format(FORMAT_CAPACITY, knapsack + 1);
             model.addConstr(constraint, GRB.LESS_EQUAL, instance.getCapacity(knapsack), name);
         }
     }
@@ -93,7 +80,7 @@ class ModelCreator {
             for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
                 constraint.addTerm(1, variables[knapsack][item]);
             }
-            var name = String.format(FORMATO_VINCOLO_SELEZIONE, item + 1);
+            var name = String.format(FORMAT_SELECTION, item + 1);
             model.addConstr(constraint, GRB.LESS_EQUAL, 1, name);
         }
     }

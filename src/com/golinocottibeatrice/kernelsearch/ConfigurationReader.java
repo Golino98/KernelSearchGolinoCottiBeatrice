@@ -18,7 +18,6 @@ public class ConfigurationReader {
     private final Configuration config = new Configuration();
     // Carattere usato per la separazione del nome del parametro dal valore
     private static final String separator = "\\s+";
-    private static final String FORMAT_TXT = ".txt";
 
     /**
      * Crea una nuova istanza di ConfigurationReader.
@@ -35,7 +34,7 @@ public class ConfigurationReader {
      * @return Un'istanza di {@link Configuration} contenente la configurazione letta.
      * @throws IOException Errore nella lettura del file.
      */
-    public Configuration read(int i) throws IOException {
+    public Configuration read() throws IOException {
         BufferedReader br = Files.newBufferedReader(Paths.get(configPath));
         var lines = br.lines().collect(Collectors.toList());
 
@@ -76,9 +75,9 @@ public class ConfigurationReader {
                         default -> throw new IllegalStateException("Unrecognized kernel builder.");
                     }
                 }
-                case "INSTPATH" -> config.setInstance(new InstanceReader(value + i + FORMAT_TXT).read());
-                case "LOGPATH" -> config.setLogPath(value + i + FORMAT_TXT);
-                case "SOLPATH" -> config.setSolPath(value + i + FORMAT_TXT);
+                case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
+                case "LOGPATH" -> config.setLogPath(value);
+                case "SOLPATH" -> config.setSolPath(value);
 
                 default -> System.out.println("Unrecognized parameter name.");
             }

@@ -13,16 +13,21 @@ import java.util.stream.Collectors;
  * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
  */
 public class KernelSearch {
-    private static final int timeThreshold = 5;
-    static final String FORMATTED_ITERATION = "\n\n[Iteration %d]\n";
-    static final String FORMATTED_SOLVE_BUCKET = "\n<Solving bucket %d>\n";
+    private static final int TIME_THRESHOLD = 5;
+    private static final String FORMAT_KERNEL = "\n\n[Solving kernel]\n";
+    private static final String FORMAT_ITERATION = "\n\n[Iteration %d]\n";
+    private static final String FORMAT_SOLVE_BUCKET = "\n<Solving bucket %d>\n";
+    private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f* -  TIME: +%ds\n";
+    private static final String NO_SOLUTION_FOUND = "No solution found\n";
 
     private final Configuration config;
-    private List<Variable> variables;
-    private Solution bestSolution;
+    private Solver solver;
     private List<Bucket> buckets;
     private Kernel kernel;
     private Instant startTime;
+
+    private Solution bestSolution;
+    private List<Variable> variables;
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -42,6 +47,7 @@ public class KernelSearch {
     public Solution start() throws GRBException {
         // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
         startTime = Instant.now();
+        solver = new Solver(new SolverConfiguration(config));
 
         var sorter = config.getVariableSorter();
         var kernelBuilder = config.getKernelBuilder();
@@ -56,34 +62,40 @@ public class KernelSearch {
         solveKernel();
         iterateBuckets();
 
+        solver.dispose();
+
         return bestSolution;
     }
 
     private void solveRelaxation() throws GRBException {
-        var solver = new Solver(new SolverConfiguration(config, config.getTimeLimit(), true));
-        solver.setCallback(new LogCallback(startTime));
-        var solution = solver.solve();
+        var model = solver.createModel(config.getInstance(), config.getTimeLimit(), true);
+        var solution = model.solve();
         variables = solution.getVariables();
+        model.dispose();
     }
 
     private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
-        var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
+        var model = solver.createModel(config.getInstance(), timeLimit, false);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
-        solver.disableVariables(toDisable);
+        model.disableVariables(toDisable);
 
-        bestSolution = solver.solve();
-        solver.dispose();
+        System.out.print(FORMAT_KERNEL);
+        bestSolution = model.solve();
+        System.out.printf(FORMAT_NEW_SOLUTION, bestSolution.getObjective(), getElapsedTime());
+
+        model.write(config.getSolPath());
+        model.dispose();
     }
 
     private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
-            if (getRemainingTime() <= timeThreshold) {
+            if (getRemainingTime() <= TIME_THRESHOLD) {
                 return;
             }
 
-            System.out.format(FORMATTED_ITERATION, i);
+            System.out.format(FORMAT_ITERATION, i);
             solveBuckets();
         }
     }
@@ -92,39 +104,46 @@ public class KernelSearch {
         int count = 0;
 
         for (Bucket b : buckets) {
-            System.out.format(FORMATTED_SOLVE_BUCKET, count++);
+            System.out.format(FORMAT_SOLVE_BUCKET, count++);
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
-            solver.setCallback(new LogCallback(startTime));
+            var model = solver.createModel(config.getInstance(), timeLimit, false);
 
             var toDisable = variables.stream().filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
-            solver.disableVariables(toDisable);
-            solver.addBucketConstraint(b.getVariables());
+            model.disableVariables(toDisable);
+            model.addBucketConstraint(b.getVariables());
 
             if (!bestSolution.isEmpty()) {
-                solver.addObjConstraint(bestSolution.getObjective());
-                solver.readSolution(bestSolution);
+                model.addObjConstraint(bestSolution.getObjective());
+                model.readSolution(bestSolution);
             }
 
-            var solution = solver.solve();
+            var solution = model.solve();
 
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                var selected = solver.getSelectedVariables(b.getVariables());
+                System.out.printf(FORMAT_NEW_SOLUTION, solution.getObjective(), getElapsedTime());
+                var selected = model.getSelectedVariables(b.getVariables());
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
+                model.write(config.getSolPath());
+            } else {
+                System.out.print(NO_SOLUTION_FOUND);
             }
 
-            if (getRemainingTime() <= timeThreshold) {
+            if (getRemainingTime() <= TIME_THRESHOLD) {
                 return;
             }
 
-            solver.dispose();
+            model.dispose();
         }
     }
 
     private int getRemainingTime() {
-        return (int) (config.getTimeLimit() - Duration.between(startTime, Instant.now()).getSeconds());
+        return config.getTimeLimit() - getElapsedTime();
+    }
+
+    private int getElapsedTime() {
+        return (int) Duration.between(startTime, Instant.now()).getSeconds();
     }
 }
