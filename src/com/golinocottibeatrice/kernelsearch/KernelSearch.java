@@ -41,10 +41,9 @@ public class KernelSearch {
     /**
      * Avvia la kernel search.
      *
-     * @return La soluzione trovata.
      * @throws GRBException Errore di Gurobi.
      */
-    public Solution start() throws GRBException {
+    public void start() throws GRBException {
         // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
         startTime = Instant.now();
         solver = new Solver(new SolverConfiguration(config));
@@ -63,8 +62,6 @@ public class KernelSearch {
         iterateBuckets();
 
         solver.dispose();
-
-        return bestSolution;
     }
 
     private void solveRelaxation() throws GRBException {
