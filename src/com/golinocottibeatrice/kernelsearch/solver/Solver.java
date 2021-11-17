@@ -1,115 +1,73 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
-import gurobi.*;
-import gurobi.GRB.DoubleAttr;
-import gurobi.GRB.IntAttr;
-import gurobi.GRB.StringAttr;
-
-import java.util.*;
+import com.golinocottibeatrice.kernelsearch.instance.Instance;
+import gurobi.GRB;
+import gurobi.GRBEnv;
+import gurobi.GRBException;
 
 /**
  * Risolutore per il problema della multiple knapsack,
- * basato su GUROBI.
+ * che consente di creare dei modelli GUROBI
+ * con dei valori di configurazione comuni.
+ * <p>
+ * Al termine dell'utilizzo il metodo <code>dispose()</code>
+ * dovrebbe essere utilizzato per liberare le risorse.
  */
 public class Solver {
-    private final SolverConfiguration config;
-    private final GRBModel model;
+    private final GRBEnv env;
 
     /**
-     * Crea un nuovo risolutore.
+     * Crea un nuovo solver.
      *
-     * @param config La configurazione del risolutore.
+     * @param config La configurazione del solver.
      * @throws GRBException Errore di GUROBI.
      */
     public Solver(SolverConfiguration config) throws GRBException {
-        this.config = config;
-        model = new ModelCreator(config).create();
+        this.env = new GRBEnv();
+        env.set(GRB.StringParam.LogFile, config.getLogPath());
+        env.set(GRB.IntParam.LogToConsole, 0);
+        env.set(GRB.IntParam.Threads, config.getNumThreads());
+        env.set(GRB.IntParam.Presolve, config.getPresolve());
+        env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
     }
 
     /**
-     * Risolve l'istanza del problema dato.
+     * Crea un nuovo modello.
      *
-     * @return La soluzione trovata.
+     * @param instance       L'istanza del problema MKP.
+     * @param timeLimit      Il limite di tempo per la risoluzione del problema.
+     * @param isLpRelaxation <code>true</code> se deve essere risolto il rilassato del problema.
+     * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */
-    public Solution solve() throws GRBException {
-        model.optimize();
+    public Model createModel(Instance instance, int timeLimit, boolean isLpRelaxation) throws GRBException {
+        var modelConfig = new ModelConfiguration();
+        modelConfig.setEnv(env);
+        modelConfig.setInstance(instance);
+        modelConfig.setTimeLimit(timeLimit);
+        modelConfig.setLpRelaxation(isLpRelaxation);
 
-        // Nessuna soluzione trovata
-        if (model.get(IntAttr.SolCount) == 0) {
-            return new EmptySolution();
-        }
-
-        var objective = model.get(DoubleAttr.ObjVal);
-        var variables = new ArrayList<Variable>();
-        for (var v : model.getVars()) {
-            Variable variable;
-            if (config.isLpRelaxation()) {
-                variable = new Variable(v.get(StringAttr.VarName), v.get(DoubleAttr.X), v.get(DoubleAttr.RC));
-            } else {
-                variable = new Variable(v.get(StringAttr.VarName), v.get(DoubleAttr.X));
-            }
-            variables.add(variable);
-        }
-        return new Solution(objective, variables);
+        return new ModelCreator(modelConfig).create();
     }
 
     /**
-     * Disabilita una variabile, fissando il suo valore a 0.
+     * Crea un nuovo modello NON rilassato.
      *
-     * @param v La variabile da disabilitare
+     * @param instance       L'istanza del problema MKP.
+     * @param timeLimit      Il limite di tempo per la risoluzione del problema.
+     * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */
-    public void disableVariable(Variable v) throws GRBException {
-        var test = model.getVarByName(v.getName());
-        model.addConstr(model.getVarByName(v.getName()), GRB.EQUAL, 0, "FIX_VAR_" + v.getName());
+    public Model createModel(Instance instance, int timeLimit) throws GRBException {
+        return createModel(instance, timeLimit,false);
     }
 
     /**
-     * Disabilita delle variabili, fissando il loro valore a 0.
+     * Libera le risorse usate dal solver.
      *
-     * @param variables Le variabili da disabilitare.
      * @throws GRBException Errore di GUROBI.
      */
-    public void disableVariables(List<Variable> variables) throws GRBException {
-        for (var v : variables) {
-            disableVariable(v);
-        }
-    }
-
-    public void addBucketConstraint(List<Variable> variables) throws GRBException {
-        var expr = new GRBLinExpr();
-        for (var v : variables) {
-            expr.addTerm(1, model.getVarByName(v.getName()));
-        }
-        model.addConstr(expr, GRB.GREATER_EQUAL, 1, "bucketConstraint");
-    }
-
-    public void addObjConstraint(double obj) throws GRBException {
-        model.getEnv().set(GRB.DoubleParam.Cutoff, obj);
-    }
-
-    public void readSolution(Solution solution) throws GRBException {
-        for (GRBVar var : model.getVars()) {
-            var.set(DoubleAttr.Start, solution.getVariableValue(var.get(StringAttr.VarName)));
-        }
-    }
-
-    public void setCallback(GRBCallback callback) {
-        model.setCallback(callback);
-    }
-
-    public List<Variable> getSelectedVariables(List<Variable> variables) throws GRBException {
-        var selected = new ArrayList<Variable>();
-        for (var v : variables) {
-            if (model.getVarByName(v.getName()).get(DoubleAttr.X) > config.getPositiveThreshold()) {
-                selected.add(v);
-            }
-        }
-        return selected;
-    }
-
-    public void dispose() {
-        model.dispose();
+    public void dispose() throws GRBException {
+        env.dispose();
     }
 }

@@ -13,16 +13,17 @@ import java.util.stream.Collectors;
  * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
  */
 public class KernelSearch {
-    private static final int timeThreshold = 5;
-    static final String FORMATTED_ITERATION = "\n\n[Iteration %d]\n";
-    static final String FORMATTED_SOLVE_BUCKET = "\n<Solving bucket %d>\n";
+    private static final int TIME_THRESHOLD = 3;
 
     private final Configuration config;
-    private List<Variable> variables;
-    private Solution bestSolution;
+    private final Logger log;
+    private Solver solver;
     private List<Bucket> buckets;
     private Kernel kernel;
+
     private Instant startTime;
+    private Solution bestSolution;
+    private List<Variable> variables;
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -31,59 +32,67 @@ public class KernelSearch {
      */
     public KernelSearch(Configuration config) {
         this.config = config;
+        this.log = config.getLogger();
     }
 
     /**
      * Avvia la kernel search.
      *
-     * @return La soluzione trovata.
      * @throws GRBException Errore di Gurobi.
      */
-    public Solution start() throws GRBException {
+    public void start() throws GRBException {
+        solver = new Solver(new SolverConfiguration(config));
+
         // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
         startTime = Instant.now();
-
-        var sorter = config.getVariableSorter();
-        var kernelBuilder = config.getKernelBuilder();
-        var bucketBuilder = config.getBucketBuilder();
+        log.start(startTime);
 
         solveRelaxation();
-        sorter.sort(variables);
+        config.getVariableSorter().sort(variables);
 
-        kernel = kernelBuilder.build(variables, config);
-        buckets = bucketBuilder.build(variables.stream()
+        kernel = config.getKernelBuilder().build(variables, config);
+        buckets = config.getBucketBuilder().build(variables.stream()
                 .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
         solveKernel();
         iterateBuckets();
 
-        return bestSolution;
+        solver.dispose();
     }
 
+    // Risolve il rilassato del problema
     private void solveRelaxation() throws GRBException {
-        var solver = new Solver(new SolverConfiguration(config, config.getTimeLimit(), true));
-        solver.setCallback(new LogCallback(startTime));
-        var solution = solver.solve();
+        var model = solver.createModel(config.getInstance(), config.getTimeLimit(), true);
+        log.relaxStart();
+
+        var solution = model.solve();
+        log.solution(solution.getObjective(), getElapsedTime());
+
         variables = solution.getVariables();
+        model.dispose();
     }
 
     private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
-        var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
+        var model = solver.createModel(config.getInstance(), timeLimit);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
-        solver.disableVariables(toDisable);
+        model.disableVariables(toDisable);
 
-        bestSolution = solver.solve();
-        solver.dispose();
+        log.kernelStart();
+        bestSolution = model.solve();
+        log.solution(bestSolution.getObjective(), getElapsedTime());
+
+        model.write(config.getSolPath());
+        model.dispose();
     }
 
     private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
-            if (getRemainingTime() <= timeThreshold) {
+            if (getRemainingTime() <= TIME_THRESHOLD) {
                 return;
             }
 
-            System.out.format(FORMATTED_ITERATION, i);
+            log.iterationStart(i);
             solveBuckets();
         }
     }
@@ -92,39 +101,46 @@ public class KernelSearch {
         int count = 0;
 
         for (Bucket b : buckets) {
-            System.out.format(FORMATTED_SOLVE_BUCKET, count++);
+            log.bucketStart(count++);
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            var solver = new Solver(new SolverConfiguration(config, timeLimit, false));
-            solver.setCallback(new LogCallback(startTime));
+            var model = solver.createModel(config.getInstance(), timeLimit);
 
             var toDisable = variables.stream().filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
-            solver.disableVariables(toDisable);
-            solver.addBucketConstraint(b.getVariables());
+            model.disableVariables(toDisable);
+            model.addBucketConstraint(b.getVariables());
 
             if (!bestSolution.isEmpty()) {
-                solver.addObjConstraint(bestSolution.getObjective());
-                solver.readSolution(bestSolution);
+                model.addObjConstraint(bestSolution.getObjective());
+                model.readSolution(bestSolution);
             }
 
-            var solution = solver.solve();
+            var solution = model.solve();
 
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                var selected = solver.getSelectedVariables(b.getVariables());
+                log.solution(solution.getObjective(), getElapsedTime());
+                var selected = model.getSelectedVariables(b.getVariables());
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
+                model.write(config.getSolPath());
+            } else {
+                log.noSolution();
             }
 
-            if (getRemainingTime() <= timeThreshold) {
+            if (getRemainingTime() <= TIME_THRESHOLD) {
                 return;
             }
 
-            solver.dispose();
+            model.dispose();
         }
     }
 
     private int getRemainingTime() {
-        return (int) (config.getTimeLimit() - Duration.between(startTime, Instant.now()).getSeconds());
+        return config.getTimeLimit() - getElapsedTime();
+    }
+
+    private int getElapsedTime() {
+        return (int) Duration.between(startTime, Instant.now()).getSeconds();
     }
 }

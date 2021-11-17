@@ -1,6 +1,5 @@
 package com.golinocottibeatrice.kernelsearch.instance;
 
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,11 +29,6 @@ public class Instance {
 
     public int getNumItems() {
         return items.size();
-    }
-
-    public List<Integer> getCapacities() {
-        // Restituisce una lista NON modificabile
-        return Collections.unmodifiableList(capacities);
     }
 
     public int getCapacity(int i) {
