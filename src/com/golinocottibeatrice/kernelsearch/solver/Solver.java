@@ -51,6 +51,18 @@ public class Solver {
     }
 
     /**
+     * Crea un nuovo modello NON rilassato.
+     *
+     * @param instance       L'istanza del problema MKP.
+     * @param timeLimit      Il limite di tempo per la risoluzione del problema.
+     * @return Il modello creato.
+     * @throws GRBException Errore di GUROBI.
+     */
+    public Model createModel(Instance instance, int timeLimit) throws GRBException {
+        return createModel(instance, timeLimit,false);
+    }
+
+    /**
      * Libera le risorse usate dal solver.
      *
      * @throws GRBException Errore di GUROBI.

@@ -26,6 +26,7 @@ public class Configuration {
     private BucketBuilder bucketBuilder;
     private KernelBuilder kernelBuilder;
     private Instance instance;
+    private Logger logger;
 
     public BucketBuilder getBucketBuilder() {
         return bucketBuilder;
@@ -145,5 +146,13 @@ public class Configuration {
 
     public void setSolPath(String solPath) {
         this.solPath = solPath;
+    }
+
+    public Logger getLogger() {
+        return logger;
+    }
+
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 }

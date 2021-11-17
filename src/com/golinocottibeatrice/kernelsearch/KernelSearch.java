@@ -13,19 +13,15 @@ import java.util.stream.Collectors;
  * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
  */
 public class KernelSearch {
-    private static final int TIME_THRESHOLD = 5;
-    private static final String FORMAT_KERNEL = "\n\n[Solving kernel]\n";
-    private static final String FORMAT_ITERATION = "\n\n[Iteration %d]\n";
-    private static final String FORMAT_SOLVE_BUCKET = "\n<Solving bucket %d>\n";
-    private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f* -  TIME: +%ds\n";
-    private static final String NO_SOLUTION_FOUND = "No solution found\n";
+    private static final int TIME_THRESHOLD = 3;
 
     private final Configuration config;
+    private final Logger log;
     private Solver solver;
     private List<Bucket> buckets;
     private Kernel kernel;
-    private Instant startTime;
 
+    private Instant startTime;
     private Solution bestSolution;
     private List<Variable> variables;
 
@@ -36,6 +32,7 @@ public class KernelSearch {
      */
     public KernelSearch(Configuration config) {
         this.config = config;
+        this.log = config.getLogger();
     }
 
     /**
@@ -44,19 +41,17 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public void start() throws GRBException {
-        // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
-        startTime = Instant.now();
         solver = new Solver(new SolverConfiguration(config));
 
-        var sorter = config.getVariableSorter();
-        var kernelBuilder = config.getKernelBuilder();
-        var bucketBuilder = config.getBucketBuilder();
+        // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
+        startTime = Instant.now();
+        log.start(startTime);
 
         solveRelaxation();
-        sorter.sort(variables);
+        config.getVariableSorter().sort(variables);
 
-        kernel = kernelBuilder.build(variables, config);
-        buckets = bucketBuilder.build(variables.stream()
+        kernel = config.getKernelBuilder().build(variables, config);
+        buckets = config.getBucketBuilder().build(variables.stream()
                 .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
         solveKernel();
         iterateBuckets();
@@ -64,23 +59,28 @@ public class KernelSearch {
         solver.dispose();
     }
 
+    // Risolve il rilassato del problema
     private void solveRelaxation() throws GRBException {
         var model = solver.createModel(config.getInstance(), config.getTimeLimit(), true);
+        log.relaxStart();
+
         var solution = model.solve();
+        log.solution(solution.getObjective(), getElapsedTime());
+
         variables = solution.getVariables();
         model.dispose();
     }
 
     private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
-        var model = solver.createModel(config.getInstance(), timeLimit, false);
+        var model = solver.createModel(config.getInstance(), timeLimit);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         model.disableVariables(toDisable);
 
-        System.out.print(FORMAT_KERNEL);
+        log.kernelStart();
         bestSolution = model.solve();
-        System.out.printf(FORMAT_NEW_SOLUTION, bestSolution.getObjective(), getElapsedTime());
+        log.solution(bestSolution.getObjective(), getElapsedTime());
 
         model.write(config.getSolPath());
         model.dispose();
@@ -92,7 +92,7 @@ public class KernelSearch {
                 return;
             }
 
-            System.out.format(FORMAT_ITERATION, i);
+            log.iterationStart(i);
             solveBuckets();
         }
     }
@@ -101,10 +101,10 @@ public class KernelSearch {
         int count = 0;
 
         for (Bucket b : buckets) {
-            System.out.format(FORMAT_SOLVE_BUCKET, count++);
+            log.bucketStart(count++);
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            var model = solver.createModel(config.getInstance(), timeLimit, false);
+            var model = solver.createModel(config.getInstance(), timeLimit);
 
             var toDisable = variables.stream().filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
             model.disableVariables(toDisable);
@@ -119,13 +119,13 @@ public class KernelSearch {
 
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                System.out.printf(FORMAT_NEW_SOLUTION, solution.getObjective(), getElapsedTime());
+                log.solution(solution.getObjective(), getElapsedTime());
                 var selected = model.getSelectedVariables(b.getVariables());
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
                 model.write(config.getSolPath());
             } else {
-                System.out.print(NO_SOLUTION_FOUND);
+                log.noSolution();
             }
 
             if (getRemainingTime() <= TIME_THRESHOLD) {

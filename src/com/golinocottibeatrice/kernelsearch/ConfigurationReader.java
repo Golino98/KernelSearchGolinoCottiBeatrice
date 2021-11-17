@@ -2,7 +2,6 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -14,10 +13,15 @@ import java.util.stream.Collectors;
  * vedi la documentazione.
  */
 public class ConfigurationReader {
+    private static final String UNRECOGNIZED_KERNEL_BUILDER = "Unrecognized kernel builder.";
+    private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
+    private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
+    private static final String UNRECOGNIZED_PARAMETER_NAME = "Unrecognized parameter name.";
+    // Carattere usato per la separazione del nome del parametro dal valore
+    private static final String SEPARATOR = "\\s+";
+
     private final String configPath;
     private final Configuration config = new Configuration();
-    // Carattere usato per la separazione del nome del parametro dal valore
-    private static final String separator = "\\s+";
 
     /**
      * Crea una nuova istanza di ConfigurationReader.
@@ -35,12 +39,12 @@ public class ConfigurationReader {
      * @throws IOException Errore nella lettura del file.
      */
     public Configuration read() throws IOException {
-        BufferedReader br = Files.newBufferedReader(Paths.get(configPath));
+        var br = Files.newBufferedReader(Paths.get(configPath));
         var lines = br.lines().collect(Collectors.toList());
 
-        for (String line : lines) {
+        for (var line : lines) {
             // Divide la stringa in un array di stringhe usando il separator
-            String[] splitLine = line.split(separator);
+            var splitLine = line.split(SEPARATOR);
             // La prima stringa è il nome dell'item di configurazione
             var item = splitLine[0];
             // La seconda stringa è il valore associato all'item
@@ -53,7 +57,7 @@ public class ConfigurationReader {
                 case "TIMELIMIT" -> config.setTimeLimit(Integer.parseInt(value));
                 case "SORTER" -> {
                     if (Integer.parseInt(value) != 0) {
-                        throw new IllegalStateException("Unrecognized item sorter.");
+                        throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
                     }
                     config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
                 }
@@ -61,7 +65,7 @@ public class ConfigurationReader {
                 case "BUCKETSIZE" -> config.setBucketSize(Double.parseDouble(value));
                 case "BUCKETBUILDER" -> {
                     if (Integer.parseInt(value) != 0) {
-                        throw new IllegalStateException("Unrecognized bucket builder.");
+                        throw new IllegalStateException(UNRECOGNIZED_BUCKET_BUILDER);
                     }
                     config.setBucketBuilder(new DefaultBucketBuilder());
                 }
@@ -72,16 +76,17 @@ public class ConfigurationReader {
                     switch (Integer.parseInt(value)) {
                         case 0 -> config.setKernelBuilder(new KernelBuilderPositive());
                         case 1 -> config.setKernelBuilder(new KernelBuilderPercentage());
-                        default -> throw new IllegalStateException("Unrecognized kernel builder.");
+                        default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
                     }
                 }
                 case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
                 case "LOGPATH" -> config.setLogPath(value);
                 case "SOLPATH" -> config.setSolPath(value);
 
-                default -> System.out.println("Unrecognized parameter name.");
+                default -> System.out.println(UNRECOGNIZED_PARAMETER_NAME);
             }
         }
+        config.setLogger(new Logger(System.out));
         return config;
     }
 }
