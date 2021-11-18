@@ -2,11 +2,7 @@ package com.golinocottibeatrice.kernelsearch;
 
 import java.io.PrintStream;
 import java.time.Instant;
-import java.time.ZoneId;
 import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.Locale;
 
 public class Logger {
     private static final String FORMAT_START = "\nSTART TIME: %s:%s:%s";
@@ -16,6 +12,8 @@ public class Logger {
     private static final String FORMAT_SOLVE_BUCKET = "\n<Bucket %d> ";
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%ds";
     private static final String NO_SOLUTION_FOUND = "No solution found";
+    private static final String TIMELIMIT = "\n\nTimelimit reached";
+
     private final PrintStream out;
 
     public Logger(PrintStream out) {
@@ -49,5 +47,9 @@ public class Logger {
 
     public void bucketStart(int count) {
         out.printf(FORMAT_SOLVE_BUCKET, count);
+    }
+
+    public void timeLimit() {
+        out.print(TIMELIMIT);
     }
 }

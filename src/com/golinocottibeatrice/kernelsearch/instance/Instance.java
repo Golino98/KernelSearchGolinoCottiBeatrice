@@ -46,4 +46,5 @@ public class Instance {
     public int getProfit(int i) {
         return getItem(i).getProfit();
     }
+
 }

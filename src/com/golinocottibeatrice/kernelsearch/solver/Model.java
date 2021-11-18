@@ -78,6 +78,13 @@ public class Model {
         }
     }
 
+    /**
+     * Aggiunge un vincolo che impone che tra tutte le variabili di un bucket
+     * ne deve essere abilitata almeno una
+     *
+     * @param variables Le variabili del bucket.
+     * @throws GRBException Errore di GUROBI.
+     */
     public void addBucketConstraint(List<Variable> variables) throws GRBException {
         var expr = new GRBLinExpr();
         for (var v : variables) {
@@ -86,16 +93,35 @@ public class Model {
         model.addConstr(expr, GRB.GREATER_EQUAL, 1, FORMAT_BUCKET);
     }
 
+    /**
+     * Aggiunge un vincolo di cutoff al modello.
+     *
+     * @param obj Il valore di cut.
+     * @throws GRBException Errore di GUROBI
+     */
     public void addObjConstraint(double obj) throws GRBException {
         model.getEnv().set(GRB.DoubleParam.Cutoff, obj);
     }
 
+    /**
+     * Inizializza le variabili del modello.
+     *
+     * @param solution La soluzione da cui prendere i valori iniziali.
+     * @throws GRBException Errore di GUROBI.
+     */
     public void readSolution(Solution solution) throws GRBException {
         for (GRBVar var : model.getVars()) {
             var.set(GRB.DoubleAttr.Start, solution.getVariableValue(var.get(GRB.StringAttr.VarName)));
         }
     }
 
+    /**
+     * Restituisce, tra una lista di variabili, solo quelle selezionate nella soluzione.
+     *
+     * @param variables Le variabili da cui estrarre le variabili selezionate.
+     * @return Le variabili selezionate
+     * @throws GRBException Errore di GUROBI.
+     */
     public List<Variable> getSelectedVariables(List<Variable> variables) throws GRBException {
         var selected = new ArrayList<Variable>();
         for (var v : variables) {
@@ -106,10 +132,19 @@ public class Model {
         return selected;
     }
 
+    /**
+     * Scrive la soluzione del modello su un file.
+     *
+     * @param path Il file su cui scrivere.
+     * @throws GRBException Errore di GUROBI.
+     */
     public void write(String path) throws GRBException {
         model.write(path);
     }
 
+    /**
+     * Libera le risorse occupate dal modello.
+     */
     public void dispose() {
         model.dispose();
     }
