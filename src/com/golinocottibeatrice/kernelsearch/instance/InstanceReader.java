@@ -11,9 +11,10 @@ import java.util.stream.Collectors;
  * Il formato dei file d'istanza si trova nella documentazione del progetto.
  */
 public class InstanceReader {
-    private final String instPath;
     // Carattere usato per separare weight e profit di un item
-    private static final String separator = "\\s+";
+    private static final String SEPARATOR = "\\s+";
+
+    private final String instPath;
 
     /**
      * Crea una nuovo InstanceReader.
@@ -49,7 +50,7 @@ public class InstanceReader {
         var items = new ArrayList<InstanceItem>(nItems);
         // Le righe dalla nKnapsacks+2 alla nItems+nKnapsacks+1 contengono gli oggetti
         for (var line : lines.subList(nKnapsacks + 2, nItems + nKnapsacks + 2)) {
-            var splitLine = line.split(separator);
+            var splitLine = line.split(SEPARATOR);
             var weight = Integer.parseInt(splitLine[0]);
             var profit = Integer.parseInt(splitLine[1]);
             items.add(new InstanceItem(weight, profit));
