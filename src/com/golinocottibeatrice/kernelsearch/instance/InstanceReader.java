@@ -1,5 +1,7 @@
 package com.golinocottibeatrice.kernelsearch.instance;
 
+import com.golinocottibeatrice.kernelsearch.util.FileUtil;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -32,7 +34,12 @@ public class InstanceReader {
      * @throws IOException Errore nella lettura del file.
      */
     public Instance read() throws IOException {
-        var br = Files.newBufferedReader(Paths.get(instPath));
+        var path = Paths.get(instPath);
+
+        // Nome dell'istanza
+        var name = FileUtil.getFileName(path);
+
+        var br = Files.newBufferedReader(path);
         var lines = br.lines().collect(Collectors.toList());
 
         // La prima linea contiene il numero di knapsacks
@@ -56,6 +63,6 @@ public class InstanceReader {
             items.add(new InstanceItem(weight, profit));
         }
 
-        return new Instance(capacities, items);
+        return new Instance(name,capacities, items);
     }
 }

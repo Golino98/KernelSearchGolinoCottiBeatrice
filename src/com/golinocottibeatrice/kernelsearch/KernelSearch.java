@@ -87,7 +87,7 @@ public class KernelSearch {
         bestSolution = model.solve();
         log.solution(bestSolution.getObjective(), getElapsedTime());
 
-        model.write(config.getSolPath());
+        model.write();
         model.dispose();
     }
 
@@ -137,7 +137,7 @@ public class KernelSearch {
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
 
-                model.write(config.getSolPath());
+                model.write();
             } else {
                 log.noSolution();
             }

@@ -10,8 +10,7 @@ public class Configuration {
     private int numThreads;
     private int presolve;
     private double mipGap;
-    private String logPath;
-    private String solPath;
+    private String logDir;
 
     // Limiti di tempo
     private int timeLimit;
@@ -124,12 +123,12 @@ public class Configuration {
         this.timeLimitKernel = timeLimitKernel;
     }
 
-    public String getLogPath() {
-        return logPath;
+    public String getLogDir() {
+        return logDir;
     }
 
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
+    public void setLogDir(String logDir) {
+        this.logDir = logDir;
     }
 
     public Instance getInstance() {
@@ -138,14 +137,6 @@ public class Configuration {
 
     public void setInstance(Instance instance) {
         this.instance = instance;
-    }
-
-    public String getSolPath() {
-        return solPath;
-    }
-
-    public void setSolPath(String solPath) {
-        this.solPath = solPath;
     }
 
     public Logger getLogger() {

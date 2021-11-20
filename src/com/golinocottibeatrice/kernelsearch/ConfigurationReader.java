@@ -80,8 +80,7 @@ public class ConfigurationReader {
                     }
                 }
                 case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
-                case "LOGPATH" -> config.setLogPath(value);
-                case "SOLPATH" -> config.setSolPath(value);
+                case "LOGDIR" -> config.setLogDir(value);
 
                 default -> System.out.println(UNRECOGNIZED_PARAMETER_NAME);
             }

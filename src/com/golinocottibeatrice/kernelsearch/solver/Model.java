@@ -18,17 +18,20 @@ public class Model {
     private static final String FORMAT_BUCKET = "BUCKET";
 
     private final GRBModel model;
-    private final boolean isLpRelaxation;
+    private final ModelConfiguration config;
 
     /**
      * Crea un nuovo modello.
      *
-     * @param model          Il modello GUROBI.
-     * @param isLpRelaxation Indica se il problema deve essere rilassato.
+     * @param model  Il modello GUROBI.
+     * @param config La configurazione del modello.
      */
-    Model(GRBModel model, boolean isLpRelaxation) throws GRBException {
-        this.model = isLpRelaxation ? model.relax() : model;
-        this.isLpRelaxation = isLpRelaxation;
+    Model(GRBModel model, ModelConfiguration config) throws GRBException {
+        this.model = config.isLpRelaxation() ? model.relax() : model;
+        this.config = config;
+
+        model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
+        model.set(GRB.StringParam.LogFile, config.getLogPath());
     }
 
     /**
@@ -48,7 +51,7 @@ public class Model {
         var objective = model.get(GRB.DoubleAttr.ObjVal);
         var variables = new ArrayList<Variable>();
         for (var v : model.getVars()) {
-            var rc = isLpRelaxation ? v.get(GRB.DoubleAttr.RC) : 0;
+            var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
             var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc);
             variables.add(variable);
         }
@@ -133,13 +136,12 @@ public class Model {
     }
 
     /**
-     * Scrive la soluzione del modello su un file.
+     * Scrive la soluzione del modello sul file di soluzione.
      *
-     * @param path Il file su cui scrivere.
      * @throws GRBException Errore di GUROBI.
      */
-    public void write(String path) throws GRBException {
-        model.write(path);
+    public void write() throws GRBException {
+        model.write(config.getSolPath());
     }
 
     /**

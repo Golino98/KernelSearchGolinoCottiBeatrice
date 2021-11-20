@@ -1,6 +1,7 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import gurobi.GRB;
 import gurobi.GRBEnv;
 import gurobi.GRBException;
@@ -15,6 +16,7 @@ import gurobi.GRBException;
  */
 public class Solver {
     private final GRBEnv env;
+    private final SolverConfiguration config;
 
     /**
      * Crea un nuovo solver.
@@ -23,8 +25,8 @@ public class Solver {
      * @throws GRBException Errore di GUROBI.
      */
     public Solver(SolverConfiguration config) throws GRBException {
+        this.config = config;
         this.env = new GRBEnv();
-        env.set(GRB.StringParam.LogFile, config.getLogPath());
         env.set(GRB.IntParam.LogToConsole, 0);
         env.set(GRB.IntParam.Threads, config.getNumThreads());
         env.set(GRB.IntParam.Presolve, config.getPresolve());
@@ -46,6 +48,8 @@ public class Solver {
         modelConfig.setInstance(instance);
         modelConfig.setTimeLimit(timeLimit);
         modelConfig.setLpRelaxation(isLpRelaxation);
+        modelConfig.setLogPath(FileUtil.getLogPath(config.getLogDir(), instance.getName()));
+        modelConfig.setSolPath(FileUtil.getSolPath(config.getLogDir(), instance.getName()));
 
         return new ModelCreator(modelConfig).create();
     }
@@ -53,13 +57,13 @@ public class Solver {
     /**
      * Crea un nuovo modello NON rilassato.
      *
-     * @param instance       L'istanza del problema MKP.
-     * @param timeLimit      Il limite di tempo per la risoluzione del problema.
+     * @param instance  L'istanza del problema MKP.
+     * @param timeLimit Il limite di tempo per la risoluzione del problema.
      * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */
     public Model createModel(Instance instance, int timeLimit) throws GRBException {
-        return createModel(instance, timeLimit,false);
+        return createModel(instance, timeLimit, false);
     }
 
     /**

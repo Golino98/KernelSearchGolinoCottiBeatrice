@@ -32,19 +32,15 @@ public class ModelCreator {
      */
     public Model create() throws GRBException {
         model = new GRBModel(config.getEnv());
-        buildModel();
-        return new Model(model, config.isLpRelaxation());
-    }
-
-    private void buildModel() throws GRBException {
-        model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
 
         initializeVariables();
         createCapacityContraints();
         createSelectionContraints();
         setObjectiveFunction();
 
+        // Necessario per applicare le modifiche effettuate al modello.
         model.update();
+        return new Model(model, config);
     }
 
     // Crea le di variabili binarie x(i,j)

@@ -12,7 +12,7 @@ public class Logger {
     private static final String FORMAT_SOLVE_BUCKET = "\n<Bucket %d> ";
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%ds";
     private static final String NO_SOLUTION_FOUND = "No solution found";
-    private static final String TIMELIMIT = "\n\nTimelimit reached";
+    private static final String TIMELIMIT = "\n\nTime limit reached";
 
     private final PrintStream out;
 
