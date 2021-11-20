@@ -6,7 +6,7 @@ import gurobi.*;
 /**
  * Creatore di un nuovo modello, impostato per risolvere il problema MKP.
  */
-public class ModelCreator {
+class ModelCreator {
     private static final String FORMAT_VAR_NAME = "x_%d_%d";
     private static final String FORMAT_CAPACITY = "Vincolo sulla capacità per zaino %d";
     private static final String FORMAT_SELECTION = "Vincolo massima selezione per item %d";
@@ -19,7 +19,7 @@ public class ModelCreator {
     // Variabili binarie x(i,j) che indicano se l'oggetto i viene collocato nel knapsack j
     private GRBVar[][] variables;
 
-    public ModelCreator(ModelConfiguration config) {
+    ModelCreator(ModelConfiguration config) {
         this.config = config;
         this.instance = config.getInstance();
     }

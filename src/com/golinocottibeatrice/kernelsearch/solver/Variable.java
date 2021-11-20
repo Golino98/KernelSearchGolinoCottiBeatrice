@@ -15,7 +15,7 @@ public class Variable {
      * @param value Il valore assegnato alla variabile (non necessariamente binario).
      * @param rc    Il valore del costo ridotto (diverso da zero solo se rilassamento continuo).
      */
-    public Variable(String name, double value, double rc) {
+    Variable(String name, double value, double rc) {
         this.name = name;
         this.value = value;
         this.rc = rc;

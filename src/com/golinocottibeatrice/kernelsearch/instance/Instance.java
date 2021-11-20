@@ -14,7 +14,7 @@ public class Instance {
     // Viene usata la List perchè è necessario assegnare una posizione agli item
     // in base all'ordine con cui vengono letti
     private final List<Integer> capacities;
-    private final List<InstanceItem> items;
+    private final List<Item> items;
 
     /**
      * Crea una nuova istanza.
@@ -23,7 +23,7 @@ public class Instance {
      * @param capacities La capacità dei knapsack dell'istanza.
      * @param items      Gli oggetti dell'istanza.
      */
-    public Instance(String name, List<Integer> capacities, List<InstanceItem> items) {
+    Instance(String name, List<Integer> capacities, List<Item> items) {
         this.name = name;
         this.capacities = capacities;
         this.items = items;
@@ -45,7 +45,7 @@ public class Instance {
         return capacities.get(i);
     }
 
-    public InstanceItem getItem(int i) {
+    public Item getItem(int i) {
         return items.get(i);
     }
 

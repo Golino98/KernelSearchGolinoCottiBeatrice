@@ -46,7 +46,13 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public void start() throws GRBException {
-        solver = new Solver(new SolverConfiguration(config));
+        var solverConfig = new SolverConfiguration();
+        solverConfig.setLogDir(config.getLogDir());
+        solverConfig.setNumThreads(config.getNumThreads());
+        solverConfig.setPresolve(config.getPresolve());
+        solverConfig.setMipGap(config.getMipGap());
+
+        solver = new Solver(solverConfig);
 
         startTime = Instant.now();
         log.start(startTime);

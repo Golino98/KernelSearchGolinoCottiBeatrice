@@ -15,7 +15,7 @@ public class Solution {
      * @param objective Valore della funzione obiettivo.
      * @param variables Lista contenente il valore delle variabili.
      */
-    public Solution(double objective, List<Variable> variables) {
+    Solution(double objective, List<Variable> variables) {
         this.objective = objective;
         this.variables = variables;
     }
