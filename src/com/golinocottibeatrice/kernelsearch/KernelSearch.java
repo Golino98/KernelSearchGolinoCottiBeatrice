@@ -1,5 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;
 
@@ -23,6 +24,7 @@ public class KernelSearch {
     private List<Bucket> buckets;
     private Kernel kernel;
 
+    private Instance currentInstance;
     // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
     private Instant startTime;
     // Variabili del problema
@@ -54,25 +56,29 @@ public class KernelSearch {
 
         solver = new Solver(solverConfig);
 
-        startTime = Instant.now();
-        log.start(startTime);
+        for (var instance : config.getInstances()) {
+            this.currentInstance = instance;
 
-        solveRelaxation();
+            startTime = Instant.now();
+            log.start(startTime);
 
-        config.getVariableSorter().sort(variables);
-        kernel = config.getKernelBuilder().build(variables, config);
-        // Nei bucket vanno solo le variabili che non sono già nel kernel
-        buckets = config.getBucketBuilder().build(variables.stream()
-                .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
+            solveRelaxation();
 
-        solveKernel();
-        iterateBuckets();
+            config.getVariableSorter().sort(variables);
+            kernel = config.getKernelBuilder().build(variables, config);
+            // Nei bucket vanno solo le variabili che non sono già nel kernel
+            buckets = config.getBucketBuilder().build(variables.stream()
+                    .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
+
+            solveKernel();
+            iterateBuckets();
+        }
 
         solver.dispose();
     }
 
     private void solveRelaxation() throws GRBException {
-        var model = solver.createModel(config.getInstance(), config.getTimeLimit(), true);
+        var model = solver.createModel(currentInstance, config.getTimeLimit(), true);
         log.relaxStart();
 
         var solution = model.solve();
@@ -84,7 +90,7 @@ public class KernelSearch {
 
     private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
-        var model = solver.createModel(config.getInstance(), timeLimit);
+        var model = solver.createModel(currentInstance, timeLimit);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         model.disableVariables(toDisable);
@@ -116,7 +122,7 @@ public class KernelSearch {
             log.bucketStart(count++);
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            var model = solver.createModel(config.getInstance(), timeLimit);
+            var model = solver.createModel(currentInstance, timeLimit);
 
             // Disabilita le variabili che non sono ne nel kernel ne nel bucket
             var toDisable = variables.stream()

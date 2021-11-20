@@ -1,10 +1,14 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -79,8 +83,24 @@ public class ConfigurationReader {
                         default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
                     }
                 }
-                case "INSTPATH" -> config.setInstance(new InstanceReader(value).read());
-                case "LOGDIR" -> config.setLogDir(value);
+                case "INSTPATH" -> {
+                    var instances = new ArrayList<Instance>();
+
+                    var inst = new File(value);
+                    if (inst.isDirectory()) {
+                        for (var instPath : Objects.requireNonNull(inst.listFiles())) {
+                            instances.add(new InstanceReader(instPath.getAbsolutePath()).read());
+                        }
+                    } else {
+                        instances.add(new InstanceReader(value).read());
+                    }
+
+                    config.setInstances(instances);
+                }
+                case "LOGDIR" -> {
+                    Files.createDirectories(Paths.get(value));
+                    config.setLogDir(value);
+                }
 
                 default -> System.out.println(UNRECOGNIZED_PARAMETER_NAME);
             }

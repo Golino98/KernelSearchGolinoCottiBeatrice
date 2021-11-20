@@ -2,6 +2,8 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 
+import java.util.List;
+
 /**
  * Contenitore per le informazione di configurazione del progetto.
  */
@@ -24,7 +26,7 @@ public class Configuration {
     private VariableSorter sorter;
     private BucketBuilder bucketBuilder;
     private KernelBuilder kernelBuilder;
-    private Instance instance;
+    private List<Instance> instances;
     private Logger logger;
 
     public BucketBuilder getBucketBuilder() {
@@ -131,12 +133,12 @@ public class Configuration {
         this.logDir = logDir;
     }
 
-    public Instance getInstance() {
-        return instance;
+    public List<Instance> getInstances() {
+        return instances;
     }
 
-    public void setInstance(Instance instance) {
-        this.instance = instance;
+    public void setInstances(List<Instance> instances) {
+        this.instances = instances;
     }
 
     public Logger getLogger() {
