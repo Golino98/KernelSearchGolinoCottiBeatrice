@@ -150,4 +150,8 @@ public class Model {
     public void dispose() {
         model.dispose();
     }
+
+    public Double getElapsedTime() throws GRBException {
+        return model.get(GRB.DoubleAttr.Runtime);
+    }
 }

@@ -2,6 +2,7 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.solver.*;
+import gurobi.GRB;
 import gurobi.GRBException;
 
 import java.time.Duration;
@@ -23,6 +24,8 @@ public class KernelSearch {
     private Solver solver;
     private List<Bucket> buckets;
     private Kernel kernel;
+
+    private static Double timeElapsed = 0.0;
 
     private Instance currentInstance;
     // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
@@ -154,6 +157,8 @@ public class KernelSearch {
                 log.noSolution();
             }
 
+            timeElapsed += model.getElapsedTime();
+            System.out.println("\nTotal time elapsed: "+timeElapsed + "\n");
             model.dispose();
 
             if (getRemainingTime() <= TIME_THRESHOLD) {
