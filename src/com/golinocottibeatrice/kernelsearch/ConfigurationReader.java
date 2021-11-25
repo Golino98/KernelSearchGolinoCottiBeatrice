@@ -60,8 +60,10 @@ public class ConfigurationReader {
                 case "PRESOLVE" -> config.setPresolve(Integer.parseInt(value));
                 case "TIMELIMIT" -> config.setTimeLimit(Integer.parseInt(value));
                 case "SORTER" -> {
-                    if (Integer.parseInt(value) != 0) {
-                        throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
+                    switch(Integer.parseInt(value)) {
+                        case 0 -> config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
+                        case 1 -> config.setVariableSorter(new VariableSorterByAbsoluteRCAndValue());
+                        default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
                     }
                     config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
                 }
