@@ -42,7 +42,7 @@ public class Solver {
      * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */
-    public Model createModel(Instance instance, int timeLimit, boolean isLpRelaxation) throws GRBException {
+    public Model createModel(Instance instance, long timeLimit, boolean isLpRelaxation) throws GRBException {
         var modelConfig = new ModelConfiguration();
         modelConfig.setEnv(env);
         modelConfig.setInstance(instance);
@@ -62,7 +62,7 @@ public class Solver {
      * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */
-    public Model createModel(Instance instance, int timeLimit) throws GRBException {
+    public Model createModel(Instance instance, long timeLimit) throws GRBException {
         return createModel(instance, timeLimit, false);
     }
 

@@ -11,7 +11,7 @@ class ModelConfiguration {
     private String logPath;
     private String solPath;
     private Instance instance;
-    private int timeLimit;
+    private long timeLimit;
     private boolean isLpRelaxation;
 
     public GRBEnv getEnv() {
@@ -30,11 +30,11 @@ class ModelConfiguration {
         this.instance = instance;
     }
 
-    public int getTimeLimit() {
+    public long getTimeLimit() {
         return timeLimit;
     }
 
-    public void setTimeLimit(int timeLimit) {
+    public void setTimeLimit(long timeLimit) {
         this.timeLimit = timeLimit;
     }
 

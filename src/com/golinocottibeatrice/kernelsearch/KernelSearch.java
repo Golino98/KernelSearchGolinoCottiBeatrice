@@ -2,10 +2,8 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.solver.*;
-import gurobi.GRB;
 import gurobi.GRBException;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,7 +15,7 @@ import java.util.stream.Collectors;
 public class KernelSearch {
     // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
     // sotto il cui viene fermato il programma
-    private static final int TIME_THRESHOLD = 3;
+    private static final int TIME_THRESHOLD = 1;
 
     private final Configuration config;
     private final Logger log;
@@ -25,11 +23,8 @@ public class KernelSearch {
     private List<Bucket> buckets;
     private Kernel kernel;
 
-    private static Double timeElapsed = 0.0;
-
     private Instance currentInstance;
-    // Tempo di avvio della ricerca, usato per limitare il tempo di esecuzione
-    private Instant startTime;
+    private double elapsedTime = 0;
     // Variabili del problema
     private List<Variable> variables;
     // Miglior soluzione trovata
@@ -62,8 +57,8 @@ public class KernelSearch {
         for (var instance : config.getInstances()) {
             this.currentInstance = instance;
 
-            startTime = Instant.now();
-            log.start(startTime);
+            elapsedTime = 0;
+            log.start(instance.getName(), Instant.now());
 
             solveRelaxation();
 
@@ -75,6 +70,7 @@ public class KernelSearch {
 
             solveKernel();
             iterateBuckets();
+            log.end(bestSolution.getObjective(), elapsedTime);
         }
 
         solver.dispose();
@@ -85,9 +81,10 @@ public class KernelSearch {
         log.relaxStart();
 
         var solution = model.solve();
-        log.solution(solution.getObjective(), getElapsedTime());
+        log.solution(solution.getObjective(), elapsedTime);
 
         variables = solution.getVariables();
+        elapsedTime += model.getElapsedTime();
         model.dispose();
     }
 
@@ -100,7 +97,8 @@ public class KernelSearch {
 
         log.kernelStart();
         bestSolution = model.solve();
-        log.solution(bestSolution.getObjective(), getElapsedTime());
+        elapsedTime += model.getElapsedTime();
+        log.solution(bestSolution.getObjective(), elapsedTime);
 
         model.write();
         model.dispose();
@@ -142,9 +140,10 @@ public class KernelSearch {
 
             var solution = model.solve();
 
+            elapsedTime += model.getElapsedTime();
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                log.solution(solution.getObjective(), getElapsedTime());
+                log.solution(solution.getObjective(), elapsedTime);
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
@@ -154,11 +153,9 @@ public class KernelSearch {
 
                 model.write();
             } else {
-                log.noSolution();
+                log.noSolution(elapsedTime);
             }
 
-            timeElapsed += model.getElapsedTime();
-            System.out.println("\nTotal time elapsed: "+timeElapsed + "\n");
             model.dispose();
 
             if (getRemainingTime() <= TIME_THRESHOLD) {
@@ -167,13 +164,10 @@ public class KernelSearch {
         }
     }
 
-    // Restituisce il tempo trascorso dall'avvio del programma
-    private int getElapsedTime() {
-        return (int) Duration.between(startTime, Instant.now()).getSeconds();
-    }
 
     // Restituisce il tempo rimamente per l'esecuzione
-    private int getRemainingTime() {
-        return config.getTimeLimit() - getElapsedTime();
+    private long getRemainingTime() {
+        var time = config.getTimeLimit() - (long) elapsedTime;
+        return time >= 0 ? time : 0;
     }
 }
