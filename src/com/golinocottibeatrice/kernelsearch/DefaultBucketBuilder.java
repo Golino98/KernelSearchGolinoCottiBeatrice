@@ -12,7 +12,7 @@ public class DefaultBucketBuilder implements BucketBuilder {
      * @return una {@link List<Bucket>}
      */
     @Override
-    public List<Bucket> build(List<Variable> variables, Configuration config) {
+    public List<Bucket> build(List<Variable> variables, SearchConfiguration config) {
         List<Bucket> buckets = new ArrayList<>();
         Bucket b = new Bucket();
 
