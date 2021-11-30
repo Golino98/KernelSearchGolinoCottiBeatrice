@@ -5,16 +5,23 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 
 public class Logger {
+    public static final String RESET = "\u001B[0m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String GREEN = "\u001B[32m";
+    public static final String CYAN = "\u001B[36m";
+    public static final String PURPLE = "\u001B[35m";
+    public static final String BLUE = "\u001B[34m";
+
     private static final String SEPARATOR = "\n--------------------------------------------";
-    private static final String FORMAT_START = "\nInstance:   %s\nStart time: %02d:%02d:%02d UTC";
-    private static final String FORMAT_RELAX = "\n\n[Solving relaxation]\n";
-    private static final String FORMAT_KERNEL = "\n\n[Solving kernel]\n";
-    private static final String FORMAT_ITERATION = "\n\n[Iteration %d]";
-    private static final String FORMAT_SOLVE_BUCKET = "\n<Bucket %2d> ";
+    private static final String FORMAT_START = CYAN + "\nInstance:   " + RESET + "%s\n" + CYAN + "Start time: " + RESET + "%02d:%02d:%02d UTC";
+    private static final String FORMAT_RELAX = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
+    private static final String FORMAT_KERNEL = PURPLE + "\n\n[Solving kernel]\n" + RESET;
+    private static final String FORMAT_ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
+    private static final String FORMAT_SOLVE_BUCKET = BLUE + "\n<Bucket %2d> " + RESET;
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
     private static final String FORMAT_NO_SOLUTION_FOUND = "NO SOLUTION  - TIME: +%fs";
-    private static final String FORMAT_END = "\nBest solution: %06.2f\nTime elapsed:  %fs\n";
-    private static final String TIMELIMIT = "\n\nTime limit reached";
+    private static final String FORMAT_END = GREEN + "\n\nBest solution: " + RESET + "%06.2f\n" + GREEN + "Time elapsed:  " + RESET + "%fs\n";
+    private static final String TIMELIMIT = YELLOW + "\n\nTime limit reached" + RESET;
 
     private final PrintStream out;
 
