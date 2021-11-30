@@ -1,6 +1,5 @@
 package com.golinocottibeatrice.kernelsearch.search;
 
-import com.golinocottibeatrice.kernelsearch.Configuration;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;
@@ -11,12 +10,12 @@ import java.util.stream.Collectors;
 
 /**
  * Implementa il metodo della kernel search, usando GUROBI come risolutore.
- * I parametri di configurazione vengono letti da un'istanza di {@link Configuration}.
+ * I parametri di configurazione vengono letti da un'istanza di {@link SearchConfiguration}.
  */
 public class KernelSearch {
     // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
     // sotto il cui viene fermato il programma
-    private static final int TIME_THRESHOLD = 1;
+    private static final int TIME_THRESHOLD = 2;
 
     private final SearchConfiguration config;
     private final Logger log;
@@ -24,8 +23,8 @@ public class KernelSearch {
     private List<Bucket> buckets;
     private Kernel kernel;
 
-    private Instance instance;
-    private double elapsedTime = 0;
+    private final Instance instance;
+    private double elapsedTime;
     // Variabili del problema
     private List<Variable> variables;
     // Miglior soluzione trovata
@@ -38,9 +37,9 @@ public class KernelSearch {
      */
     public KernelSearch(SearchConfiguration config) {
         this.config = config;
-        this.instance = config.getInstance();
-        this.log = config.getLogger();
-        this.solver = config.getSolver();
+        instance = config.getInstance();
+        log = config.getLogger();
+        solver = config.getSolver();
     }
 
     /**
@@ -109,7 +108,8 @@ public class KernelSearch {
         int count = 0;
 
         for (var b : buckets) {
-            log.bucketStart(count++);
+            log.bucketStart(count);
+            count++;
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
             var model = solver.createModel(instance, timeLimit);

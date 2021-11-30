@@ -11,7 +11,7 @@ import gurobi.GRBException;
  * che consente di creare dei modelli GUROBI
  * con dei valori di configurazione comuni.
  * <p>
- * Al termine dell'utilizzo il metodo <code>dispose()</code>
+ * Al termine dell'utilizzo il metodo {@code dispose()}
  * dovrebbe essere utilizzato per liberare le risorse.
  */
 public class Solver {
@@ -26,7 +26,7 @@ public class Solver {
      */
     public Solver(SolverConfiguration config) throws GRBException {
         this.config = config;
-        this.env = new GRBEnv();
+        env = new GRBEnv();
         env.set(GRB.IntParam.LogToConsole, 0);
         env.set(GRB.IntParam.Threads, config.getNumThreads());
         env.set(GRB.IntParam.Presolve, config.getPresolve());
@@ -38,7 +38,7 @@ public class Solver {
      *
      * @param instance       L'istanza del problema MKP.
      * @param timeLimit      Il limite di tempo per la risoluzione del problema.
-     * @param isLpRelaxation <code>true</code> se deve essere risolto il rilassato del problema.
+     * @param isLpRelaxation {@code true} se deve essere risolto il rilassato del problema.
      * @return Il modello creato.
      * @throws GRBException Errore di GUROBI.
      */

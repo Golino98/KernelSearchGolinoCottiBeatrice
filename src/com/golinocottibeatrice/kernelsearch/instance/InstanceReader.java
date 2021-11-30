@@ -63,6 +63,7 @@ public class InstanceReader {
             items.add(new Item(weight, profit));
         }
 
+        br.close();
         return new Instance(name,capacities, items);
     }
 }

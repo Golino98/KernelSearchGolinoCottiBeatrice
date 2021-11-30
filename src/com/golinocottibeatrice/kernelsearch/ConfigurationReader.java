@@ -64,6 +64,7 @@ public class ConfigurationReader {
             }
         }
 
+        br.close();
         return config;
     }
 }

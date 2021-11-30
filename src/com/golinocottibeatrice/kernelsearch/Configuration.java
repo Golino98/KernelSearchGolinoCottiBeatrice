@@ -1,21 +1,16 @@
 package com.golinocottibeatrice.kernelsearch;
 
 /**
- * Contenitore per le informazione di configurazione del progetto.
+ * Contenitore per le informazione di configurazione del progetto, come lette da file.
  */
 public class Configuration {
-    // Parametri di Gurobi
     private int numThreads;
     private int presolve;
     private double mipGap;
     private String logDir;
-
-    // Limiti di tempo
     private int timeLimit;
     private int timeLimitKernel;
     private int timeLimitBucket;
-
-    // Parametri della kernel search
     private int numIterations;
     private double kernelSize;
     private double bucketSize;

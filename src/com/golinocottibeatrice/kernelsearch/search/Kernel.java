@@ -15,7 +15,7 @@ public class Kernel {
      * Crea un nuovo kernel set vuoto.
      */
     public Kernel() {
-        this.variables = new ArrayList<>();
+        variables = new ArrayList<>();
     }
 
     /**
