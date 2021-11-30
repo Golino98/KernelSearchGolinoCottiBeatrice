@@ -1,5 +1,6 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.search;
 
+import com.golinocottibeatrice.kernelsearch.Configuration;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;

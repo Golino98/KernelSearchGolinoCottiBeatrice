@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.search;
 
 import java.io.PrintStream;
 import java.time.Instant;

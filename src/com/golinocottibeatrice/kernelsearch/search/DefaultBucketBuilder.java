@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.search;
 
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
@@ -8,7 +8,7 @@ import java.util.List;
 public class DefaultBucketBuilder implements BucketBuilder {
     /**
      * @param variables  lista di variabili
-     * @param config variabile di tipo {@link Configuration}, usata per settare la configurazione del problema
+     * @param config variabile di tipo {@link SearchConfiguration}, usata per settare la configurazione del problema
      * @return una {@link List<Bucket>}
      */
     @Override

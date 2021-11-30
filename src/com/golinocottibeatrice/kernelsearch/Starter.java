@@ -2,6 +2,7 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
+import com.golinocottibeatrice.kernelsearch.search.*;
 import com.golinocottibeatrice.kernelsearch.solver.Solver;
 import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
 import gurobi.GRBException;
