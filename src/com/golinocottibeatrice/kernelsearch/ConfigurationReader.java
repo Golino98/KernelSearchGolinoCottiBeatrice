@@ -1,14 +1,8 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.instance.Instance;
-import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
-
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -17,9 +11,6 @@ import java.util.stream.Collectors;
  * vedi la documentazione.
  */
 public class ConfigurationReader {
-    private static final String UNRECOGNIZED_KERNEL_BUILDER = "Unrecognized kernel builder.";
-    private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
-    private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
     private static final String UNRECOGNIZED_PARAMETER_NAME = "Unrecognized parameter name.";
     // Carattere usato per la separazione del nome del parametro dal valore
     private static final String SEPARATOR = "\\s+";
@@ -59,55 +50,20 @@ public class ConfigurationReader {
                 case "MIPGAP" -> config.setMipGap(Double.parseDouble(value));
                 case "PRESOLVE" -> config.setPresolve(Integer.parseInt(value));
                 case "TIMELIMIT" -> config.setTimeLimit(Integer.parseInt(value));
-                case "SORTER" -> {
-                    switch(Integer.parseInt(value)) {
-                        case 0 -> config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
-                        case 1 -> config.setVariableSorter(new VariableSorterByAbsoluteRCAndValue());
-                        default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
-                    }
-                    config.setVariableSorter(new VariableSorterByValueAndAbsoluteRC());
-                }
+                case "SORTER" -> config.setVariableSorter(Integer.parseInt(value));
                 case "KERNELSIZE" -> config.setKernelSize(Double.parseDouble(value));
                 case "BUCKETSIZE" -> config.setBucketSize(Double.parseDouble(value));
-                case "BUCKETBUILDER" -> {
-                    if (Integer.parseInt(value) != 0) {
-                        throw new IllegalStateException(UNRECOGNIZED_BUCKET_BUILDER);
-                    }
-                    config.setBucketBuilder(new DefaultBucketBuilder());
-                }
+                case "BUCKETBUILDER" -> config.setBucketBuilder(Integer.parseInt(value));
                 case "TIMELIMITKERNEL" -> config.setTimeLimitKernel(Integer.parseInt(value));
                 case "NUMITERATIONS" -> config.setNumIterations(Integer.parseInt(value));
                 case "TIMELIMITBUCKET" -> config.setTimeLimitBucket(Integer.parseInt(value));
-                case "KERNELBUILDER" -> {
-                    switch (Integer.parseInt(value)) {
-                        case 0 -> config.setKernelBuilder(new KernelBuilderPositive());
-                        case 1 -> config.setKernelBuilder(new KernelBuilderPercentage());
-                        default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
-                    }
-                }
-                case "INSTPATH" -> {
-                    var instances = new ArrayList<Instance>();
-
-                    var inst = new File(value);
-                    if (inst.isDirectory()) {
-                        for (var instPath : Objects.requireNonNull(inst.listFiles())) {
-                            instances.add(new InstanceReader(instPath.getAbsolutePath()).read());
-                        }
-                    } else {
-                        instances.add(new InstanceReader(value).read());
-                    }
-
-                    config.setInstances(instances);
-                }
-                case "LOGDIR" -> {
-                    Files.createDirectories(Paths.get(value));
-                    config.setLogDir(value);
-                }
-
-                default -> System.out.println(UNRECOGNIZED_PARAMETER_NAME);
+                case "KERNELBUILDER" -> config.setKernelBuilder(Integer.parseInt(value));
+                case "INSTPATH" -> config.setInstPath(value);
+                case "LOGDIR" -> config.setLogDir(value);
+                default -> throw new IllegalStateException(UNRECOGNIZED_PARAMETER_NAME);
             }
         }
-        config.setLogger(new Logger(System.out));
+
         return config;
     }
 }

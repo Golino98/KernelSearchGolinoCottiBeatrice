@@ -1,9 +1,5 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.instance.Instance;
-
-import java.util.List;
-
 /**
  * Contenitore per le informazione di configurazione del progetto.
  */
@@ -23,17 +19,16 @@ public class Configuration {
     private int numIterations;
     private double kernelSize;
     private double bucketSize;
-    private VariableSorter sorter;
-    private BucketBuilder bucketBuilder;
-    private KernelBuilder kernelBuilder;
-    private List<Instance> instances;
-    private Logger logger;
+    private int sorter;
+    private int bucketBuilder;
+    private int kernelBuilder;
+    private String instPath;
 
-    public BucketBuilder getBucketBuilder() {
+    public int getBucketBuilder() {
         return bucketBuilder;
     }
 
-    public void setBucketBuilder(BucketBuilder bucketBuilder) {
+    public void setBucketBuilder(int bucketBuilder) {
         this.bucketBuilder = bucketBuilder;
     }
 
@@ -45,19 +40,19 @@ public class Configuration {
         this.bucketSize = bucketSize;
     }
 
-    public VariableSorter getVariableSorter() {
+    public int getVariableSorter() {
         return sorter;
     }
 
-    public void setVariableSorter(VariableSorter sorter) {
+    public void setVariableSorter(int sorter) {
         this.sorter = sorter;
     }
 
-    public KernelBuilder getKernelBuilder() {
+    public int getKernelBuilder() {
         return kernelBuilder;
     }
 
-    public void setKernelBuilder(KernelBuilder kernelBuilder) {
+    public void setKernelBuilder(int kernelBuilder) {
         this.kernelBuilder = kernelBuilder;
     }
 
@@ -133,19 +128,11 @@ public class Configuration {
         this.logDir = logDir;
     }
 
-    public List<Instance> getInstances() {
-        return instances;
+    public String getInstPath() {
+        return instPath;
     }
 
-    public void setInstances(List<Instance> instances) {
-        this.instances = instances;
-    }
-
-    public Logger getLogger() {
-        return logger;
-    }
-
-    public void setLogger(Logger logger) {
-        this.logger = logger;
+    public void setInstPath(String instPath) {
+        this.instPath = instPath;
     }
 }
