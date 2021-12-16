@@ -69,7 +69,7 @@ public class Starter {
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
-            new KernelSearch(searchConfig).start();
+            var solution = new KernelSearch(searchConfig).start();
         }
 
         // Libera le risorse usate dal solver.
