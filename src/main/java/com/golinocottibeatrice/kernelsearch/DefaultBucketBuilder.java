@@ -8,11 +8,11 @@ import java.util.List;
 public class DefaultBucketBuilder implements BucketBuilder {
     /**
      * @param variables  lista di variabili
-     * @param config variabile di tipo {@link Configuration}, usata per settare la configurazione del problema
+     * @param config variabile di tipo {@link SearchConfiguration}, usata per settare la configurazione del problema
      * @return una {@link List<Bucket>}
      */
     @Override
-    public List<Bucket> build(List<Variable> variables, Configuration config) {
+    public List<Bucket> build(List<Variable> variables, SearchConfiguration config) {
         List<Bucket> buckets = new ArrayList<>();
         Bucket b = new Bucket();
 

@@ -7,9 +7,9 @@ import gurobi.*;
  * Creatore di un nuovo modello, impostato per risolvere il problema MKP.
  */
 class ModelCreator {
-    public static final String FORMAT_VAR_NAME = "x_%d_%d";
-    private static final String FORMAT_CAPACITY = "Vincolo sulla capacità per zaino %d";
-    private static final String FORMAT_SELECTION = "Vincolo massima selezione per item %d";
+    private static final String FORMAT_VAR_NAME = "x_%d_%d";
+    private static final String FORMAT_CAPACITY = "MAX_CAPACITY_KNAPSACK_%d";
+    private static final String FORMAT_SELECTION = "SELECTION_ITEM_%d";
 
     private final ModelConfiguration config;
     private final Instance instance;
@@ -21,7 +21,7 @@ class ModelCreator {
 
     ModelCreator(ModelConfiguration config) {
         this.config = config;
-        this.instance = config.getInstance();
+        instance = config.getInstance();
     }
 
     /**

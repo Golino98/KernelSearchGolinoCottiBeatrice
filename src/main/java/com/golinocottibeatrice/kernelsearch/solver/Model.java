@@ -9,11 +9,11 @@ import java.util.List;
  * Wrapper di un modello GUROBI.
  * Rappresenta un'istanza del problema MKP risolvibile tramite un risolutore.
  * <p>
- * Al termine dell'utilizzo il metodo <code>dispose()</code> dovrebbe
+ * Al termine dell'utilizzo il metodo {@code dispose()} dovrebbe
  * essere chiamato per liberare le risorse.
  */
 public class Model {
-    private static final double POSITIVE_THRESHOLD = 1e-5;
+    private static final double POSITIVE_THRESHOLD = 1.0e-5;
     private static final String FORMAT_FIX_VAR = "FIX_VAR_%s";
     private static final String FORMAT_BUCKET = "BUCKET";
 
@@ -122,8 +122,8 @@ public class Model {
      * @throws GRBException Errore di GUROBI.
      */
     public void readSolution(Solution solution) throws GRBException {
-        for (GRBVar var : model.getVars()) {
-            var.set(GRB.DoubleAttr.Start, solution.getVariableValue(var.get(GRB.StringAttr.VarName)));
+        for (GRBVar variable : model.getVars()) {
+            variable.set(GRB.DoubleAttr.Start, solution.getVariableValue(variable.get(GRB.StringAttr.VarName)));
         }
     }
 
@@ -160,6 +160,11 @@ public class Model {
         model.dispose();
     }
 
+    /**
+     * Permette di ottenere il tempo di esecuzione del modello.
+     * @return Il tempo impiegato per trovare la soluzione del modello.
+     * @throws GRBException Errore di GUROBI.
+     */
     public Double getElapsedTime() throws GRBException {
         return model.get(GRB.DoubleAttr.Runtime);
     }

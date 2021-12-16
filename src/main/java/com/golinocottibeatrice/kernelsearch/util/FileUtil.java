@@ -1,5 +1,7 @@
 package com.golinocottibeatrice.kernelsearch.util;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
@@ -39,6 +41,16 @@ public class FileUtil {
     }
 
     /**
+     * Crea una cartella, creando anche tutte le directory "padre" che non esistono.
+     *
+     * @param path Il path della cartella da creare.
+     * @throws IOException Errore di I/O.
+     */
+    public static void createDirectories(String path) throws IOException {
+        Files.createDirectories(Paths.get(path));
+    }
+
+    /**
      * Consente di comporre il path di un file di log, unendo il path di una directory
      * al nome del file di log, a cui viene aggiunta l'estensione appropriata.
      *
@@ -72,6 +84,6 @@ public class FileUtil {
      * @return Il path del file.
      */
     private static String getPath(String dir, String fileName, String ext) {
-        return Paths.get(dir, fileName.concat(ext)).toString();
+        return Paths.get(dir, fileName + ext).toString();
     }
 }
