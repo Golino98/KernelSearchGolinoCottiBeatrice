@@ -51,8 +51,14 @@ public class Model {
         var objective = model.get(GRB.DoubleAttr.ObjVal);
         var variables = new ArrayList<Variable>();
         for (int i = 0; i < model.getVars().length; i++) {
+            //Lettura di una nuova variabile GBBVar
             var v = model.getVar(i);
-            var item = config.getInstance().getItem(Integer.parseInt(v.get(GRB.StringAttr.VarName).substring(2,3)));
+
+            //Creazione di un item, viene utilizzato il subsstring in quando, il terzo carattere del nome di una variabile
+            //corrisponde al numero dell'item. Facendo così è possibile andaer a selezionare volta per volta la variabile
+            //Corrispondente all'item
+
+            var item = config.getInstance().getItem(Integer.parseInt(v.get(GRB.StringAttr.VarName).substring(2, 3)));
             var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
             var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc,
                     item.getWeight(), item.getProfit());

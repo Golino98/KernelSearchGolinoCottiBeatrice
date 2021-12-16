@@ -52,6 +52,10 @@ public class Variable {
         return rc;
     }
 
+    /**
+     * Restituisce il valore del profit/weight (utilizzato nella classe VariableSorterByProfitDivideWeight
+     * @return
+     */
     public double getProfitDividedByWeight() {
         return this.profit / this.weight;
     }
