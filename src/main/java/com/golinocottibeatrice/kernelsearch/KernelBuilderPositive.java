@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch.search;
+package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 

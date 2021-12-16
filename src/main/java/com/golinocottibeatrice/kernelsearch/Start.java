@@ -1,12 +1,14 @@
 package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.instance.*;
-import com.golinocottibeatrice.kernelsearch.search.*;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import gurobi.GRBException;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.Objects;
 /**
  * Gestisce l'avvio della kernel search.
  */
-public class Starter {
+public class Start {
     private static final String DEFAULT_CONFIG_PATH = "./config.txt";
     private static final String UNRECOGNIZED_KERNEL_BUILDER = "Unrecognized kernel builder.";
     private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
@@ -29,7 +31,7 @@ public class Starter {
      *
      * @param configPath Il path della configurazione.
      */
-    public Starter(String configPath) {
+    public Start(String configPath) {
         this.configPath = configPath.isEmpty() ? DEFAULT_CONFIG_PATH : configPath;
     }
 
@@ -42,7 +44,7 @@ public class Starter {
         }
 
         try {
-            new Starter(configPath).start();
+            new Start(configPath).start();
         } catch (IOException | GRBException e) {
             e.printStackTrace();
         }
@@ -66,10 +68,15 @@ public class Starter {
         // Il solver viene settato qua perchè bisogna fare il dispose() alla fine dell'esecuzione.
         searchConfig.setSolver(solver);
 
+        var out = new FileWriter("log/solutions.csv");
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
             var solution = new KernelSearch(searchConfig).start();
+
+            try (var printer = new CSVPrinter(out, CSVFormat.DEFAULT)) {
+                printer.printRecord(searchConfig.getInstance().getName(), solution.getObjective());
+            }
         }
 
         // Libera le risorse usate dal solver.
