@@ -21,7 +21,6 @@ public class Bucket {
     }
 
     /**
-     * //TODO: Modifica da far controllare alla profe
      *
      * @param v variabile di tipo {@link Variable} di cui controllare l'esistenza all'interno della lista variables.
      *          Il controllo viene fatto in maniera case insensitive in modo tale da non avere problemi con le maiuscole.

@@ -7,6 +7,8 @@ public class Variable {
     private final String name;
     private final double value;
     private final double rc;
+    private final int weight;
+    private final int profit;
 
     /**
      * Crea una nuova variabile.
@@ -15,10 +17,13 @@ public class Variable {
      * @param value Il valore assegnato alla variabile (non necessariamente binario).
      * @param rc    Il valore del costo ridotto (diverso da zero solo se rilassamento continuo).
      */
-    Variable(String name, double value, double rc) {
+    Variable(String name, double value, double rc, int weight, int profit) {
         this.name = name;
         this.value = value;
         this.rc = rc;
+        this.weight = weight;
+        this.profit = profit;
+
     }
 
     public String getName() {
@@ -29,6 +34,15 @@ public class Variable {
         return value;
     }
 
+    public int getWeight() {
+        return weight;
+    }
+
+    public int getProfit() {
+        return profit;
+    }
+
+
     /**
      * Restituisce il valore del costo ridotto assegnato alla variabile.
      *
@@ -36,5 +50,9 @@ public class Variable {
      */
     public double getRC() {
         return rc;
+    }
+
+    public double getProfitDividedByWeight() {
+        return this.profit / this.weight;
     }
 }

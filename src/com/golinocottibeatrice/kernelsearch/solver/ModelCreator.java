@@ -7,7 +7,7 @@ import gurobi.*;
  * Creatore di un nuovo modello, impostato per risolvere il problema MKP.
  */
 class ModelCreator {
-    private static final String FORMAT_VAR_NAME = "x_%d_%d";
+    public static final String FORMAT_VAR_NAME = "x_%d_%d";
     private static final String FORMAT_CAPACITY = "Vincolo sulla capacità per zaino %d";
     private static final String FORMAT_SELECTION = "Vincolo massima selezione per item %d";
 

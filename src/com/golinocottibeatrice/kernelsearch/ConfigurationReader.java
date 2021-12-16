@@ -82,6 +82,7 @@ public class ConfigurationReader {
                     switch (Integer.parseInt(value)) {
                         case 0 -> config.setKernelBuilder(new KernelBuilderPositive());
                         case 1 -> config.setKernelBuilder(new KernelBuilderPercentage());
+                        case 2 -> config.setKernelBuilder(new KernelBuilderThreshold());
                         default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
                     }
                 }

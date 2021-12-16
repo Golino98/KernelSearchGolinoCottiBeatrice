@@ -9,9 +9,11 @@ public class KernelBuilderPercentage implements KernelBuilder {
     public Kernel build(List<Variable> variables, Configuration config) {
 
         Kernel kernel = new Kernel();
-        for (var v:variables) {
+        for (var v : variables) {
             if (kernel.size() < Math.round(config.getKernelSize() * variables.size())) {
                 kernel.addItem(v);
+            } else {
+                break;
             }
         }
         return kernel;

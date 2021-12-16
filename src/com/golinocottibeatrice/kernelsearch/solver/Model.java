@@ -50,9 +50,12 @@ public class Model {
 
         var objective = model.get(GRB.DoubleAttr.ObjVal);
         var variables = new ArrayList<Variable>();
-        for (var v : model.getVars()) {
+        for (int i = 0; i < model.getVars().length; i++) {
+            var v = model.getVar(i);
+            var item = config.getInstance().getItem(Integer.parseInt(v.get(GRB.StringAttr.VarName).substring(2,3)));
             var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
-            var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc);
+            var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc,
+                    item.getWeight(), item.getProfit());
             variables.add(variable);
         }
         return new Solution(objective, variables);

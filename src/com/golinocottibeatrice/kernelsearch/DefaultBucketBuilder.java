@@ -18,6 +18,7 @@ public class DefaultBucketBuilder implements BucketBuilder {
 
         //Il comando floor esegue un arrotondamento all'intero più vicino
         int size = (int) Math.floor(variables.size() * config.getBucketSize());
+
         for (Variable v : variables) {
             b.addVariable(v);
 
@@ -26,7 +27,7 @@ public class DefaultBucketBuilder implements BucketBuilder {
                 b = new Bucket();
             }
         }
-        if (b.size() < size && b.size() > 0) {
+        if (b.size() <= size && b.size() > 0) {
             buckets.add(b);
         }
         return buckets;
