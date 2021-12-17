@@ -119,6 +119,7 @@ public class Start {
         return switch (config.getVariableSorter()) {
             case 0 -> new VariableSorterByValueAndAbsoluteRC();
             case 1 -> new VariableSorterByAbsoluteRCAndValue();
+            case 2 -> new VariableSorterByProfitDivideWeight();
             default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
         };
     }
