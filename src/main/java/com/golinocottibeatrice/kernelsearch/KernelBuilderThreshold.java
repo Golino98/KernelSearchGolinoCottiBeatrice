@@ -6,10 +6,8 @@ import java.util.List;
 
 public class KernelBuilderThreshold implements KernelBuilder {
 
-
     @Override
     public Kernel build(List<Variable> variables, SearchConfiguration config) {
-
         Kernel kernel = new Kernel();
 
         for (var v : variables) {

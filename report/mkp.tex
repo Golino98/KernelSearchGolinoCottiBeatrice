@@ -1,0 +1,53 @@
+\chapter{The Multiple Knapsack Problem}
+Given a set of \(m\) knapsacks with a known \(\text{capacity } c_{i}\) \((i=1,\dots,m)\) and a set of \(n\) items with
+known \(\text{profit } p_{j}\) and \(\text{weight } w_{j}\) \((j=1,\dots,n)\) the Multiple Knapsack Problem (MKP) consists in
+selecting \(m\) disjoint subsets of items (one subset per knapsack) such that the total weight of the items in the knapsack
+does not exceed its capacity, and the profit of the selected items is maximized.
+
+\section{Mathematical model}
+There are quite a few formulations for the MKP, with different degrees of
+complexity and performance.
+The formulation that was used in this project is the classical and most intuitive
+one, that uses the following binary variables:
+\[x_{ij}=
+\begin{cases}
+    1 & \quad \text{if item } j \text{ is packed into knapsack } i\\
+    0 & \quad \text{otherwise}
+\end{cases}
+\]
+
+The model is as follows:
+\begin{equation}
+    \label{eq:obj}
+    \max{z} = \sum_{i=1}^{n} \sum_{j=1}^{n} p_{j} x_{ij}
+\end{equation}
+\begin{equation}
+    \label{eq:cap}
+    \sum_{j=1}^{n} w_{j} x_{ij} \leq c_{i} \qquad i=1,\dots,m
+\end{equation}
+\begin{equation}
+    \label{eq:sel}
+    \sum_{i=1}^{m} x_{ij} \leq 1 \qquad j=1,\dots,n
+\end{equation}
+\begin{equation}
+    x_{ij} \in \{0,1\} \qquad i=1,\dots,m \quad j=1,\dots,n
+\end{equation}
+
+The objective function~\eqref{eq:obj} maximises the profit of the items in the knapsacks.\\
+Constraints~\eqref{eq:cap} impose that the capacity of each knapsack is respected, while constraints~\eqref{eq:sel}
+ensure that each item is packed in no more than one knapsack.
+
+\section{Real life examples}
+The MKP has various real life examples, in various fields.
+
+The most straightforward example might be the cargo organization for a transport company.
+In this scenario, the knapsack may be the trucks or containers.
+Their capacity is the effective capacity of the truck/container.
+The items are the objects that must be delivered.
+Their weight is the actual weight of the item, while the profit is the priority of the delivery.
+
+Another example might be the project selection:
+The knapsacks may be the years of development of the project, and their capacity is the available budget for
+that year.
+The items can be the available projects: the weight is the cost of the project, the profit is the monetary gains
+from the project completion.

@@ -2,23 +2,27 @@
 \usepackage[utf8]{inputenc} % Codifica caratteri
 \usepackage[lmargin=2cm,rmargin=2cm,tmargin=2.5cm,bmargin=2cm]{geometry} % Bordi pagina come da formato tesi Unibs
 \linespread{1.5} % Interlinea
-\usepackage{graphicx} % Per poter inserire immagini
-\usepackage{float} % Per controllare il posizionamento di immagini e tabelle
-\usepackage{csquotes} % Per inserire citazioni
-\usepackage{subfig}
-\usepackage{fancyhdr} % Per modificare l'intestazione delle pagine
-\setlength{\parindent}{1cm} % Rientro paragrafi (???)
+\setlength{\parindent}{0pt} % No spazio prima dei paragrafi
+\setlength{\parskip}{1em}
+
 \usepackage[backend=biber, sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
 \addbibresource{bibliography.bib} % File contentente la bibliografia
 
-\pagestyle{fancy} % Formato intestazione pagine (???)
-\renewcommand{\chaptermark}[1]{\markboth{\thechapter.\ \uppercase{#1}}{}}
+\usepackage{titlesec} % Per modificare il formato dei capitoli
+\titleformat{\chapter}[hang]{\normalfont\Huge\bfseries}{\thechapter.}{8pt}{\Huge\bfseries}
+\titlespacing*{\chapter}{0pt}{0pt}{20pt}
+
+\usepackage{fancyhdr} % Per modificare l'intestazione delle pagine
+\pagestyle{fancy} % Customizzazione testata e piè di pagina
+\renewcommand{\chaptermark}[1]{\markboth{#1}{#1}}
 \fancyhf{}
-\fancyhead[C]{\textbf{\leftmark}}
+\fancyhead[L]{\thechapter. \leftmark}
 \fancyfoot[C]{\thepage}
-\renewcommand{\headrulewidth}{1pt}
-\renewcommand{\footrulewidth}{1pt}
-\usepackage[Conny]{fncychap}
+
+\usepackage{graphicx} % Per poter inserire immagini
+\usepackage{float} % Per controllare il posizionamento di immagini e tabelle
+\usepackage{amsmath}
+\usepackage{hyperref} % Per scrivere equazioni
 
 \title{Implementation of The Multiple Knapsack Problem in the Kernel Search}
 \author{Matteo Beatrice, Luca Cotti, Giacomo Golino}
@@ -26,54 +30,14 @@
 
 \begin{document}
     %Frontespizio
-    \begin{titlepage}
-        \begin{figure}[H] % Logo Unibs
-            \centering
-            \includegraphics[width=72.4mm]{logo_unibs}
-        \end{figure}
-
-        \begin{center}
-            \LARGE{\uppercase{Università degli Studi di Brescia}}\\ % Doppio backslash = vai a capo
-            \vspace{5mm} % Spazio verticale
-            \large{\uppercase{Dipartimento di Ingegneria dell'informazione}}\\
-            \vspace{5mm}
-            \large{Corso di Laurea Magistrale in Ingegneria Informatica}\\
-        \end{center}
-
-        \vspace{15mm}
-
-        \begin{center}
-            \LARGE{\textbf{Implementation of The Multiple Knapsack Problem in the Kernel Search}}\\
-        \end{center}
-
-        \vspace{10mm}
-
-        \begin{flushleft}
-            \large
-            \textbf{Docente:}\\
-            Ch.ma Prof.sa Renata Mansini
-        \end{flushleft}
-
-        \begin{flushright}
-            \large
-            \textbf{Studenti:}\\
-            Matteo Beatrice (000000)\\
-            Luca Cotti (719204)\\
-            Giacomo Golino (719210)
-        \end{flushright}
-
-        \vspace*{\fill} % Spazio bianco per mettere il testo in fondo alla pagina
-
-        \rule{0.8\textwidth}{0.6pt}\\ % Linea nera
-        \centering{\Large{Anno Accademico 2021/2022}}
-    \end{titlepage}
+    \input{title}
 
     %Corpo
     \tableofcontents
     \hyphenpenalty=10000 % Non spezzare le parole a capo
 
-    \chapter{Introduction}
-
-    \chapter{Conclusion}
+    \input{introduction}
+    \input{mkp}
+    \input{implementation}
     \printbibliography
 \end{document}

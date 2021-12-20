@@ -47,7 +47,7 @@ public class KernelSearch {
      *
      * @throws GRBException Errore di Gurobi.
      */
-    public Solution start() throws GRBException {
+    public SearchResult start() throws GRBException {
         elapsedTime = 0;
         log.start(instance.getName(), Instant.now());
 
@@ -63,7 +63,7 @@ public class KernelSearch {
         iterateBuckets();
         log.end(bestSolution.getObjective(), elapsedTime);
 
-        return bestSolution;
+        return new SearchResult(bestSolution, elapsedTime, elapsedTime + TIME_THRESHOLD >= config.getTimeLimit());
     }
 
     private void solveRelaxation() throws GRBException {
