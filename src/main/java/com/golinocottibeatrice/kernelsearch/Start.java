@@ -8,13 +8,11 @@ import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import gurobi.GRBException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
-import org.apache.commons.io.comparator.NameFileComparator;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -129,6 +127,7 @@ public class Start {
             case 0 -> new VariableSorterByValueAndAbsoluteRC();
             case 1 -> new VariableSorterByAbsoluteRCAndValue();
             case 2 -> new VariableSorterByProfitDivideWeight();
+            case 3 -> new VariableSorterRandom();
             default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
         };
     }
