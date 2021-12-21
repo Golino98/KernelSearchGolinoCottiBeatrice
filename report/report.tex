@@ -4,13 +4,15 @@
 \linespread{1.5} % Interlinea
 \setlength{\parindent}{0pt} % No spazio prima dei paragrafi
 \setlength{\parskip}{1em}
+\setlength{\headheight}{15pt}
+\addtolength{\topmargin}{-2.5pt}
 
-\usepackage[backend=biber, sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
-\addbibresource{bibliography.bib} % File contentente la bibliografia
+\usepackage[backend=biber,sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
+\addbibresource{refs.bib} % File contentente la bibliografia
 
 \usepackage{titlesec} % Per modificare il formato dei capitoli
 \titleformat{\chapter}[hang]{\normalfont\Huge\bfseries}{\thechapter.}{8pt}{\Huge\bfseries}
-\titlespacing*{\chapter}{0pt}{0pt}{20pt}
+\titlespacing*{\chapter}{0pt}{-40pt}{20pt}
 
 \usepackage{fancyhdr} % Per modificare l'intestazione delle pagine
 \pagestyle{fancy} % Customizzazione testata e piè di pagina
@@ -21,23 +23,26 @@
 
 \usepackage{graphicx} % Per poter inserire immagini
 \usepackage{float} % Per controllare il posizionamento di immagini e tabelle
-\usepackage{amsmath}
-\usepackage{hyperref} % Per scrivere equazioni
+\usepackage{amsmath} % Per inserire equazioni
+\usepackage[hidelinks]{hyperref} % Per inserire URL
+\usepackage{xurl} % Per consentire agli URL di spezzarsi a capo
+\usepackage{enumitem}
+\usepackage{siunitx} % Necessario per usare \setitemize
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
 
 \title{Implementation of The Multiple Knapsack Problem in the Kernel Search}
 \author{Matteo Beatrice, Luca Cotti, Giacomo Golino}
 \date{December 2020}
 
 \begin{document}
-    %Frontespizio
-    \input{title}
+    \input{title} %Frontespizio
 
-    %Corpo
     \tableofcontents
-    \hyphenpenalty=10000 % Non spezzare le parole a capo
+    \hyphenpenalty=3000 % Penalizza lo spezzamento delle parole a capo
 
-    \input{introduction}
+    % I capitoli veri e propri sono su pagine a parte
+    \input{intro}
     \input{mkp}
-    \input{implementation}
+    \input{impl}
     \printbibliography
 \end{document}

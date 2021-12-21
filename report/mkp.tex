@@ -1,12 +1,13 @@
 \chapter{The Multiple Knapsack Problem}
-Given a set of \(m\) knapsacks with a known \(\text{capacity } c_{i}\) \((i=1,\dots,m)\) and a set of \(n\) items with
-known \(\text{profit } p_{j}\) and \(\text{weight } w_{j}\) \((j=1,\dots,n)\) the Multiple Knapsack Problem (MKP) consists in
+The description of the Multiple Knapsack Problem (MKP), as described in~\cite{mkp:2019}, is the following:\\
+given a set of \(m\) knapsacks with a known \(\text{capacity } c_{i}\) \((i=1,\dots,m)\) and a set of \(n\) items with
+known \(\text{profit } p_{j}\) and \(\text{weight } w_{j}\) \((j=1,\dots,n)\) the MKP consists in
 selecting \(m\) disjoint subsets of items (one subset per knapsack) such that the total weight of the items in the knapsack
 does not exceed its capacity, and the profit of the selected items is maximized.
 
 \section{Mathematical model}
 There are quite a few formulations for the MKP, with different degrees of
-complexity and performance.
+complexity and performance.\\
 The formulation that was used in this project is the classical and most intuitive
 one, that uses the following binary variables:
 \[x_{ij}=
@@ -16,7 +17,7 @@ one, that uses the following binary variables:
 \end{cases}
 \]
 
-The model is as follows:
+The mathematical model is as follows:
 \begin{equation}
     \label{eq:obj}
     \max{z} = \sum_{i=1}^{n} \sum_{j=1}^{n} p_{j} x_{ij}
@@ -38,16 +39,16 @@ Constraints~\eqref{eq:cap} impose that the capacity of each knapsack is respecte
 ensure that each item is packed in no more than one knapsack.
 
 \section{Real life examples}
-The MKP has various real life examples, in various fields.
+The MKP has various real life examples, in different fields.
 
-The most straightforward example might be the cargo organization for a transport company.
-In this scenario, the knapsack may be the trucks or containers.
-Their capacity is the effective capacity of the truck/container.
-The items are the objects that must be delivered.
-Their weight is the actual weight of the item, while the profit is the priority of the delivery.
+The most straightforward example is the cargo organization for a transport company.
+In this scenario, the knapsacks are the trucks or containers.
+Their capacity is the effective capacity of the truck/container.\\
+The items are the objects that must be delivered:
+their weight is the actual weight of the item, while the profit is the priority of the delivery.
 
-Another example might be the project selection:
-The knapsacks may be the years of development of the project, and their capacity is the available budget for
-that year.
-The items can be the available projects: the weight is the cost of the project, the profit is the monetary gains
+Another example is the project selection: the knapsacks are
+the years available for the development of projects,
+and their capacity is the available budget for that year.\\
+The items are the available projects: the weight is the cost of the project, the profit is the monetary gain
 from the project completion.
