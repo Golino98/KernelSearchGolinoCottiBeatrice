@@ -17,7 +17,8 @@ public class Configuration {
     private int sorter;
     private int bucketBuilder;
     private int kernelBuilder;
-    private String instPath;
+    private String instPath = "";
+    private String runName = "";
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -129,5 +130,13 @@ public class Configuration {
 
     public void setInstPath(String instPath) {
         this.instPath = instPath;
+    }
+
+    public String getRunName() {
+        return runName;
+    }
+
+    public void setRunName(String runName) {
+        this.runName = runName;
     }
 }

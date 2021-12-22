@@ -21,13 +21,13 @@ import java.util.Objects;
  */
 public class Start {
     private static final String DEFAULT_CONFIG_PATH = "./config.txt";
-    private static final String CSV_FILENAME = "solutions.csv";
     private static final String UNRECOGNIZED_KERNEL_BUILDER = "Unrecognized kernel builder.";
     private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
     private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
 
     private final String configPath;
     private Configuration config;
+    private CSVPrinter printer;
 
     /**
      * Crea una nuova istanza di Starter con la configurazione letta da file.
@@ -71,18 +71,23 @@ public class Start {
         // Il solver viene settato qua perchè bisogna fare il dispose() alla fine dell'esecuzione.
         searchConfig.setSolver(solver);
 
-        var out = new FileWriter(config.getLogDir() + "/" + CSV_FILENAME);
-        var printer = new CSVPrinter(out, CSVFormat.DEFAULT);
+        var shouldPrint = !config.getRunName().isEmpty();
+        if (shouldPrint) {
+            var out = new FileWriter(config.getLogDir() + "/" + config.getRunName() + ".csv");
+            printer = new CSVPrinter(out, CSVFormat.DEFAULT);
+        }
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
             var result = new KernelSearch(searchConfig).start();
 
-            printer.printRecord(
-                    instance.getName(),
-                    result.getObjective(),
-                    result.getTimeElapsed(),
-                    result.timeLimitReached());
+            if (shouldPrint) {
+                printer.printRecord(
+                        instance.getName(),
+                        result.getObjective(),
+                        result.getTimeElapsed(),
+                        result.timeLimitReached());
+            }
         }
 
         // Libera le risorse usate.

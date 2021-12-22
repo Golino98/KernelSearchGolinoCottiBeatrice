@@ -71,6 +71,7 @@ public class ConfigurationReader {
                 case "KERNELBUILDER" -> config.setKernelBuilder(Integer.parseInt(value));
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
+                case "RUNNAME" -> config.setRunName(value);
                 default -> throw new IllegalStateException(UNRECOGNIZED_PARAMETER_NAME);
             }
         }
