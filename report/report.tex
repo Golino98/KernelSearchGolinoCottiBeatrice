@@ -7,6 +7,17 @@
 \setlength{\headheight}{15pt}
 \addtolength{\topmargin}{-2.5pt}
 
+\usepackage{graphicx} % Per poter inserire immagini
+\usepackage{float} % Per controllare il posizionamento di immagini e tabelle
+\usepackage{amsmath} % Per inserire equazioni
+\usepackage[hidelinks]{hyperref} % Per inserire URL
+\usepackage{xurl} % Per consentire agli URL di spezzarsi a capo
+\usepackage{enumitem} % Per poter inserire liste
+\usepackage{siunitx} % Necessario per usare \setitemize
+\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
+\usepackage{booktabs}
+\usepackage{multirow}
+
 \usepackage[backend=biber,sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
 \addbibresource{refs.bib} % File contentente la bibliografia
 
@@ -21,14 +32,6 @@
 \fancyhead[L]{\thechapter. \leftmark}
 \fancyfoot[C]{\thepage}
 
-\usepackage{graphicx} % Per poter inserire immagini
-\usepackage{float} % Per controllare il posizionamento di immagini e tabelle
-\usepackage{amsmath} % Per inserire equazioni
-\usepackage[hidelinks]{hyperref} % Per inserire URL
-\usepackage{xurl} % Per consentire agli URL di spezzarsi a capo
-\usepackage{enumitem}
-\usepackage{siunitx} % Necessario per usare \setitemize
-\setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
 
 \title{Implementation of The Multiple Knapsack Problem in the Kernel Search}
 \author{Matteo Beatrice, Luca Cotti, Giacomo Golino}
@@ -37,12 +40,14 @@
 \begin{document}
     \input{title} %Frontespizio
 
-    \tableofcontents
-    \hyphenpenalty=3000 % Penalizza lo spezzamento delle parole a capo
+    \tableofcontents % Indice
+    \hyphenpenalty=3000 % Rende meno probabile lo spezzamento delle parole a capo
 
     % I capitoli veri e propri sono su pagine a parte
     \input{intro}
     \input{mkp}
     \input{impl}
-    \printbibliography
+    \printbibliography[
+        heading=bibintoc % Inserisci bibliografia nell'indice
+    ]
 \end{document}
