@@ -21,7 +21,6 @@ The algorithm itself and the parameters were not changed at this time.\\
 The code along with extensive documentation can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice}.
 
-
 \section{Test Instances}
 The test instances for the MKP were kindly provided to us by the authors of~\cite{mkp:2019}.\\
 There are in total 2100 test instances, organized in
@@ -37,13 +36,12 @@ SMALL contains 180 instances, while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 insta
 The instances in the first three directories were already solved to the optimum.
 Of those in the last two folders only a few were already solved: the unsolved
 ones only had an upper and lower bound.
-
+\newpage
 \section{How to read an Instance}
 Every instance was generated randomly by the authors of~\cite{mkp:2019}.
 The name of each instance contains different information, in order to fastly understand the dimension of the problem represented.
 The first integer represents the knapsacks number, while the second indicates then number of the items.
 The last integer is used to differentiate the instances belonging to the same class.
-
 Our test instances are text files, in which are contained the data related to the knapsacks and their \textbf{capacity} and items with their \textbf{profit} and \textbf{weight}. The structure of each of them shown below:
 
 	\begin{flushleft} 
@@ -78,6 +76,7 @@ Our test instances are text files, in which are contained the data related to th
 
 For most of the instances without the exact solution, we were able to
 find the exact using an exact GUROBI solver, with the following configuration:
+\newpage
 \begin{itemize}
     \item Presolve = 2 (aggressive presolve)
     \item Time limit = 90 hours
