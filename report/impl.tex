@@ -38,6 +38,44 @@ The instances in the first three directories were already solved to the optimum.
 Of those in the last two folders only a few were already solved: the unsolved
 ones only had an upper and lower bound.
 
+\section{How to read an Instance}
+Every instance was generated randomly by the authors of~\cite{mkp:2019}.
+The name of each instance contains different information, in order to fastly understand the dimension of the problem represented.
+The first integer represents the knapsacks number, while the second indicates then number of the items.
+The last integer is used to differentiate the instances belonging to the same class.
+
+Our test instances are text files, in which are contained the data related to the knapsacks and their \textbf{capacity} and items with their \textbf{profit} and \textbf{weight}. The structure of each of them shown below:
+
+	\begin{flushleft} 
+		$\begin{rcases*}
+			3 \quad
+		\end{rcases*} \rightarrow \textit{\textbf{m} knapsacks.}$
+	\end{flushleft}
+	\begin{flushleft}
+		$\begin{rcases*}
+			7 \quad
+		\end{rcases*} \rightarrow \textit{\textbf{n} items.}$
+	\end{flushleft}
+
+	\begin{flushleft}
+		$\begin{rcases*}
+			908 \quad
+			\\834 
+			\\675 
+		\end{rcases*} \rightarrow \textit{\textbf{capacities} of the m knapsacks.}$
+	\end{flushleft}
+	\begin{flushleft}
+		$\begin{rcases*}
+			264	\quad 430 \quad
+			\\606 \quad	945
+			\\268 \quad	409
+			\\619 \quad	591
+			\\958 \quad	839
+			\\972 \quad	818
+			\\723 \quad	71
+		\end{rcases*} \rightarrow \textit{\textbf{weight} and \textbf{profit} of the n items.}$
+	\end{flushleft}
+
 For most of the instances without the exact solution, we were able to
 find the exact using an exact GUROBI solver, with the following configuration:
 \begin{itemize}
