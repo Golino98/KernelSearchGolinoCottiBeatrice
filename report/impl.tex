@@ -21,17 +21,20 @@ Every instance was generated randomly by the authors of~\cite{mkp:2019}.
 The name of each instance contains different information, in order to fastly understand the dimension of the problem represented.
 The first integer represents the knapsacks number, while the second indicates then number of the items.
 The last integer is used to differentiate the instances belonging to the same class.
-Our test instances are text files, in which are contained the data related to the knapsacks and their \textbf{capacity} and items with their \textbf{profit} and \textbf{weight}. The structure of each of them shown below:
+
+%inseririre come leggere una stringa per capire di che problema si tratta
+
+Our test instances are text files, in which are contained the data related to the knapsacks and their \textbf{capacity} and items with their \textbf{profit} and \textbf{weight}. An example of an instance's structure is shown below:
 
 	\begin{flushleft} 
 		$\begin{rcases*}
 			3 \quad
-		\end{rcases*} \rightarrow \textit{\textbf{m} knapsacks.}$
+		\end{rcases*} \rightarrow $ integer that indicates the value of $ \textit{\textbf{m} (number of knapsacks).}$
 	\end{flushleft}
 	\begin{flushleft}
 		$\begin{rcases*}
 			7 \quad
-		\end{rcases*} \rightarrow \textit{\textbf{n} items.}$
+		\end{rcases*} \rightarrow $ integer that indicates the value of $ \textit{\textbf{n} (number of items).}$
 	\end{flushleft}
 
 	\begin{flushleft}
@@ -39,7 +42,7 @@ Our test instances are text files, in which are contained the data related to th
 			908 \quad
 			\\834 
 			\\675 
-		\end{rcases*} \rightarrow \textit{\textbf{capacities} of the m knapsacks.}$
+		\end{rcases*} \rightarrow $ integers that indicate the \textbf{capacity}  $ c_{i} $  of the knapsack i with \space $ i=1,\:\dots\:,m. $
 	\end{flushleft}
 	\begin{flushleft}
 		$\begin{rcases*}
@@ -50,7 +53,13 @@ Our test instances are text files, in which are contained the data related to th
 			\\958 \quad	839
 			\\972 \quad	818
 			\\723 \quad	71
-		\end{rcases*} \rightarrow \textit{\textbf{weight} and \textbf{profit} of the n items.}$
+		\end{rcases*} \rightarrow $ 
+		$\begin{rcases*}
+			{\begin{tabular}{@{}l@{}}
+				First column shows the \textbf{weight} $ w_{i}. $ \\
+				Second column shows the \textbf{profit} $ p_{i} $.
+			\end{tabular}} 
+		\end{rcases*} \rightarrow \space$ $ i=1,\:\dots\:,n. $
 	\end{flushleft}
 
 For most of the instances without the exact solution, we were able to
