@@ -62,21 +62,21 @@ Our test instances are text files, in which are contained the data related to th
 		\end{rcases*} \rightarrow \space$ $ i=1,\:\dots\:,n. $
 	\end{flushleft}
 
-For most of the instances without the exact solution, we were able to
-find the exact using an exact GUROBI solver, with the following configuration:
-\newpage
+For most of the instances with the exact solution calculated by the authors of the paper, we were able to
+find too the exact using an exact GUROBI solver, with the following configuration:
+
 \begin{itemize}
     \item Presolve = 2 (aggressive presolve)
-    \item Time limit = 90 hours
+    \item Time limit = 1 hour
     \item Threads = 12
     \item MIPGap = \num{1e-12}
 \end{itemize}
 
-The code can be found at \url{https://github.com/Golino98/ProgettoTestingPorzioniCodiceKernelSearch}
+The code can be found at \url{https://github.com/Golino98/EsattoMKP}
 
 To simplify the testing of the changes to the kernel search algorithm,
-we only considered 40 instances: 6 for each directory,
-plus 10 that couldn't be solved to the optimum.
+we only considered 40 instances: 6 solved to the optimum for each directory,
+plus 10 that we weren't able to solve to the best.
 
 Tables~\ref{tab:exact_opt} and~\ref{tab:exact_noopt} represent,
 respectively, the optimum values of the 30 instances solved to
