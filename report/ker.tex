@@ -1,0 +1,21 @@
+\chapter{Kernel Search}
+
+\section{Kernel Search}
+The code provided during the course implements a generic kernel search
+which uses GUROBI as solver, and has the following default paramenters:
+\begin{itemize}
+	\item Presolve = 2 (aggressive presolve)
+	\item Time limit = 30 seconds
+	\item Threads = 12
+	\item MIPGap = \num{1e-12}
+	\item Sort variables by profit and reduced cost
+	\item Kernel size = 15\% of the number of variables (rounded to the nearest integer)
+	\item Bucket size = 2.5\% of the number of variables (rounded to the nearest integer)
+	\item Number of iterations = 2
+	\item Time limit for each bucket = 5 seconds
+\end{itemize}
+The code was initially modified to implement the MKP model, and it was then
+refactored to improve its quality and efficiency.
+The algorithm itself and the parameters were not changed at this time.\\
+The code along with extensive documentation can be found at
+\url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice}.
