@@ -20,7 +20,7 @@ one, that uses the following binary variables:
 The mathematical model is as follows:
 \begin{equation}
     \label{eq:obj}
-    \max{z} = \sum_{i=1}^{n} \sum_{j=1}^{n} p_{j} x_{ij}
+    \max{z} = \sum_{i=1}^{m} \sum_{j=1}^{n} p_{j} x_{ij}
 \end{equation}
 \begin{equation}
     \label{eq:cap}
@@ -42,15 +42,15 @@ We can assume that each knapsack can contain at least one item (\(\min_{j}\{w_{j
 and that each item can fit in at least one knapsack (\(\max_{j}\{w_{j}\} \leq \max_{i}\{c_{i}\}\)).
 
 \section{Real life examples}
-The MKP has various real life examples, in different fields.
+The MKP has various real life examples and it can be used in different fields.
 
-The most straightforward example is the cargo organization for a transport company.
+The most straightforward example is the \textbf{cargo organization} for a transport company.
 In this scenario, the knapsacks are the trucks or containers.
 Their capacity is the effective capacity of the truck/container.\\
 The items are the objects that must be delivered:
-their weight is the actual weight of the item, while the profit is the priority of the delivery.
+their weight is the actual weight (or volume) of the goods that need to be shipped, while the profit is the priority of the delivery.
 
-Another example is the project selection: the knapsacks are
+Another example is the \textbf{project selection}: the knapsacks are
 the years available for the development of projects,
 and their capacity is the available budget for that year.\\
 The items are the available projects: the weight is the cost of the project, the profit is the monetary gain
