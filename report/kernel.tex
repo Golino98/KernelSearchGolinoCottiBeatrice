@@ -1,0 +1,98 @@
+\chapter{Kernel Search}
+
+Kernel Search is an heuristic algorithm used to solve MIP problems, originally presented in~\cite{kernel:2007}.\\
+The algorithm has been studied in a few applications, such as the multidimensional knapsack problem
+in~\cite{kernel:2010} and the portfolio selection problem in~\cite{kernel:2012}.
+
+The algorithm is based on a few observations that can often be made when solving MIP problems:
+\begin{itemize}
+    \item in the optimal solution there are only a few non-zero variables;
+    \item basic variables in the LP-relaxation are good predictors of non-zero variables in the MIP optimum;
+    \item reduced costs are good predictors of the likelihood of a non-basic variable to be in the MIP optimum.
+\end{itemize}
+
+Kernel search needs an MIP solver such as GUROBI or CPLEX to solve a set of MIP sub-problems.
+
+\section{Algorithm}
+The algorithm has two main phases: an \textit{inizialitation phase}
+that builds an initial \textit{kernel set} and a number of \textit{buckets},
+and a \textit{improvement phase} that iteratively enlarges the kernel set and improves the solution.
+
+\subsection{Inizialization Phase}
+The first step of kernel search is to solve the LP relaxation of the problem.\\
+Then, the set of variables of the problem is sorted according to some \textit{sorting criterion}.
+
+Once this is done, the kernel set \(\Lambda\) can be built by selecting the \textit{C}
+variables in the sorted set according a \textit{kernel construction criterion},
+where \textit{C} is the size of the kernel set.
+
+The next step is to solve MIP(\(\Lambda\)),
+which is the original problem restricted to only include the variables in \(\Lambda\):
+all the variables not in \(\Lambda\) are set to 0 to exclude them from the problem.\\
+The resulting solution will be called \(x^{*}\) and the optimum value \(w^{*}\).\\
+It is possible that no solution is found for MIP(\(\Lambda)\): in this case \(w^{*}\) is set to \(-\inf\).
+
+The variables not in \(\Lambda\) are partitioned into a certain number of buckets \textit{nb}, according
+to a \textit{bucket construction criterion}.
+
+\subsection{Improvement Phase}
+The main objectives of this phase are finding a new improving feasible solution and identifying new variables
+to enter the kernel set.
+
+Once the buckets are constructed, the algorithms proceeds with the improvement phase:\\
+for each bucket \(B_{i} \quad i=1,\dots,nb\),
+the restricted sub-problem MIP(\(\Lambda \cup B_{i}\)) is solved.
+
+Only the feasible sub-problems with an incumbent solution \(\bar{x^{*}} \geq w^{*}\) are of interest.\\
+For such sub-problems the set \(\bar{\Lambda_{i}} \coloneqq \{\text{selected variables in } B_{i}\}\) is built.\\
+Then the kernel set is updated: \(\Lambda \coloneqq \Lambda \cup \bar{\Lambda_{i}}\).
+Since variable are only added to the kernel, and never removed, its size increases monotonically.
+
+After all the \textit{nb} have been iterated, the algorithm ends.
+
+
+\section{Parameters}
+The kernel search has quite a few configuration parameters that can be used to tune the algorithm for a specific problem:
+\begin{itemize}
+    \item variable sorting criterion: used to sort the variables in the initialization phase.
+    Ideally, if the sorting criterion is selected appropriately,
+    all the significant variables for the problem should be located in \(\Lambda\) and the very first buckets.
+    \item kernel size C: the number of items initially selected to construct the kernel.
+    \item kernel construction criterion: used to build the kernel.
+    The criterion defined in the basic kernel search consists in selecting
+    the first C variables in the sorted set, but for certain problems more complex criteria can be used.
+    \item bucket construction criterion: how the buckets are constructed.
+\end{itemize}
+
+
+\section{Improving Efficiency of the Basic Kernel Search}
+To improve the performance of the basic kernel search, two constraints can be added
+when solving each (\(\Lambda \cup B_{i}\)):
+
+\begin{equation}
+    \label{eq:impr1}
+    \text{value of the objective function} \geq w^{*}
+\end{equation}
+\begin{equation}
+    \label{eq:impr2}
+    \sum_{j \in B_{i}} x_{j} \geq 1
+\end{equation}
+
+Constraint~\eqref{eq:impr1} is a cutoff constraint that allows only solutions that improve on the current
+objective value.
+Constraints~\eqref{eq:impr2} ensure that at least one item must be selected from the bucket \(B_{i}\).
+Such an item will then be included in the new kernel set.
+
+
+\section{Iterative Kernel Search}
+Iterative kernel search is a variation of the basic kernel search where buckets are scrolle more than once.
+The algorithm is as follows:
+\begin{enumerate}
+    \item Execute the basic kernel search
+    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max{i:\bar{\Lambda_{i}} \neq \emptyset}\)
+    \item Execute the improvement phase of the algorithm
+    \item If a new variable enters the kernel set, \(nb\) is reset to its initial value,
+    the improvement phase is executed again and the algorithm is repeated from step 2.
+\end{enumerate}
+
+A simpler version of this algorithm repeats step 3 a certain number of times, skipping step 4 entirely.

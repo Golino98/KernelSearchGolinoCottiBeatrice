@@ -1,5 +1,5 @@
 \chapter{The Multiple Knapsack Problem}
-The description of the Multiple Knapsack Problem (MKP), as described in~\cite{mkp:2019}, is the following:\\
+The Multiple Knapsack Problem (MKP) is a strongly NP-hard problem that was described in~\cite{mkp:2019} as follows:\\
 given a set of \(m\) knapsacks with a known \(\text{capacity } c_{i}\) \((i=1,\dots,m)\) and a set of \(n\) items with
 known \(\text{profit } p_{j}\) and \(\text{weight } w_{j}\) \((j=1,\dots,n)\) the MKP consists in
 selecting \(m\) disjoint subsets of items (one subset per knapsack) such that the total weight of the items in the knapsack
@@ -37,6 +37,9 @@ The mathematical model is as follows:
 The objective function~\eqref{eq:obj} maximises the profit of the items in the knapsacks.\\
 Constraints~\eqref{eq:cap} impose that the capacity of each knapsack is respected, while constraints~\eqref{eq:sel}
 ensure that each item is packed in no more than one knapsack.
+
+We can assume that each knapsack can contain at least one item (\(\min_{j}\{w_{j}\} \leq \min_{i}\{c_{i}\}\))
+and that each item can fit in at least one knapsack (\(\max_{j}\{w_{j}\} \leq \max_{i}\{c_{i}\}\)).
 
 \section{Real life examples}
 The MKP has various real life examples, in different fields.
