@@ -23,7 +23,6 @@ public class Variable {
         this.rc = rc;
         this.weight = weight;
         this.profit = profit;
-
     }
 
     public String getName() {
@@ -57,6 +56,6 @@ public class Variable {
      * @return
      */
     public double getProfitDividedByWeight() {
-        return this.profit / this.weight;
+        return ((double)this.profit) / ((double)this.weight);
     }
 }

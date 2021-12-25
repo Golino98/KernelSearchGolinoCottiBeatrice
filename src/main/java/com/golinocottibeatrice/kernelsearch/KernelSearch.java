@@ -24,7 +24,7 @@ public class KernelSearch {
     private Kernel kernel;
 
     private final Instance instance;
-    private double elapsedTime;
+    private long startTime;
     // Variabili del problema
     private List<Variable> variables;
     // Miglior soluzione trovata
@@ -48,7 +48,7 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public SearchResult start() throws GRBException {
-        elapsedTime = 0;
+        startTime=System.nanoTime();
         log.start(instance.getName(), Instant.now());
 
         solveRelaxation();
@@ -61,9 +61,9 @@ public class KernelSearch {
 
         solveKernel();
         iterateBuckets();
-        log.end(bestSolution.getObjective(), elapsedTime);
+        log.end(bestSolution.getObjective(), elapsedTime());
 
-        return new SearchResult(bestSolution, elapsedTime, elapsedTime + TIME_THRESHOLD >= config.getTimeLimit());
+        return new SearchResult(bestSolution, elapsedTime(), elapsedTime() + TIME_THRESHOLD >= config.getTimeLimit());
     }
 
     private void solveRelaxation() throws GRBException {
@@ -71,10 +71,9 @@ public class KernelSearch {
         log.relaxStart();
 
         var solution = model.solve();
-        log.solution(solution.getObjective(), elapsedTime);
+        log.solution(solution.getObjective(), elapsedTime());
 
         variables = solution.getVariables();
-        elapsedTime += model.getElapsedTime();
         model.dispose();
     }
 
@@ -87,8 +86,7 @@ public class KernelSearch {
 
         log.kernelStart();
         bestSolution = model.solve();
-        elapsedTime += model.getElapsedTime();
-        log.solution(bestSolution.getObjective(), elapsedTime);
+        log.solution(bestSolution.getObjective(), elapsedTime());
 
         model.write();
         model.dispose();
@@ -131,10 +129,9 @@ public class KernelSearch {
 
             var solution = model.solve();
 
-            elapsedTime += model.getElapsedTime();
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                log.solution(solution.getObjective(), elapsedTime);
+                log.solution(solution.getObjective(), elapsedTime());
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
@@ -144,7 +141,7 @@ public class KernelSearch {
 
                 model.write();
             } else {
-                log.noSolution(elapsedTime);
+                log.noSolution(elapsedTime());
             }
 
             model.dispose();
@@ -155,10 +152,14 @@ public class KernelSearch {
         }
     }
 
+    private double elapsedTime() {
+        var time = (double)(System.nanoTime()-startTime);
+        return time/1_000_000_000;
+    }
 
     // Restituisce il tempo rimamente per l'esecuzione
     private long getRemainingTime() {
-        var time = config.getTimeLimit() - (long) elapsedTime;
+        var time = config.getTimeLimit() - (long) elapsedTime();
         return time >= 0 ? time : 0;
     }
 }

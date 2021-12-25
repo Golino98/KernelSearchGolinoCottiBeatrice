@@ -50,15 +50,10 @@ public class Model {
 
         var objective = model.get(GRB.DoubleAttr.ObjVal);
         var variables = new ArrayList<Variable>();
-        for (int i = 0; i < model.getVars().length; i++) {
-            //Lettura di una nuova variabile GBBVar
-            var v = model.getVar(i);
-
-            //Creazione di un item, viene utilizzato il subsstring in quando, il terzo carattere del nome di una variabile
-            //corrisponde al numero dell'item. Facendo così è possibile andaer a selezionare volta per volta la variabile
-            //Corrispondente all'item
-
-            var item = config.getInstance().getItem(Integer.parseInt(v.get(GRB.StringAttr.VarName).substring(2, 3)));
+        for (var v : model.getVars()) {
+            var index = Integer.parseInt(v.get(GRB.StringAttr.VarName).split("_")[2]) - 1;
+            var item = config.getInstance().getItem(index);
+            System.out.printf("%d %d\n", item.getWeight(), item.getProfit());
             var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
             var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc,
                     item.getWeight(), item.getProfit());
@@ -162,6 +157,7 @@ public class Model {
 
     /**
      * Permette di ottenere il tempo di esecuzione del modello.
+     *
      * @return Il tempo impiegato per trovare la soluzione del modello.
      * @throws GRBException Errore di GUROBI.
      */

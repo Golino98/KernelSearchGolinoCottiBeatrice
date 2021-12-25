@@ -36,7 +36,7 @@ public class ConfigurationReader {
      */
     public Configuration read() throws IOException {
         var br = Files.newBufferedReader(Paths.get(configPath));
-        var lines = br.lines().collect(Collectors.toList());
+        var lines = br.lines().toList();
 
         for (var line : lines) {
             // Salta le linee vuote

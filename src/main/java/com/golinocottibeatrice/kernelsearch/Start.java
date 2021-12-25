@@ -92,7 +92,9 @@ public class Start {
 
         // Libera le risorse usate.
         solver.dispose();
-        printer.close();
+        if (shouldPrint) {
+            printer.close();
+        }
     }
 
 
