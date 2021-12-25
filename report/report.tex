@@ -16,8 +16,12 @@
 \usepackage{enumitem} % Per poter inserire liste
 \usepackage{siunitx} % Necessario per usare \setitemize
 \setitemize{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
+\setenumerate{noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt} % Per rendere le liste più compatte
 \usepackage{booktabs}
 \usepackage{multirow}
+
+\usepackage[titles]{tocloft}
+\setlength{\cftbeforechapskip}{6pt}
 
 \usepackage[backend=biber,sorting=none]{biblatex} % Per poter scrivere la bibliografia su un file a parte
 \addbibresource{refs.bib} % File contentente la bibliografia
@@ -50,6 +54,7 @@
     \input{mkp}
     \input{kernel}
     \input{impl}
+    \input{test}
     \printbibliography[
         heading=bibintoc % Inserisci bibliografia nell'indice
     ]

@@ -1,124 +1,37 @@
-\chapter{Implementation and Test Instances}
+\chapter{Implementation}
 
+The code was originally provided during the course,
+and it implements in Java a simple iterative kernel search (as explained in~\ref{sec:iter})
+which uses GUROBI 9.5 as the MIP solver.
 
-\section{Kernel Search}
-The code provided during the course implements a generic kernel search
-which uses GUROBI as solver, and has the following default paramenters:
+The GUROBI configuration is the following:
 \begin{itemize}
-    \item Presolve = 2 (aggressive presolve)
-    \item Time limit = 30 seconds
-    \item Threads = 12
-    \item MIPGap = \num{1e-12}
-    \item Sort variables by non-increasing value and non-decreasing reduced cost
-    \item Kernel size = 15\% of the number of variables (rounded to the nearest integer)
-    \item Bucket size = 2.5\% of the number of variables (rounded to the nearest integer)
-    \item Number of iterations = 2
-    \item Time limit for each bucket = 5 seconds
+    \item \textit{Presolve}: 2 (aggressive presolve)
+    \item \textit{MIPGap}: \num{1e-12}
+    \item \textit{Threads}: 12
 \end{itemize}
-The code was initially modified to implement the MKP model, and it was then
-refactored to improve its quality and efficiency.
+
+The kernel search instead is configured with the following parameters:
+\begin{itemize}
+    \item \textit{Variable sorting criterion}: sort variables by non-increasing value and non-decreasing reduced cost
+    \item \textit{Kernel size C}: 15\% of the number of variables (rounded to the nearest integer)
+    \item \textit{Bucket construction criterion}: iterates through the sorted variables, grouping them in
+    buckets of size equal to the 2.5\% of the number of variables (rounded to the nearest integer).
+    In most instances, the last bucket built will contain fewer items than the previous ones, because the remaining
+    variables will be inferior to the bucket size.
+    \item \textit{Number of iterations}: 2
+\end{itemize}
+
+The default timelimits are:
+\begin{itemize}
+    \item \textit{Global Time limit}: 30 seconds
+    \item \textit{Time limit for the kernel}: 5 seconds
+    \item \textit{Time limit for each bucket}: 5 seconds
+\end{itemize}
+
+The code was initially modified to implement the MKP model described in~\ref{sec:model},
+and it was then refactored to improve its quality and efficiency.
 The algorithm itself and the parameters were not changed at this time.\\
-The code along with extensive documentation can be found at
+The code along with its documentation can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice}.
 
-
-\section{Test Instances}
-The test instances for the MKP were kindly provided to us by the authors of~\cite{mkp:2019}.\\
-There are in total 2100 test instances, organized in
-five directories of increasing complexity:
-\begin{itemize}
-    \item SMALL
-    \item FK\_1
-    \item FK\_2
-    \item FK\_3
-    \item FK\_4
-\end{itemize}
-SMALL contains 180 instances, while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 instances each.
-The instances in the first two directories were already solved to the optimum.
-Of those in the last three folders only a few were already solved: the unsolved
-ones only had an upper and lower bound.
-\newpage
-
-
-\section{How to read an Instance}
-Every instance was generated randomly by the authors of~\cite{mkp:2019}.
-The name of each instance contains different information, in order to fastly understand the dimension of the problem represented.
-The first word is used to indicate if the instance's values are generated randomly or if they are variables of a real life problem.
-The first integer represents the knapsacks number, while the second indicates then number of the items.
-The last integer is used to differentiate the instances belonging to the same class.
-Here an example:
-\textit{\begin{center}
-		\text{random10\_60\_1\_1000\_1\_12}
-\end{center}}
-This instance is generated randomly. It has 10 knapsacks and 60 items. It's the $ 12^{th} $ in the class instance case.
-
-Our test instances are text files, in which are contained the data related to the knapsacks and their \textbf{capacity} and items with their \textbf{profit} and \textbf{weight}. An example of an instance's structure is shown below:
-
-\begin{flushleft}
-    $\begin{rcases*}
-         3 \quad
-    \end{rcases*} \rightarrow $ integer that indicates the value of $ \textit{\textbf{m} (number of knapsacks).}$
-\end{flushleft}
-\begin{flushleft}
-    $\begin{rcases*}
-         7 \quad
-    \end{rcases*} \rightarrow $ integer that indicates the value of $ \textit{\textbf{n} (number of items).}$
-\end{flushleft}
-
-\begin{flushleft}
-    $\begin{rcases*}
-         908 \quad
-         \\834
-         \\675
-    \end{rcases*} \rightarrow $ integers that indicate the \textbf{capacity}  $ c_{i} $  of the knapsack i with \space $ i=1,\:\dots\:,m. $
-\end{flushleft}
-\begin{flushleft}
-    $\begin{rcases*}
-         264    \quad 430 \quad
-         \\606 \quad    945
-         \\268 \quad    409
-         \\619 \quad    591
-         \\958 \quad    839
-         \\972 \quad    818
-         \\723 \quad    71
-    \end{rcases*} \rightarrow $
-    $\begin{rcases*}
-    {\begin{tabular}{@{}l@{}}
-         First column shows the \textbf{weight} \(w_{i}\) \\
-         Second column shows the \textbf{profit} \(p_{i}\).
-    \end{tabular}}
-    \end{rcases*} \rightarrow \space$ $ i=1,\:\dots\:,n. $
-\end{flushleft}
-
-For most of the instances with the exact solution calculated by the authors of the paper, we were able to
-find too the exact using an exact GUROBI solver, with the following configuration:
-
-\begin{itemize}
-    \item Presolve = 2 (aggressive presolve)
-    \item Time limit = 1 hour
-    \item Threads = 12
-    \item MIPGap = \num{1e-12}
-\end{itemize}
-
-The code can be found at \url{https://github.com/Golino98/EsattoMKP}
-
-To simplify the testing of the changes to the kernel search algorithm,
-we only considered 40 instances: 6 solved to the optimum for each directory,
-plus 10 that we weren't able to solve to the best.
-
-Tables~\ref{tab:exact_opt} and~\ref{tab:exact_noopt} represent,
-respectively, the optimum values of the 30 instances solved to
-the optimum, and the upper and lower bound for the 10
-that couldn't be solved.
-
-\input{tables/exact_opt.tex}
-\input{tables/exact_noopt.tex}
-
-
-\section{Performance of the exact algorithm}
-
-
-\section{Performance of the default kernel search}
-
-
-\section{Performance of random variable sorting}

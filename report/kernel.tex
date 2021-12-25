@@ -1,6 +1,6 @@
 \chapter{Kernel Search}
 
-Kernel Search is an heuristic algorithm used to solve MIP problems, originally presented in~\cite{kernel:2007}.\\
+Kernel Search is a heuristic algorithm used to solve MIP problems, originally presented in~\cite{kernel:2007}.\\
 The algorithm has been studied in a few applications, such as the multidimensional knapsack problem
 in~\cite{kernel:2010} and the portfolio selection problem in~\cite{kernel:2012}.
 
@@ -12,6 +12,7 @@ The algorithm is based on a few observations that can often be made when solving
 \end{itemize}
 
 Kernel search needs an MIP solver such as GUROBI or CPLEX to solve a set of MIP sub-problems.
+
 
 \section{Algorithm}
 The algorithm has two main phases: an \textit{inizialitation phase}
@@ -40,28 +41,30 @@ The main objectives of this phase are finding a new improving feasible solution 
 to enter the kernel set.
 
 Once the buckets are constructed, the algorithms proceeds with the improvement phase:\\
-for each bucket \(B_{i} \quad i=1,\dots,nb\),
+for each bucket \(B_{i} \ (\i=1,\dots,nb)\),
 the restricted sub-problem MIP(\(\Lambda \cup B_{i}\)) is solved.
 
 Only the feasible sub-problems with an incumbent solution \(\bar{x^{*}} \geq w^{*}\) are of interest.\\
-For such sub-problems the set \(\bar{\Lambda_{i}} \coloneqq \{\text{selected variables in } B_{i}\}\) is built.\\
-Then the kernel set is updated: \(\Lambda \coloneqq \Lambda \cup \bar{\Lambda_{i}}\).
+For such sub-problems the set \(\bar{\Lambda}_{i} \coloneqq \{\text{selected variables in } B_{i}\}\) is built.\\
+Then the kernel set is updated: \(\Lambda \coloneqq \Lambda \cup \bar{\Lambda}_{i}\).
 Since variable are only added to the kernel, and never removed, its size increases monotonically.
 
 After all the \textit{nb} have been iterated, the algorithm ends.
 
 
 \section{Parameters}
-The kernel search has quite a few configuration parameters that can be used to tune the algorithm for a specific problem:
+The kernel search has quite a few configuration parameters that can be used to tune the algorithm for a specific
+problem:
 \begin{itemize}
-    \item variable sorting criterion: used to sort the variables in the initialization phase.
+    \item \textit{Variable sorting criterion}: used to sort the variables in the initialization phase.
     Ideally, if the sorting criterion is selected appropriately,
     all the significant variables for the problem should be located in \(\Lambda\) and the very first buckets.
-    \item kernel size C: the number of items initially selected to construct the kernel.
-    \item kernel construction criterion: used to build the kernel.
+    \item \textit{Kernel size C}: the number of items initially selected to construct the kernel.
+    \item \textit{Kernel construction criterion}: used to build the kernel.
     The criterion defined in the basic kernel search consists in selecting
     the first C variables in the sorted set, but for certain problems more complex criteria can be used.
-    \item bucket construction criterion: how the buckets are constructed.
+    \item \textit{Bucket construction criterion}: how the buckets are constructed.
+    Also defines the number and size of the buckets.
 \end{itemize}
 
 
@@ -78,21 +81,23 @@ when solving each (\(\Lambda \cup B_{i}\)):
     \sum_{j \in B_{i}} x_{j} \geq 1
 \end{equation}
 
-Constraint~\eqref{eq:impr1} is a cutoff constraint that allows only solutions that improve on the current
+The cutoff constraint~\eqref{eq:impr1} allows only solutions that improve on the current
 objective value.
-Constraints~\eqref{eq:impr2} ensure that at least one item must be selected from the bucket \(B_{i}\).
-Such an item will then be included in the new kernel set.
+Constraints~\eqref{eq:impr2} ensure that at least one item must be selected from the bucket \(B_{i}\):
+such an item will then be included in the new kernel set.
 
 
-\section{Iterative Kernel Search}
-Iterative kernel search is a variation of the basic kernel search where buckets are scrolle more than once.
+\section{Iterative Kernel Search}\label{sec:iter}
+Iterative kernel search is a variation of the basic kernel search where buckets are scrolled more than once.
 The algorithm is as follows:
 \begin{enumerate}
     \item Execute the basic kernel search
-    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max{i:\bar{\Lambda_{i}} \neq \emptyset}\)
+    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max\{i:\bar{\Lambda}_{i} \neq \emptyset\}\)
     \item Execute the improvement phase of the algorithm
     \item If a new variable enters the kernel set, \(nb\) is reset to its initial value,
     the improvement phase is executed again and the algorithm is repeated from step 2.
 \end{enumerate}
 
-A simpler version of this algorithm repeats step 3 a certain number of times, skipping step 4 entirely.
+A simpler version of this algorithm repeats step 3 a certain number of times,
+skipping steps 2 and 4 entirely.
+The \textit{number of iterations} is a configuration parameter.
