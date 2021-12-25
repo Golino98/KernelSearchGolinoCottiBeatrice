@@ -53,7 +53,6 @@ public class Model {
         for (var v : model.getVars()) {
             var index = Integer.parseInt(v.get(GRB.StringAttr.VarName).split("_")[2]) - 1;
             var item = config.getInstance().getItem(index);
-            System.out.printf("%d %d\n", item.getWeight(), item.getProfit());
             var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
             var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc,
                     item.getWeight(), item.getProfit());
