@@ -1,0 +1,72 @@
+\chapter{The Multiple Knapsack Problem}
+The Multiple Knapsack Problem (MKP) is a strongly NP-hard problem
+that was described in~\cite{mkp:2019} as follows:\\
+given a set of \(m\) knapsacks with a known \(\text{capacity } c_{i}\)
+\((i=1,\dots,m)\) and a set of \(n\) items with
+known \(\text{profit } p_{j}\) and \(\text{weight } w_{j}\) \((j=1,\dots,n)\)
+the MKP consists in selecting \(m\) disjoint subsets of items
+(one subset per knapsack) such that the total weight of the items in the knapsack
+does not exceed its capacity, and the profit of the selected items is maximized.
+
+
+\section{Mathematical Model}\label{sec:model}
+There are quite a few formulations for the MKP, with different degrees of
+complexity and performance.\\
+The model that was used in this project is the classical and most intuitive
+one, that uses the following binary variables:
+\[x_{ij}=
+\begin{cases*}
+    1 \quad \text{if item } j \text{ is packed into knapsack } i;\\
+    0 \quad \text{otherwise}.
+\end{cases*}
+\]
+
+The mathematical model is the following:
+\begin{equation}
+    \label{eq:obj}
+    \max{z} = \sum_{i=1}^{m} \sum_{j=1}^{n} p_{j} x_{ij}
+\end{equation}
+\begin{equation}
+    \label{eq:cap}
+    \sum_{j=1}^{n} w_{j} x_{ij} \leq c_{i} \qquad i=1,\dots,m
+\end{equation}
+\begin{equation}
+    \label{eq:sel}
+    \sum_{i=1}^{m} x_{ij} \leq 1 \qquad j=1,\dots,n
+\end{equation}
+\begin{equation}
+    x_{ij} \in \{0,1\} \qquad i=1,\dots,m \quad j=1,\dots,n
+\end{equation}
+
+The objective function~\eqref{eq:obj} maximizes the profit
+of the items in the knapsacks.\\
+Constraints~\eqref{eq:cap} impose that the capacity of each knapsack is respected,
+while constraints~\eqref{eq:sel} ensure that each item
+is packed in no more than one knapsack.
+
+We can assume that each knapsack can contain at least one item
+(\(\min_{j}\{w_{j}\} \leq \min_{i}\{c_{i}\}\))
+and that each item can fit in at least one knapsack
+(\(\max_{j}\{w_{j}\} \leq \max_{i}\{c_{i}\}\)).
+
+
+\section{Real Life Examples}
+The MKP has various real life examples and can be used in different fields.
+
+The most straightforward example is the \textbf{cargo organization} for a transport company.
+In this scenario, the knapsacks are the trucks or containers.
+Their capacity is the effective capacity of the truck/container.\\
+The items are the objects that must be delivered:
+their weight is the actual weight (or volume) of the goods that need to be shipped,
+while the profit is the priority of the delivery.
+
+Another example is the \textbf{project selection}: the knapsacks are
+the years available for the development of projects,
+and their capacity is the available budget for that year.\\
+The items are the available projects: the weight is the cost of the project,
+the profit is the monetary gain from the project completion.
+
+More complex examples can be found in the literature.
+Applications in the design of computer processors, layout of electronic
+circuits and sugar cane alcohol production can be found in~\cite{example:1996}.
+Uses in vehicle and container loading are mentioned in~\cite{example:1971}.

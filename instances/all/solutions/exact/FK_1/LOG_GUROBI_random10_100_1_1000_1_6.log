@@ -1,0 +1,58 @@
+
+Gurobi 9.1.2 (win64, Java) logging started Mon Nov 15 12:53:26 2021
+
+Academic license - for non-commercial use only - expires 2022-10-30
+Gurobi Optimizer version 9.1.2 build v9.1.2rc0 (win64)
+Thread count: 6 physical cores, 12 logical processors, using up to 12 threads
+Optimize a model with 110 rows, 1000 columns and 2000 nonzeros
+Model fingerprint: 0xcc69210e
+Variable types: 0 continuous, 1000 integer (1000 binary)
+Coefficient statistics:
+  Matrix range     [1e+00, 1e+03]
+  Objective range  [3e+00, 1e+03]
+  Bounds range     [1e+00, 1e+00]
+  RHS range        [1e+00, 3e+03]
+Found heuristic solution: objective 26703.000000
+Presolve time: 0.02s
+Presolved: 110 rows, 1000 columns, 2000 nonzeros
+Variable types: 0 continuous, 1000 integer (1000 binary)
+Presolved: 110 rows, 1000 columns, 2000 nonzeros
+
+
+Root relaxation: objective 3.767776e+04, 135 iterations, 0.00 seconds
+
+    Nodes    |    Current Node    |     Objective Bounds      |     Work
+ Expl Unexpl |  Obj  Depth IntInf | Incumbent    BestBd   Gap | It/Node Time
+
+     0     0 37677.7619    0    9 26703.0000 37677.7619  41.1%     -    0s
+H    0     0                    36933.000000 37677.7619  2.02%     -    0s
+H    0     0                    37528.000000 37677.7619  0.40%     -    0s
+     0     0 37648.5541    0   13 37528.0000 37648.5541  0.32%     -    1s
+     0     0 37648.5541    0   12 37528.0000 37648.5541  0.32%     -    1s
+     0     0 37648.5541    0   18 37528.0000 37648.5541  0.32%     -    2s
+     0     0 37648.5541    0   21 37528.0000 37648.5541  0.32%     -    2s
+     0     0 37648.5541    0   28 37528.0000 37648.5541  0.32%     -    2s
+     0     0 37648.5541    0   17 37528.0000 37648.5541  0.32%     -    2s
+     0     2 37648.5541    0   11 37528.0000 37648.5541  0.32%     -    2s
+   103   121 37642.3569   15   20 37528.0000 37647.4155  0.32%  10.4    6s
+H  116   121                    37547.000000 37647.4155  0.27%  10.0    6s
+  3442  3083 37636.5593   13   27 37547.0000 37636.5593  0.24%   6.0   10s
+H 3454  2937                    37549.000000 37636.5001  0.23%   6.6   12s
+  8913  6235 infeasible  145      37549.0000 37635.0000  0.23%   5.5   15s
+H12312  5226                    37553.000000 37635.0000  0.22%   5.3   19s
+ 12820  5473     cutoff  154      37553.0000 37635.0000  0.22%   5.3   20s
+H13789   996                    37635.000032 37635.0000  0.00%   5.3   20s
+
+Cutting planes:
+  Gomory: 5
+  Cover: 10
+  MIR: 2
+
+Explored 14004 nodes (75990 simplex iterations) in 20.46 seconds
+Thread count was 12 (of 12 available processors)
+
+Solution count 7: 37635 37553 37549 ... 26703
+No other solutions better than 37635
+
+Optimal solution found (tolerance 1.00e-12)
+Best objective 3.763500022377e+04, best bound 3.763500022377e+04, gap 0.0000%
