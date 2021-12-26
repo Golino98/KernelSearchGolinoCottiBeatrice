@@ -1,9 +1,16 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
+import com.golinocottibeatrice.kernelsearch.bucket.DefaultBucketBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
+import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
+import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderIntValues;
+import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderPercentage;
+import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderPositive;
 import com.golinocottibeatrice.kernelsearch.solver.Solver;
 import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
+import com.golinocottibeatrice.kernelsearch.sorter.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import gurobi.GRBException;
 import org.apache.commons.csv.CSVFormat;
@@ -153,6 +160,7 @@ public class Start {
         return switch (config.getKernelBuilder()) {
             case 0 -> new KernelBuilderPositive();
             case 1 -> new KernelBuilderPercentage();
+            case 2 -> new KernelBuilderIntValues();
             default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
         };
     }

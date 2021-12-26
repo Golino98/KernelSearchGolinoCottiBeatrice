@@ -1,7 +1,10 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
 import com.golinocottibeatrice.kernelsearch.solver.Solver;
+import com.golinocottibeatrice.kernelsearch.sorter.VariableSorter;
 
 public class SearchConfiguration {
     // Limiti di tempo
