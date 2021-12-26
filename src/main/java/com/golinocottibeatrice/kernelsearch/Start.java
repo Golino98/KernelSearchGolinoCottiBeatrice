@@ -133,7 +133,7 @@ public class Start {
         return switch (config.getVariableSorter()) {
             case 0 -> new VariableSorterByValueAndAbsoluteRC();
             case 1 -> new VariableSorterByAbsoluteRCAndValue();
-            case 2 -> new VariableSorterByProfitDivideWeight();
+            case 2 -> new VariableSorterByValueProfitWeightAndRC();
             case 3 -> new VariableSorterRandom();
             default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
         };
@@ -166,6 +166,9 @@ public class Start {
         // aggiungi solo l'istanza singola.
         if (inst.isDirectory()) {
             for (var instPath : Objects.requireNonNull(inst.listFiles())) {
+                if (instPath.isDirectory()) {
+                    continue;
+                }
                 instances.add(new InstanceReader(instPath.getAbsolutePath()).read());
             }
         } else {

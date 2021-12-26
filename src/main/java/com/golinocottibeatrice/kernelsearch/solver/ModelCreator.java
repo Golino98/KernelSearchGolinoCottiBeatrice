@@ -58,7 +58,7 @@ class ModelCreator {
             for (int item = 0; item < ni; item++) {
                 var name = String.format(FORMAT_VAR_NAME, knapsack + 1, item + 1);
                 grbVars[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
-                modelVars.add(new Variable(name, instance.getItem(item)));
+                modelVars.add(new Variable(name, instance.getItem(item),instance.getCapacity(knapsack)));
             }
         }
     }
