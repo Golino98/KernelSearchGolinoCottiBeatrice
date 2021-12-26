@@ -1,6 +1,8 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;
 
@@ -54,6 +56,7 @@ public class KernelSearch {
         solveRelaxation();
 
         config.getVariableSorter().sort(variables);
+
         kernel = config.getKernelBuilder().build(variables, config);
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()
@@ -84,7 +87,7 @@ public class KernelSearch {
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         model.disableVariables(toDisable);
 
-        log.kernelStart();
+        log.kernelStart(kernel.size());
         bestSolution = model.solve();
         log.solution(bestSolution.getObjective(), elapsedTime());
 
@@ -108,7 +111,7 @@ public class KernelSearch {
         int count = 0;
 
         for (var b : buckets) {
-            log.bucketStart(count);
+            log.bucketStart(count, b.size());
             count++;
 
             var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
@@ -131,7 +134,6 @@ public class KernelSearch {
 
             if (!solution.isEmpty()) {
                 bestSolution = solution;
-                log.solution(solution.getObjective(), elapsedTime());
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
@@ -139,6 +141,7 @@ public class KernelSearch {
                 selected.forEach(kernel::addItem);
                 selected.forEach(b::removeItem);
 
+                log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
                 model.write();
             } else {
                 log.noSolution(elapsedTime());

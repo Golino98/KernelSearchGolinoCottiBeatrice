@@ -1,8 +1,7 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.sorter;
 
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 

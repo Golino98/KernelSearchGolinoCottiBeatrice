@@ -1,5 +1,6 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.bucket;
 
+import com.golinocottibeatrice.kernelsearch.SearchConfiguration;
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.ArrayList;
