@@ -19,6 +19,7 @@ public class Model {
 
     private final GRBModel model;
     private final ModelConfiguration config;
+    private final List<Variable> variables;
 
     /**
      * Crea un nuovo modello.
@@ -26,12 +27,12 @@ public class Model {
      * @param model  Il modello GUROBI.
      * @param config La configurazione del modello.
      */
-    Model(GRBModel model, ModelConfiguration config) throws GRBException {
+    Model(GRBModel model, List<Variable> variables, ModelConfiguration config) throws GRBException {
         this.model = config.isLpRelaxation() ? model.relax() : model;
+        this.variables = variables;
         this.config = config;
 
         model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
-        model.set(GRB.StringParam.LogFile, config.getLogPath());
     }
 
     /**
@@ -49,14 +50,12 @@ public class Model {
         }
 
         var objective = model.get(GRB.DoubleAttr.ObjVal);
-        var variables = new ArrayList<Variable>();
-        for (var v : model.getVars()) {
-            var index = Integer.parseInt(v.get(GRB.StringAttr.VarName).split("_")[2]) - 1;
-            var item = config.getInstance().getItem(index);
-            var rc = config.isLpRelaxation() ? v.get(GRB.DoubleAttr.RC) : 0;
-            var variable = new Variable(v.get(GRB.StringAttr.VarName), v.get(GRB.DoubleAttr.X), rc,
-                    item.getWeight(), item.getProfit());
-            variables.add(variable);
+        for (var v : variables) {
+            var grbVar = model.getVarByName(v.getName());
+            var rc = config.isLpRelaxation() ? grbVar.get(GRB.DoubleAttr.RC) : 0;
+            var value = grbVar.get(GRB.DoubleAttr.X);
+            v.setRc(rc);
+            v.setValue(value);
         }
         return new Solution(objective, variables);
     }
@@ -152,15 +151,5 @@ public class Model {
      */
     public void dispose() {
         model.dispose();
-    }
-
-    /**
-     * Permette di ottenere il tempo di esecuzione del modello.
-     *
-     * @return Il tempo impiegato per trovare la soluzione del modello.
-     * @throws GRBException Errore di GUROBI.
-     */
-    public Double getElapsedTime() throws GRBException {
-        return model.get(GRB.DoubleAttr.Runtime);
     }
 }

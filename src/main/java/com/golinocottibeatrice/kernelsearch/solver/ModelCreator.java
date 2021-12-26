@@ -3,6 +3,9 @@ package com.golinocottibeatrice.kernelsearch.solver;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import gurobi.*;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Creatore di un nuovo modello, impostato per risolvere il problema MKP.
  */
@@ -17,7 +20,9 @@ class ModelCreator {
     // Modello GUROBI
     private GRBModel model;
     // Variabili binarie x(i,j) che indicano se l'oggetto i viene collocato nel knapsack j
-    private GRBVar[][] variables;
+    private GRBVar[][] grbVars;
+    // Variabli che incapsulano l'informazione delle variabili di GUROBI e del relativo item
+    private final List<Variable> modelVars = new ArrayList<>();
 
     ModelCreator(ModelConfiguration config) {
         this.config = config;
@@ -40,19 +45,20 @@ class ModelCreator {
 
         // Necessario per applicare le modifiche effettuate al modello.
         model.update();
-        return new Model(model, config);
+        return new Model(model, modelVars, config);
     }
 
     // Crea le di variabili binarie x(i,j)
     private void initializeVariables() throws GRBException {
         var nk = instance.getNumKnapsacks();
         var ni = instance.getNumItems();
-        variables = new GRBVar[nk][ni];
+        grbVars = new GRBVar[nk][ni];
 
         for (var knapsack = 0; knapsack < nk; knapsack++) {
             for (int item = 0; item < ni; item++) {
                 var name = String.format(FORMAT_VAR_NAME, knapsack + 1, item + 1);
-                variables[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
+                grbVars[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
+                modelVars.add(new Variable(name, instance.getItem(item)));
             }
         }
     }
@@ -62,7 +68,7 @@ class ModelCreator {
         for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
             var constraint = new GRBLinExpr();
             for (int item = 0; item < instance.getNumItems(); item++) {
-                constraint.addTerm(instance.getWeight(item), variables[knapsack][item]);
+                constraint.addTerm(instance.getWeight(item), grbVars[knapsack][item]);
             }
             var name = String.format(FORMAT_CAPACITY, knapsack + 1);
             model.addConstr(constraint, GRB.LESS_EQUAL, instance.getCapacity(knapsack), name);
@@ -74,7 +80,7 @@ class ModelCreator {
         for (int item = 0; item < instance.getNumItems(); item++) {
             var constraint = new GRBLinExpr();
             for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
-                constraint.addTerm(1, variables[knapsack][item]);
+                constraint.addTerm(1, grbVars[knapsack][item]);
             }
             var name = String.format(FORMAT_SELECTION, item + 1);
             model.addConstr(constraint, GRB.LESS_EQUAL, 1, name);
@@ -86,7 +92,7 @@ class ModelCreator {
         var objective = new GRBLinExpr();
         for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
             for (int item = 0; item < instance.getNumItems(); item++) {
-                objective.addTerm(instance.getProfit(item), variables[knapsack][item]);
+                objective.addTerm(instance.getProfit(item), grbVars[knapsack][item]);
             }
         }
         model.setObjective(objective, GRB.MAXIMIZE);

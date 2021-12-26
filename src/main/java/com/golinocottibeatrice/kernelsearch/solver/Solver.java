@@ -27,7 +27,7 @@ public class Solver {
     public Solver(SolverConfiguration config) throws GRBException {
         this.config = config;
         env = new GRBEnv();
-        env.set(GRB.IntParam.LogToConsole, 0);
+        env.set(GRB.IntParam.OutputFlag, 0);
         env.set(GRB.IntParam.Threads, config.getNumThreads());
         env.set(GRB.IntParam.Presolve, config.getPresolve());
         env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
@@ -48,7 +48,6 @@ public class Solver {
         modelConfig.setInstance(instance);
         modelConfig.setTimeLimit(timeLimit);
         modelConfig.setLpRelaxation(isLpRelaxation);
-        modelConfig.setLogPath(FileUtil.getLogPath(config.getLogDir(), instance.getName()));
         modelConfig.setSolPath(FileUtil.getSolPath(config.getLogDir(), instance.getName()));
 
         return new ModelCreator(modelConfig).create();
