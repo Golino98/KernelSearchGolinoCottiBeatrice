@@ -16,9 +16,12 @@ public class Logger {
     private static final String FORMAT_START = CYAN + "\nInstance:   " + RESET + "%s\n" + CYAN + "Start time: " + RESET + "%02d:%02d:%02d UTC";
     private static final String FORMAT_RELAX = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
     private static final String FORMAT_KERNEL = PURPLE + "\n\n[Solving kernel]\n" + RESET;
+    private static final String FORMAT_KERNEL_SIZE = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
     private static final String FORMAT_ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
     private static final String FORMAT_SOLVE_BUCKET = BLUE + "\n<Bucket %2d> " + RESET;
+    private static final String FORMAT_SOLVE_BUCKET_SIZE = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
+    private static final String FORMAT_NEW_SOLUTION_SIZE = "SEL_VARS=%d (K_SIZE=%d) - OBJ=%06.2f - TIME: +%fs";
     private static final String FORMAT_NO_SOLUTION_FOUND = "NO SOLUTION  - TIME: +%fs";
     private static final String FORMAT_END = GREEN + "\n\nBest solution: " + RESET + "%06.2f\n" + GREEN + "Time elapsed:  " + RESET + "%fs\n";
     private static final String TIMELIMIT = YELLOW + "\n\nTime limit reached" + RESET;
@@ -43,8 +46,16 @@ public class Logger {
         out.print(FORMAT_KERNEL);
     }
 
+    public void kernelStart(int kernelSize) {
+        out.printf(FORMAT_KERNEL_SIZE, kernelSize);
+    }
+
     public void solution(double objective, double elapsedTime) {
         out.printf(FORMAT_NEW_SOLUTION, objective, elapsedTime);
+    }
+
+    public void solution(int selected_variables, int kernelSize, double objective, double elapsedTime) {
+        out.printf(FORMAT_NEW_SOLUTION_SIZE, selected_variables, kernelSize, objective, elapsedTime);
     }
 
     public void noSolution(double elapsedTime) {
@@ -57,6 +68,10 @@ public class Logger {
 
     public void bucketStart(int count) {
         out.printf(FORMAT_SOLVE_BUCKET, count);
+    }
+
+    public void bucketStart(int count, int bucketSize) {
+        out.printf(FORMAT_SOLVE_BUCKET_SIZE, count, bucketSize);
     }
 
     public void timeLimit() {
