@@ -8,7 +8,6 @@ import gurobi.GRBEnv;
  */
 class ModelConfiguration {
     private GRBEnv env;
-    private String logPath;
     private String solPath;
     private Instance instance;
     private long timeLimit;
@@ -44,14 +43,6 @@ class ModelConfiguration {
 
     public void setLpRelaxation(boolean lpRelaxation) {
         isLpRelaxation = lpRelaxation;
-    }
-
-    public String getLogPath() {
-        return logPath;
-    }
-
-    public void setLogPath(String logPath) {
-        this.logPath = logPath;
     }
 
     public String getSolPath() {

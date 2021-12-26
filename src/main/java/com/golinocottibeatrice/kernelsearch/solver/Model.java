@@ -33,7 +33,6 @@ public class Model {
         this.config = config;
 
         model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
-        model.set(GRB.StringParam.LogFile, config.getLogPath());
     }
 
     /**
@@ -51,8 +50,8 @@ public class Model {
         }
 
         var objective = model.get(GRB.DoubleAttr.ObjVal);
-        for (var v : variables){
-            var grbVar=model.getVarByName(v.getName());
+        for (var v : variables) {
+            var grbVar = model.getVarByName(v.getName());
             var rc = config.isLpRelaxation() ? grbVar.get(GRB.DoubleAttr.RC) : 0;
             var value = grbVar.get(GRB.DoubleAttr.X);
             v.setRc(rc);
