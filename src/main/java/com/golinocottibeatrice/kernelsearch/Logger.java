@@ -22,6 +22,7 @@ public class Logger {
     private static final String FORMAT_SOLVE_BUCKET_SIZE = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
     private static final String FORMAT_NEW_SOLUTION_SIZE = "SEL_VARS=%d (K_SIZE=%d) - OBJ=%06.2f - TIME: +%fs";
+    private static final String FORMAT_NEW_SOLUTION_SIZE_EJECT = "SEL_VARS=%d - REM_VARS=%d - OBJ=%06.2f - TIME: +%fs - K_SIZE=%d";
     private static final String FORMAT_NO_SOLUTION_FOUND = "NO SOLUTION  - TIME: +%fs";
     private static final String FORMAT_END = GREEN + "\n\nBest solution: " + RESET + "%06.2f\n" + GREEN + "Time elapsed:  " + RESET + "%fs\n";
     private static final String TIMELIMIT = YELLOW + "\n\nTime limit reached" + RESET;
@@ -56,6 +57,10 @@ public class Logger {
 
     public void solution(int selected_variables, int kernelSize, double objective, double elapsedTime) {
         out.printf(FORMAT_NEW_SOLUTION_SIZE, selected_variables, kernelSize, objective, elapsedTime);
+    }
+
+    public void solution(int selected_variables, int kernelSize, double objective, double elapsedTime, int removed_vars) {
+        out.printf(FORMAT_NEW_SOLUTION_SIZE_EJECT, selected_variables, removed_vars, objective, elapsedTime, kernelSize);
     }
 
     public void noSolution(double elapsedTime) {

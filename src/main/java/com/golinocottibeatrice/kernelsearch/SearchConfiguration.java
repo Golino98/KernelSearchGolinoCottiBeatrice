@@ -22,6 +22,15 @@ public class SearchConfiguration {
     private Instance instance;
     private Logger logger;
     private Solver solver;
+    private int ejectThreshold = 0;
+
+    public int getEjectThreshold() {
+        return this.ejectThreshold;
+    }
+
+    public void setEjectThreshold(int ejectThreshold) {
+        this.ejectThreshold = ejectThreshold;
+    }
 
     public int getTimeLimit() {
         return timeLimit;

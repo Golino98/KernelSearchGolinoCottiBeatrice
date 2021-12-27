@@ -119,7 +119,7 @@ public class Start {
 
     // Crea la configurazione della Kernel Search sulla base della config letta da file.
     private SearchConfiguration buildSearchConfig() {
-        var searchConfig = new SearchConfiguration();
+        SearchConfiguration searchConfig = new SearchConfiguration();
 
         searchConfig.setLogger(new Logger(System.out));
         searchConfig.setTimeLimit(config.getTimeLimit());
@@ -131,6 +131,7 @@ public class Start {
         searchConfig.setVariableSorter(getVariableSorter());
         searchConfig.setBucketBuilder(getBucketBuilder());
         searchConfig.setKernelBuilder(getKernelBuilder());
+        searchConfig.setEjectThreshold(this.config.getEjectThreshold());
 
         return searchConfig;
     }

@@ -19,6 +19,9 @@ public class Configuration {
     private int kernelBuilder;
     private String instPath = "";
     private String runName = "";
+    private int ejectThreshold = 0;
+
+    public int getEjectThreshold() {return this.ejectThreshold;}
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -138,5 +141,9 @@ public class Configuration {
 
     public void setRunName(String runName) {
         this.runName = runName;
+    }
+
+    public void setEjectThreshold(int parseInt) {
+        this.ejectThreshold = parseInt;
     }
 }

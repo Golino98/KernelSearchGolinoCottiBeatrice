@@ -9,6 +9,7 @@ public class Variable {
     private final String name;
     private final Item item;
     private final int knapsackCapacity;
+    private int timesUsed = 0;
     private double value;
     private double rc;
 
@@ -16,6 +17,14 @@ public class Variable {
         this.name = name;
         this.item = item;
         this.knapsackCapacity = knapCapacity;
+    }
+
+    public int getTimesUsed() {
+        return this.timesUsed;
+    }
+
+    public void increaseTimesUsed() {
+        this.timesUsed++;
     }
 
     public String getName() {
@@ -48,5 +57,9 @@ public class Variable {
 
     public int getKnapsackCapacity() {
         return knapsackCapacity;
+    }
+
+    public String toString() {
+        return this.getName() + " -> Value: " + this.getValue() + " - Used: " + this.timesUsed + " times\n";
     }
 }

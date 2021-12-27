@@ -109,6 +109,7 @@ public class KernelSearch {
 
     private void solveBuckets() throws GRBException {
         int count = 0;
+        int count_solutions = 0;
 
         for (var b : buckets) {
             log.bucketStart(count, b.size());
@@ -133,15 +134,23 @@ public class KernelSearch {
             var solution = model.solve();
 
             if (!solution.isEmpty()) {
+                count_solutions++;
                 bestSolution = solution;
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(kernel::addItem);
-                selected.forEach(b::removeItem);
 
-                log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
+                selected.forEach(variable -> {this.kernel.addItem(variable); b.removeItem(variable);});
+
+                if (this.config.getEjectThreshold() > 0) {
+                    this.kernel.updateUsages(solution);
+                    int removed_vars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
+                    log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removed_vars);
+                } else {
+                    log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
+                }
+
                 model.write();
             } else {
                 log.noSolution(elapsedTime());
