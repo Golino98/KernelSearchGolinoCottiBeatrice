@@ -26,6 +26,7 @@ public class KernelSearch {
     private Kernel kernel;
 
     private final Instance instance;
+    private final AcceptanceCounter acceptanceCounter = new AcceptanceCounter(3, 3);
     private long startTime;
     // Variabili del problema
     private List<Variable> variables;
@@ -50,7 +51,7 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public SearchResult start() throws GRBException {
-        startTime=System.nanoTime();
+        startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
 
         solveRelaxation();
@@ -109,6 +110,8 @@ public class KernelSearch {
 
     private void solveBuckets() throws GRBException {
         int count = 0;
+        var shouldAcceptAll = false;
+        var currentSolution = bestSolution;
 
         for (var b : buckets) {
             log.bucketStart(count, b.size());
@@ -123,17 +126,23 @@ public class KernelSearch {
             model.disableVariables(toDisable);
             model.addBucketConstraint(b.getVariables());
 
-            if (!bestSolution.isEmpty()) {
-                // Se la soluzione iniziale non è vuota, imponi che l'eventuale nuova soluzione sia migliore
-                model.addObjConstraint(bestSolution.getObjective());
+            if (!currentSolution.isEmpty()) {
+                if (!shouldAcceptAll) {
+                    // Se la soluzione iniziale non è vuota, imponi che l'eventuale nuova soluzione sia migliore
+                    model.addObjConstraint(currentSolution.getObjective());
+                }
                 // Imposta la soluzione da cui il modello parte.
-                model.readSolution(bestSolution);
+                model.readSolution(currentSolution);
             }
 
             var solution = model.solve();
+            shouldAcceptAll = acceptanceCounter.solution(solution.getObjective());
 
             if (!solution.isEmpty()) {
-                bestSolution = solution;
+                currentSolution = solution;
+                if (solution.getObjective() > bestSolution.getObjective()) {
+                    bestSolution = solution;
+                }
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
@@ -156,8 +165,8 @@ public class KernelSearch {
     }
 
     private double elapsedTime() {
-        var time = (double)(System.nanoTime()-startTime);
-        return time/1_000_000_000;
+        var time = (double) (System.nanoTime() - startTime);
+        return time / 1_000_000_000;
     }
 
     // Restituisce il tempo rimamente per l'esecuzione
