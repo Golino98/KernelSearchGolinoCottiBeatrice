@@ -89,11 +89,11 @@ such an item will then be included in the new kernel set.
 
 \section{Iterative Kernel Search}\label{sec:iter}
 Iterative kernel search is a variation of the basic kernel search where buckets are scrolled more than once.
-The algorithm is as follows:
+The algorithm repeats the following steps until no more variables are added to the kernel set:
 \begin{enumerate}
-    \item Execute the basic kernel search
-    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max\{i:\bar{\Lambda}_{i} \neq \emptyset\}\)
-    \item Execute the improvement phase of the algorithm
+    \item Execute the basic kernel search;
+    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max\{i:\bar{\Lambda}_{i} \neq \emptyset\}\);
+    \item Execute the improvement phase of the algorithm;
     \item If a new variable enters the kernel set, \(nb\) is reset to its initial value,
     the improvement phase is executed again and the algorithm is repeated from step 2.
 \end{enumerate}

@@ -50,7 +50,7 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public SearchResult start() throws GRBException {
-        startTime=System.nanoTime();
+        startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
 
         solveRelaxation();
@@ -96,21 +96,35 @@ public class KernelSearch {
     }
 
     private void iterateBuckets() throws GRBException {
-        for (int i = 0; i < config.getNumIterations(); i++) {
+        var q = solveBuckets();
+        var initialValue = q - 1;
+        while (q != -1) {
             if (getRemainingTime() <= TIME_THRESHOLD) {
                 log.timeLimit();
                 return;
             }
 
-            log.iterationStart(i);
-            solveBuckets();
+            var nb = q - 1;
+            q = solveBuckets(nb);
+            if (q == -1) {
+                return;
+            } else {
+                nb = initialValue;
+                q = solveBuckets(nb);
+            }
         }
     }
 
-    private void solveBuckets() throws GRBException {
-        int count = 0;
+    private int solveBuckets() throws GRBException {
+        return solveBuckets(buckets.size());
+    }
 
-        for (var b : buckets) {
+    private int solveBuckets(int nb) throws GRBException {
+        int count = 0;
+        int q = -1;
+
+        for (var i = 0; i < nb; i++) {
+            var b = buckets.get(i);
             log.bucketStart(count, b.size());
             count++;
 
@@ -133,6 +147,7 @@ public class KernelSearch {
             var solution = model.solve();
 
             if (!solution.isEmpty()) {
+                q = i+1;
                 bestSolution = solution;
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
@@ -150,14 +165,16 @@ public class KernelSearch {
             model.dispose();
 
             if (getRemainingTime() <= TIME_THRESHOLD) {
-                return;
+                break;
             }
         }
+
+        return q;
     }
 
     private double elapsedTime() {
-        var time = (double)(System.nanoTime()-startTime);
-        return time/1_000_000_000;
+        var time = (double) (System.nanoTime() - startTime);
+        return time / 1_000_000_000;
     }
 
     // Restituisce il tempo rimamente per l'esecuzione
