@@ -103,6 +103,11 @@ public class KernelSearch {
             }
 
             log.iterationStart(i);
+
+            if (this.config.getEjectThreshold()>0) {
+                this.kernel.resetUsages();
+            }
+
             solveBuckets();
         }
     }
@@ -140,16 +145,9 @@ public class KernelSearch {
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
+                selected.forEach(variable -> {variable.setBucket(b); this.kernel.addItem(variable); b.removeItem(variable);});
 
-                selected.forEach(variable -> {this.kernel.addItem(variable); b.removeItem(variable);});
-
-                if (this.config.getEjectThreshold() > 0) {
-                    this.kernel.updateUsages(solution);
-                    int removed_vars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
-                    log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removed_vars);
-                } else {
-                    log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
-                }
+                this.executeEject(selected, solution, count_solutions);
 
                 model.write();
             } else {
@@ -161,6 +159,32 @@ public class KernelSearch {
             if (getRemainingTime() <= TIME_THRESHOLD) {
                 return;
             }
+        }
+    }
+
+    /**
+     * Checks if an eject procedure is specified and executes it
+     *
+     * @param selected list of variables selected from the bucket
+     * @param solution the current solution
+     * @param count_solutions number of solutions visited in the current iteration
+     */
+    private void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+        if (this.config.getEjectThreshold() > 0) {
+            this.kernel.updateUsages(solution);
+            List<Variable> removed_vars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
+
+            removed_vars.forEach(variable -> {
+                if (variable.getBucket() != null) {
+                    variable.getBucket().addVariable(variable);
+                }else {
+                    this.buckets.get(0).addVariable(variable);
+                }
+            });
+
+            log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removed_vars.size());
+        } else {
+            log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
         }
     }
 

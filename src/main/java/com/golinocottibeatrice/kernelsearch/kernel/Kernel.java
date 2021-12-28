@@ -26,6 +26,7 @@ public class Kernel {
      * @param v {@link Variable} da aggiungere alla lista.
      */
     public void addItem(Variable v) {
+        v.resetTimesUsed();
         variables.add(v);
     }
 
@@ -68,17 +69,26 @@ public class Kernel {
      * @param solutions_count numero di soluzioni create durante esecuzione di questa iterazione
      * @return total of variables removed from the kernel
      */
-    public int checkForEject(int threshold, int solutions_count) {
-        int curr_removed;
+    public List<Variable> checkForEject(int threshold, int solutions_count) {
+        List<Variable> removed_vars;
 
         List<Variable> new_variables = this.variables.stream()
                 .filter(variable ->
-                        (solutions_count-variable.getTimesUsed()) - variable.getTimesUsed() < threshold).collect(Collectors.toList());
+                        (solutions_count-variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
+                .collect(Collectors.toList());
 
-        curr_removed = this.variables.size() - new_variables.size();
+        if (new_variables.size()<this.variables.size()) {
+            removed_vars = this.variables.stream()
+                    .filter(variable -> !new_variables.contains(variable))
+                    .collect(Collectors.toList());
+            this.variables = new_variables;
+            return removed_vars;
+        } else {
+            return new ArrayList<>();
+        }
+    }
 
-        this.variables = new_variables;
-
-        return curr_removed;
+    public void resetUsages() {
+        this.variables.forEach(Variable::resetTimesUsed);
     }
 }

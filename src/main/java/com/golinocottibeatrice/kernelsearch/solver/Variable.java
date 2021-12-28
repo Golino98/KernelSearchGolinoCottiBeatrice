@@ -1,5 +1,6 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
+import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
 import com.golinocottibeatrice.kernelsearch.instance.Item;
 
 /**
@@ -12,11 +13,24 @@ public class Variable {
     private int timesUsed = 0;
     private double value;
     private double rc;
+    private Bucket bucket;
+
+    public Bucket getBucket() {
+        return bucket;
+    }
+
+    public void setBucket(Bucket bucket) {
+        this.bucket = bucket;
+    }
 
     Variable(String name, Item item, int knapCapacity) {
         this.name = name;
         this.item = item;
         this.knapsackCapacity = knapCapacity;
+    }
+
+    public void resetTimesUsed() {
+        this.timesUsed = 0;
     }
 
     public int getTimesUsed() {
