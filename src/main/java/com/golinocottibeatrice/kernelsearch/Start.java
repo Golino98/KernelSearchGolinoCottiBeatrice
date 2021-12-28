@@ -151,6 +151,7 @@ public class Start {
             case 2 -> new VariableSorterByProfitDivideWeight();
             case 3 -> new VariableSorterRandom();
             case 4 -> new VariableSorterByValueProfitWeightAndRC();
+            case 5 -> new VariableSorterByWeightPercentage();
             default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
         };
     }
