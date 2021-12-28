@@ -46,6 +46,10 @@ public class Kernel {
         return variables.size();
     }
 
+    public List<Variable> getVariables() {
+        return this.variables;
+    }
+
     /**
      * Updates the 'timesUsed' attribute for the variables in the Kernel
      * @param solution the current solution used for the update
@@ -69,23 +73,18 @@ public class Kernel {
      * @param solutions_count numero di soluzioni create durante esecuzione di questa iterazione
      * @return total of variables removed from the kernel
      */
-    public List<Variable> checkForEject(int threshold, int solutions_count) {
-        List<Variable> removed_vars;
-
+    public int checkForEject(int threshold, int solutions_count) {
         List<Variable> new_variables = this.variables.stream()
                 .filter(variable ->
+                        !variable.isFromBucket() ||
                         (solutions_count-variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
                 .collect(Collectors.toList());
 
-        if (new_variables.size()<this.variables.size()) {
-            removed_vars = this.variables.stream()
-                    .filter(variable -> !new_variables.contains(variable))
-                    .collect(Collectors.toList());
-            this.variables = new_variables;
-            return removed_vars;
-        } else {
-            return new ArrayList<>();
-        }
+        int removed_vars = this.variables.size() - new_variables.size();
+
+        this.variables = new_variables;
+
+        return removed_vars;
     }
 
     public void resetUsages() {

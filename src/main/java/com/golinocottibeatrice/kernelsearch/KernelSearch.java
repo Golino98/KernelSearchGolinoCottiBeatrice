@@ -58,6 +58,8 @@ public class KernelSearch {
         config.getVariableSorter().sort(variables);
 
         kernel = config.getKernelBuilder().build(variables, config);
+        this.kernel.getVariables().forEach(variable -> variable.setFromBucket(false));
+
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()
                 .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
@@ -116,7 +118,7 @@ public class KernelSearch {
             count++;
 
             Model model = this.buildModel(b, count);
-            var solution = model.solve();
+            Solution solution = model.solve();
 
             if (!solution.isEmpty()) {
                 count_solutions++;
@@ -125,7 +127,7 @@ public class KernelSearch {
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(variable -> {variable.setBucket(b); this.kernel.addItem(variable); b.removeItem(variable);});
+                selected.forEach(variable -> this.kernel.addItem(variable));
 
                 this.executeEject(selected, solution, count_solutions);
 
@@ -179,5 +181,8 @@ public class KernelSearch {
         return model;
     }
 
+    /**
+     * If an eject procedure is used then this function resets the usages of the variables in the kernel
+     */
     protected void resetUsages() {}
 }

@@ -26,17 +26,9 @@ public class KernelSearch_Eject extends KernelSearch{
     @Override
     protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
         this.kernel.updateUsages(solution);
-        List<Variable> removed_vars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
+        int removed_vars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
 
-        removed_vars.forEach(variable -> {
-            if (variable.getBucket() != null) {
-                variable.getBucket().addVariable(variable);
-            }else {
-                this.buckets.get(0).addVariable(variable);
-            }
-        });
-
-        log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removed_vars.size());
+        log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removed_vars);
     }
 
     @Override
