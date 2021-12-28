@@ -19,6 +19,7 @@ public class Configuration {
     private int kernelBuilder;
     private String instPath = "";
     private String runName = "";
+    private boolean repetitionCounterEnabled;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -138,5 +139,13 @@ public class Configuration {
 
     public void setRunName(String runName) {
         this.runName = runName;
+    }
+
+    public boolean isRepetitionCounterEnabled() {
+        return repetitionCounterEnabled;
+    }
+
+    public void setRepetitionCounterEnabled(boolean repetitionCounterEnabled) {
+        this.repetitionCounterEnabled = repetitionCounterEnabled;
     }
 }

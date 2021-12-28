@@ -72,6 +72,7 @@ public class ConfigurationReader {
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
                 case "RUNNAME" -> config.setRunName(value);
+                case "ENABLEREPETITIONCOUNTER" -> config.setRepetitionCounterEnabled(Boolean.parseBoolean(value));
                 default -> throw new IllegalStateException(UNRECOGNIZED_PARAMETER_NAME);
             }
         }

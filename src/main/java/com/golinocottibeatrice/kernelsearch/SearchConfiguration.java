@@ -23,6 +23,9 @@ public class SearchConfiguration {
     private Logger logger;
     private Solver solver;
 
+    // Funzionalità aggiuntive
+    private boolean repetitionCounterEnabled;
+
     public int getTimeLimit() {
         return timeLimit;
     }
@@ -117,5 +120,13 @@ public class SearchConfiguration {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
+    }
+
+    public boolean isRepetitionCounterEnabled() {
+        return repetitionCounterEnabled;
+    }
+
+    public void setRepetitionCounterEnabled(boolean repetitionCounterEnabled) {
+        this.repetitionCounterEnabled = repetitionCounterEnabled;
     }
 }
