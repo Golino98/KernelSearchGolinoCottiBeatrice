@@ -86,7 +86,7 @@ public class Start {
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
-            var result = new KernelSearch(searchConfig).start();
+            var result = this.buildKernelSearch(searchConfig).start();
 
             if (shouldPrint) {
                 printer.printRecord(
@@ -102,6 +102,13 @@ public class Start {
         if (shouldPrint) {
             printer.close();
         }
+    }
+
+    private KernelSearch buildKernelSearch(SearchConfiguration searchConfig) {
+        if (searchConfig.getEjectThreshold() > 0)
+            return new KernelSearch_Eject(searchConfig);
+        else
+            return new KernelSearch(searchConfig);
     }
 
 
