@@ -17,20 +17,20 @@ import java.util.stream.Collectors;
 public class KernelSearch {
     // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
     // sotto il cui viene fermato il programma
-    private static final int TIME_THRESHOLD = 2;
+    protected static final int TIME_THRESHOLD = 2;
 
-    private final SearchConfiguration config;
-    private final Logger log;
-    private final Solver solver;
-    private List<Bucket> buckets;
-    private Kernel kernel;
+    protected final SearchConfiguration config;
+    protected final Logger log;
+    protected final Solver solver;
+    protected List<Bucket> buckets;
+    protected Kernel kernel;
 
-    private final Instance instance;
-    private long startTime;
+    protected final Instance instance;
+    protected long startTime;
     // Variabili del problema
-    private List<Variable> variables;
+    protected List<Variable> variables;
     // Miglior soluzione trovata
-    private Solution bestSolution;
+    protected Solution bestSolution;
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -58,18 +58,20 @@ public class KernelSearch {
         config.getVariableSorter().sort(variables);
 
         kernel = config.getKernelBuilder().build(variables, config);
+        this.kernel.getVariables().forEach(variable -> variable.setFromBucket(false));
+
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()
                 .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
 
-        solveKernel();
-        iterateBuckets();
+        this.solveKernel();
+        this.iterateBuckets();
         log.end(bestSolution.getObjective(), elapsedTime());
 
         return new SearchResult(bestSolution, elapsedTime(), elapsedTime() + TIME_THRESHOLD >= config.getTimeLimit());
     }
 
-    private void solveRelaxation() throws GRBException {
+    protected void solveRelaxation() throws GRBException {
         var model = solver.createModel(instance, config.getTimeLimit(), true);
         log.relaxStart();
 
@@ -80,7 +82,7 @@ public class KernelSearch {
         model.dispose();
     }
 
-    private void solveKernel() throws GRBException {
+    protected void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
         var model = solver.createModel(instance, timeLimit);
 
@@ -95,7 +97,7 @@ public class KernelSearch {
         model.dispose();
     }
 
-    private void iterateBuckets() throws GRBException {
+    protected void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
             if (getRemainingTime() <= TIME_THRESHOLD) {
                 log.timeLimit();
@@ -103,45 +105,32 @@ public class KernelSearch {
             }
 
             log.iterationStart(i);
+            this.resetUsages();
+
             solveBuckets();
         }
     }
 
-    private void solveBuckets() throws GRBException {
-        int count = 0;
+    protected void solveBuckets() throws GRBException {
+        int count = 0; int count_solutions = 0;
 
         for (var b : buckets) {
-            log.bucketStart(count, b.size());
             count++;
 
-            var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
-            var model = solver.createModel(instance, timeLimit);
-
-            // Disabilita le variabili che non sono ne nel kernel ne nel bucket
-            var toDisable = variables.stream()
-                    .filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
-            model.disableVariables(toDisable);
-            model.addBucketConstraint(b.getVariables());
-
-            if (!bestSolution.isEmpty()) {
-                // Se la soluzione iniziale non è vuota, imponi che l'eventuale nuova soluzione sia migliore
-                model.addObjConstraint(bestSolution.getObjective());
-                // Imposta la soluzione da cui il modello parte.
-                model.readSolution(bestSolution);
-            }
-
-            var solution = model.solve();
+            Model model = this.buildModel(b, count);
+            Solution solution = model.solve();
 
             if (!solution.isEmpty()) {
+                count_solutions++;
                 bestSolution = solution;
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(kernel::addItem);
-                selected.forEach(b::removeItem);
+                selected.forEach(variable -> this.kernel.addItem(variable));
 
-                log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
+                this.executeEject(selected, solution, count_solutions);
+
                 model.write();
             } else {
                 log.noSolution(elapsedTime());
@@ -155,14 +144,45 @@ public class KernelSearch {
         }
     }
 
-    private double elapsedTime() {
+    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+        log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
+    }
+
+    protected double elapsedTime() {
         var time = (double)(System.nanoTime()-startTime);
         return time/1_000_000_000;
     }
 
     // Restituisce il tempo rimamente per l'esecuzione
-    private long getRemainingTime() {
+    protected long getRemainingTime() {
         var time = config.getTimeLimit() - (long) elapsedTime();
         return time >= 0 ? time : 0;
     }
+
+    protected Model buildModel(Bucket b, int count) throws GRBException {
+        log.bucketStart(count, b.size());
+
+        var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
+        var model = solver.createModel(instance, timeLimit);
+
+        // Disabilita le variabili che non sono ne nel kernel ne nel bucket
+        var toDisable = variables.stream()
+                .filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
+        model.disableVariables(toDisable);
+        model.addBucketConstraint(b.getVariables());
+
+        if (!bestSolution.isEmpty()) {
+            // Se la soluzione iniziale non è vuota, imponi che l'eventuale nuova soluzione sia migliore
+            model.addObjConstraint(bestSolution.getObjective());
+            // Imposta la soluzione da cui il modello parte.
+            model.readSolution(bestSolution);
+        }
+
+        return model;
+    }
+
+    /**
+     * If an eject procedure is used then this function resets the usages of the variables in the kernel
+     */
+    protected void resetUsages() {}
 }

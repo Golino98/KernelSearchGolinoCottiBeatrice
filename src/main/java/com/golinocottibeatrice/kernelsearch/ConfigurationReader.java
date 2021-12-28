@@ -69,6 +69,7 @@ public class ConfigurationReader {
                 case "NUMITERATIONS" -> config.setNumIterations(Integer.parseInt(value));
                 case "TIMELIMITBUCKET" -> config.setTimeLimitBucket(Integer.parseInt(value));
                 case "KERNELBUILDER" -> config.setKernelBuilder(Integer.parseInt(value));
+                case "EJECT_THRESHOLD" -> config.setEjectThreshold(Integer.parseInt(value));
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
                 case "RUNNAME" -> config.setRunName(value);

@@ -86,7 +86,7 @@ public class Start {
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
-            var result = new KernelSearch(searchConfig).start();
+            var result = this.buildKernelSearch(searchConfig).start();
 
             if (shouldPrint) {
                 printer.printRecord(
@@ -104,6 +104,13 @@ public class Start {
         }
     }
 
+    private KernelSearch buildKernelSearch(SearchConfiguration searchConfig) {
+        if (searchConfig.getEjectThreshold() > 0)
+            return new KernelSearch_Eject(searchConfig);
+        else
+            return new KernelSearch(searchConfig);
+    }
+
 
     // Costruisce la configurazione del solver.
     private SolverConfiguration buildSolverConfig() {
@@ -119,7 +126,7 @@ public class Start {
 
     // Crea la configurazione della Kernel Search sulla base della config letta da file.
     private SearchConfiguration buildSearchConfig() {
-        var searchConfig = new SearchConfiguration();
+        SearchConfiguration searchConfig = new SearchConfiguration();
 
         searchConfig.setLogger(new Logger(System.out));
         searchConfig.setTimeLimit(config.getTimeLimit());
@@ -131,6 +138,7 @@ public class Start {
         searchConfig.setVariableSorter(getVariableSorter());
         searchConfig.setBucketBuilder(getBucketBuilder());
         searchConfig.setKernelBuilder(getKernelBuilder());
+        searchConfig.setEjectThreshold(this.config.getEjectThreshold());
 
         return searchConfig;
     }
