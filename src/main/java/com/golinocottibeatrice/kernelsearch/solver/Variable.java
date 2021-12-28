@@ -9,13 +9,35 @@ public class Variable {
     private final String name;
     private final Item item;
     private final int knapsackCapacity;
+    private int timesUsed = 0;
     private double value;
     private double rc;
+    private Boolean fromBucket=true;
 
     Variable(String name, Item item, int knapCapacity) {
         this.name = name;
         this.item = item;
         this.knapsackCapacity = knapCapacity;
+    }
+
+    public Boolean isFromBucket() {
+        return fromBucket;
+    }
+
+    public void setFromBucket(Boolean fromBucket) {
+        this.fromBucket = fromBucket;
+    }
+
+    public void resetTimesUsed() {
+        this.timesUsed = 0;
+    }
+
+    public int getTimesUsed() {
+        return this.timesUsed;
+    }
+
+    public void increaseTimesUsed() {
+        this.timesUsed++;
     }
 
     public String getName() {
@@ -48,5 +70,9 @@ public class Variable {
 
     public int getKnapsackCapacity() {
         return knapsackCapacity;
+    }
+
+    public String toString() {
+        return this.getName() + " -> Value: " + this.getValue() + " - Used: " + this.timesUsed + " times\n";
     }
 }
