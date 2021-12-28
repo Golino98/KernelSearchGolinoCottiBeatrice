@@ -15,6 +15,17 @@ public class VariableSorterByWeightPercentage implements VariableSorter{
                     return weight/knap_capacity;
                 });
 
-        variables.sort(valueComparator.reversed().thenComparing(Variable::getProfit));
+        //TODO Decidere quale implementare in base alle soluzioni delle altre istanze
+        //N-N
+        //variables.sort(valueComparator.thenComparing(Variable::getProfit));
+
+        //N-R
+        //variables.sort(valueComparator.thenComparing(Variable::getProfit).reversed());
+
+        //R-N
+        //variables.sort(valueComparator.reversed().thenComparing(Variable::getProfit));
+
+        //R-R
+        variables.sort(valueComparator.reversed().thenComparing(Variable::getProfit).reversed());
     }
 }
