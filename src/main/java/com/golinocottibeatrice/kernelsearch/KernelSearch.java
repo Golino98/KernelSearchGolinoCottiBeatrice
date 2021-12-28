@@ -103,12 +103,14 @@ public class KernelSearch {
             }
 
             log.iterationStart(i);
+            this.resetUsages();
+
             solveBuckets();
         }
     }
 
     protected void solveBuckets() throws GRBException {
-        int count = 0;
+        int count = 0; int count_solutions = 0;
 
         for (var b : buckets) {
             count++;
@@ -117,14 +119,16 @@ public class KernelSearch {
             var solution = model.solve();
 
             if (!solution.isEmpty()) {
+                count_solutions++;
                 bestSolution = solution;
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(variable -> {this.kernel.addItem(variable); b.removeItem(variable);});
+                selected.forEach(variable -> {variable.setBucket(b); this.kernel.addItem(variable); b.removeItem(variable);});
 
-                log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
+                this.executeEject(selected, solution, count_solutions);
+
                 model.write();
             } else {
                 log.noSolution(elapsedTime());
@@ -136,6 +140,10 @@ public class KernelSearch {
                 return;
             }
         }
+    }
+
+    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+        log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
     }
 
     protected double elapsedTime() {
@@ -170,4 +178,6 @@ public class KernelSearch {
 
         return model;
     }
+
+    protected void resetUsages() {}
 }
