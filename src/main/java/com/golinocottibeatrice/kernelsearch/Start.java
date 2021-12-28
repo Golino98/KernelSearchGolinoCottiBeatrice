@@ -131,7 +131,9 @@ public class Start {
         searchConfig.setVariableSorter(getVariableSorter());
         searchConfig.setBucketBuilder(getBucketBuilder());
         searchConfig.setKernelBuilder(getKernelBuilder());
-        searchConfig.setRepetitionCounterEnabled(config.isRepetitionCounterEnabled());
+        searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
+        searchConfig.setRepCtrThreshold(config.getRepCtrThreshold());
+        searchConfig.setRepCtrPersistence(config.getRepCtrPersistence());
 
         return searchConfig;
     }

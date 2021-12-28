@@ -3,7 +3,6 @@ package com.golinocottibeatrice.kernelsearch;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 /**
  * Lettore per la configurazione contenuta in un file txt.
@@ -72,7 +71,9 @@ public class ConfigurationReader {
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
                 case "RUNNAME" -> config.setRunName(value);
-                case "ENABLEREPETITIONCOUNTER" -> config.setRepetitionCounterEnabled(Boolean.parseBoolean(value));
+                case "ENABLE_REPCTR" -> config.setRepCtrEnabled(Boolean.parseBoolean(value));
+                case "REPCTR_THRESHOLD" -> config.setRepCtrThreshold(Integer.parseInt(value));
+                case "REPCTR_PERSISTENCE" -> config.setRepCtrPersistence(Integer.parseInt(value));
                 default -> throw new IllegalStateException(UNRECOGNIZED_PARAMETER_NAME);
             }
         }

@@ -46,8 +46,9 @@ public class KernelSearch {
         log = config.getLogger();
         solver = config.getSolver();
 
-        if (config.isRepetitionCounterEnabled()) {
-            repetitionCounter = new RepetitionCounter(3, 3, -1);
+        if (config.isRepCtrEnabled()) {
+            repetitionCounter = new RepetitionCounter(
+                    config.getRepCtrThreshold(), config.getRepCtrPersistence(), -1);
         }
     }
 
@@ -59,7 +60,8 @@ public class KernelSearch {
     public SearchResult start() throws GRBException {
         startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
-        log.repetitionCounterStatus(config.isRepetitionCounterEnabled(),3,3);
+        log.repetitionCounterStatus(
+                config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
 
         solveRelaxation();
 
@@ -120,7 +122,7 @@ public class KernelSearch {
         // Se impostato a true, vengono accettate tutte le soluzioni,
         // anche quelle che peggiorano il valore della funzione obiettivo.
         // Sempre uguale a true se il counter delle ripetizioni è disabilitato.
-        var shouldAcceptAll = !config.isRepetitionCounterEnabled();
+        var disableCutoff = !config.isRepCtrEnabled();
         // La soluzione attuale, che potrebbe non essere la migliore trovata.
         var currentSolution = bestSolution;
 
@@ -140,7 +142,7 @@ public class KernelSearch {
             if (!currentSolution.isEmpty()) {
                 // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
                 // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
-                if (!shouldAcceptAll) {
+                if (!disableCutoff) {
                     model.addObjConstraint(currentSolution.getObjective());
                 }
                 // Imposta la soluzione da cui il modello parte.
@@ -148,11 +150,11 @@ public class KernelSearch {
             }
 
             var solution = model.solve();
-            if (config.isRepetitionCounterEnabled()) {
+            if (config.isRepCtrEnabled()) {
                 // Il counter mi dice se sto trovando ripetutamente lo stesso valore.
                 // Se questo è il caso, nelle prossime iterazioni accetta qualsiasi soluzione
                 // viene trovata, anche se non migliora la funzione obiettivo.
-                shouldAcceptAll = repetitionCounter.value(solution.getObjective());
+                disableCutoff = repetitionCounter.value(solution.getObjective());
             }
 
             if (!solution.isEmpty()) {

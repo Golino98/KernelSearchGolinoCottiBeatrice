@@ -24,7 +24,9 @@ public class SearchConfiguration {
     private Solver solver;
 
     // Funzionalità aggiuntive
-    private boolean repetitionCounterEnabled;
+    private boolean repCtrEnabled;
+    private int repCtrThreshold;
+    private int repCtrPersistence;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -122,11 +124,27 @@ public class SearchConfiguration {
         this.solver = solver;
     }
 
-    public boolean isRepetitionCounterEnabled() {
-        return repetitionCounterEnabled;
+    public boolean isRepCtrEnabled() {
+        return repCtrEnabled;
     }
 
-    public void setRepetitionCounterEnabled(boolean repetitionCounterEnabled) {
-        this.repetitionCounterEnabled = repetitionCounterEnabled;
+    public void setRepCtrEnabled(boolean repCtrEnabled) {
+        this.repCtrEnabled = repCtrEnabled;
+    }
+
+    public int getRepCtrThreshold() {
+        return repCtrThreshold;
+    }
+
+    public void setRepCtrThreshold(int repCtrThreshold) {
+        this.repCtrThreshold = repCtrThreshold;
+    }
+
+    public int getRepCtrPersistence() {
+        return repCtrPersistence;
+    }
+
+    public void setRepCtrPersistence(int repCtrPersistence) {
+        this.repCtrPersistence = repCtrPersistence;
     }
 }

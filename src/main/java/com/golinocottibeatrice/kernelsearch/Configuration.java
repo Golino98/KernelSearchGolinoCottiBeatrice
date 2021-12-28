@@ -4,6 +4,7 @@ package com.golinocottibeatrice.kernelsearch;
  * Contenitore per le informazione di configurazione del progetto, come lette da file.
  */
 public class Configuration {
+    // Kernel search base
     private int numThreads;
     private int presolve;
     private double mipGap;
@@ -19,7 +20,11 @@ public class Configuration {
     private int kernelBuilder;
     private String instPath = "";
     private String runName = "";
-    private boolean repetitionCounterEnabled;
+
+    // Funzionalità aggiuntive
+    private boolean repCtrEnabled;
+    private int repCtrThreshold;
+    private int repCtrPersistence;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -141,11 +146,27 @@ public class Configuration {
         this.runName = runName;
     }
 
-    public boolean isRepetitionCounterEnabled() {
-        return repetitionCounterEnabled;
+    public boolean isRepCtrEnabled() {
+        return repCtrEnabled;
     }
 
-    public void setRepetitionCounterEnabled(boolean repetitionCounterEnabled) {
-        this.repetitionCounterEnabled = repetitionCounterEnabled;
+    public void setRepCtrEnabled(boolean repCtrEnabled) {
+        this.repCtrEnabled = repCtrEnabled;
+    }
+
+    public int getRepCtrThreshold() {
+        return repCtrThreshold;
+    }
+
+    public void setRepCtrThreshold(int repCtrThreshold) {
+        this.repCtrThreshold = repCtrThreshold;
+    }
+
+    public int getRepCtrPersistence() {
+        return repCtrPersistence;
+    }
+
+    public void setRepCtrPersistence(int repCtrPersistence) {
+        this.repCtrPersistence = repCtrPersistence;
     }
 }
