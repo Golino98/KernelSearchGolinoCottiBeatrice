@@ -40,16 +40,4 @@ public class Solution {
     public boolean isEmpty() {
         return false;
     }
-
-    public String toString() {
-        StringBuilder out = new StringBuilder();
-
-        out.append("Objective Function: ").append(this.objective).append("\n");
-
-        for (Variable v : this.variables) {
-            out.append(v.toString());
-        }
-
-        return out.toString();
-    }
 }

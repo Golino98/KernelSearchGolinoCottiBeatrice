@@ -13,18 +13,19 @@ public class Logger {
     public static final String BLUE = "\u001B[34m";
 
     private static final String SEPARATOR = "\n--------------------------------------------";
-    private static final String FORMAT_START = CYAN + "\nInstance:     " + RESET + "%s\n" + CYAN + "Start time:   " + RESET + "%02d:%02d:%02d UTC";
-    private static final String FORMAT_REP_EN = CYAN + "\nRep. counter: " + RESET + "enabled (h=%d,k=%d)\n";
-    private static final String FORMAT_REP_DIS = CYAN + "\nRep. counter: " + RESET + "disabled\n";
-    private static final String FORMAT_RELAX = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
-    private static final String FORMAT_KERNEL_SIZE = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
-    private static final String FORMAT_ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
-    private static final String FORMAT_SOLVE_BUCKET_SIZE = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
-    private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
-    private static final String FORMAT_NEW_SOLUTION_SIZE = "SEL_VARS=%d (K_SIZE=%d) - OBJ=%06.2f - TIME: +%fs";
-    private static final String FORMAT_NEW_SOLUTION_SIZE_EJECT = "SEL_VARS=%d - REM_VARS=%d - OBJ=%06.2f - TIME: +%fs - K_SIZE=%d";
-    private static final String FORMAT_NO_SOLUTION_FOUND = "NO SOLUTION  - TIME: +%fs";
-    private static final String FORMAT_END = GREEN + "\n\nBest solution: " + RESET + "%06.2f\n" + GREEN + "Time elapsed:  " + RESET + "%fs\n";
+    private static final String INSTANCE = CYAN + "\nInstance:     " + RESET + "%s\n";
+    private static final String START_TIME = CYAN + "Start time:   " + RESET + "%02d:%02d:%02d UTC";
+    private static final String REP_ENABLED = CYAN + "\nRep. counter: " + RESET + "enabled (thr=%d,per=%d)\n";
+    private static final String REP_DISABLED = CYAN + "\nRep. counter: " + RESET + "disabled\n";
+    private static final String RELAXATION = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
+    private static final String KERNEL = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
+    private static final String ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
+    private static final String BUCKET = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
+    private static final String NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
+    private static final String NEW_SOLUTION_SIZE = "SEL_VARS=%d (K_SIZE=%d) - OBJ=%06.2f - TIME: +%fs";
+    private static final String NEW_SOLUTION_SIZE_EJECT = "SEL_VARS=%d - REM_VARS=%d - OBJ=%06.2f - TIME: +%fs - K_SIZE=%d";
+    private static final String NO_SOLUTION = "NO SOLUTION  - TIME: +%fs";
+    private static final String END = GREEN + "\n\nBest solution: " + RESET + "%06.2f\n" + GREEN + "Time elapsed:  " + RESET + "%fs\n";
     private static final String TIMELIMIT = YELLOW + "\n\nTime limit reached" + RESET;
 
     private final PrintStream out;
@@ -35,48 +36,50 @@ public class Logger {
 
     public void start(String instance, Instant startTime) {
         var time = startTime.atZone(ZoneOffset.UTC).toLocalTime();
+
         out.print(SEPARATOR);
-        out.printf(FORMAT_START, instance, time.getHour(), time.getMinute(), time.getSecond());
+        out.printf(INSTANCE, instance);
+        out.printf(START_TIME, time.getHour(), time.getMinute(), time.getSecond());
     }
 
-    public void repCtrStatus(boolean enabled, int h, int k) {
+    public void repCtrStatus(boolean enabled, int threshold, int persistence) {
         if (enabled) {
-            out.printf(FORMAT_REP_EN, h, k);
+            out.printf(REP_ENABLED, threshold, persistence);
         } else {
-            out.print(FORMAT_REP_DIS);
+            out.print(REP_DISABLED);
         }
     }
 
     public void relaxStart() {
-        out.print(FORMAT_RELAX);
+        out.print(RELAXATION);
     }
 
     public void kernelStart(int kernelSize) {
-        out.printf(FORMAT_KERNEL_SIZE, kernelSize);
+        out.printf(KERNEL, kernelSize);
     }
 
     public void solution(double objective, double elapsedTime) {
-        out.printf(FORMAT_NEW_SOLUTION, objective, elapsedTime);
+        out.printf(NEW_SOLUTION, objective, elapsedTime);
     }
 
-    public void solution(int selected_variables, int kernelSize, double objective, double elapsedTime) {
-        out.printf(FORMAT_NEW_SOLUTION_SIZE, selected_variables, kernelSize, objective, elapsedTime);
+    public void solution(int selectedVars, int kernelSize, double objective, double elapsedTime) {
+        out.printf(NEW_SOLUTION_SIZE, selectedVars, kernelSize, objective, elapsedTime);
     }
 
-    public void solution(int selected_variables, int kernelSize, double objective, double elapsedTime, int removed_vars) {
-        out.printf(FORMAT_NEW_SOLUTION_SIZE_EJECT, selected_variables, removed_vars, objective, elapsedTime, kernelSize);
+    public void solution(int selectedVars, int kernelSize, double objective, double elapsedTime, int removedVars) {
+        out.printf(NEW_SOLUTION_SIZE_EJECT, selectedVars, removedVars, objective, elapsedTime, kernelSize);
     }
 
     public void noSolution(double elapsedTime) {
-        out.printf(FORMAT_NO_SOLUTION_FOUND, elapsedTime);
+        out.printf(NO_SOLUTION, elapsedTime);
     }
 
     public void iterationStart(int i) {
-        out.printf(FORMAT_ITERATION, i);
+        out.printf(ITERATION, i);
     }
 
     public void bucketStart(int count, int bucketSize) {
-        out.printf(FORMAT_SOLVE_BUCKET_SIZE, count, bucketSize);
+        out.printf(BUCKET, count, bucketSize);
     }
 
     public void timeLimit() {
@@ -84,6 +87,6 @@ public class Logger {
     }
 
     public void end(double objective, double elapsedTime) {
-        out.printf(FORMAT_END, objective, elapsedTime);
+        out.printf(END, objective, elapsedTime);
     }
 }

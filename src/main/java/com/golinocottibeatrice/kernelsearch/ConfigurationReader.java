@@ -10,7 +10,7 @@ import java.nio.file.Paths;
  * vedi la documentazione.
  */
 public class ConfigurationReader {
-    private static final String INVALID_CONFIGURATION_FORMAT= "Invalid configuration format.";
+    private static final String INVALID_CONFIGURATION_FORMAT = "Invalid configuration format.";
     private static final String UNRECOGNIZED_PARAMETER_NAME = "Unrecognized parameter name.";
     // Carattere usato per la separazione del nome del parametro dal valore
     private static final String SEPARATOR = "\\s+";
@@ -68,10 +68,12 @@ public class ConfigurationReader {
                 case "NUMITERATIONS" -> config.setNumIterations(Integer.parseInt(value));
                 case "TIMELIMITBUCKET" -> config.setTimeLimitBucket(Integer.parseInt(value));
                 case "KERNELBUILDER" -> config.setKernelBuilder(Integer.parseInt(value));
-                case "EJECT_THRESHOLD" -> config.setEjectThreshold(Integer.parseInt(value));
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
                 case "RUNNAME" -> config.setRunName(value);
+
+                case "ENABLE_EJECT" -> config.setEjectEnabled(Boolean.parseBoolean(value));
+                case "EJECT_THRESHOLD" -> config.setEjectThreshold(Integer.parseInt(value));
                 case "ENABLE_REPCTR" -> config.setRepCtrEnabled(Boolean.parseBoolean(value));
                 case "REPCTR_THRESHOLD" -> config.setRepCtrThreshold(Integer.parseInt(value));
                 case "REPCTR_PERSISTENCE" -> config.setRepCtrPersistence(Integer.parseInt(value));

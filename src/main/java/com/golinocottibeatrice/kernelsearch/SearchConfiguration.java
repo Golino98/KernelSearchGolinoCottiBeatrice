@@ -22,17 +22,10 @@ public class SearchConfiguration {
     private Instance instance;
     private Logger logger;
     private Solver solver;
-    private int ejectThreshold = 0;
-
-    public int getEjectThreshold() {
-        return this.ejectThreshold;
-    }
-
-    public void setEjectThreshold(int ejectThreshold) {
-        this.ejectThreshold = ejectThreshold;
-    }
 
     // Funzionalità aggiuntive
+    private boolean ejectEnabled;
+    private int ejectThreshold;
     private boolean repCtrEnabled;
     private int repCtrThreshold;
     private int repCtrPersistence;
@@ -133,6 +126,22 @@ public class SearchConfiguration {
         this.solver = solver;
     }
 
+    public boolean isEjectEnabled() {
+        return ejectEnabled;
+    }
+
+    public void setEjectEnabled(boolean ejectEnabled) {
+        this.ejectEnabled = ejectEnabled;
+    }
+
+    public int getEjectThreshold() {
+        return ejectThreshold;
+    }
+
+    public void setEjectThreshold(int ejectThreshold) {
+        this.ejectThreshold = ejectThreshold;
+    }
+
     public boolean isRepCtrEnabled() {
         return repCtrEnabled;
     }
@@ -156,4 +165,6 @@ public class SearchConfiguration {
     public void setRepCtrPersistence(int repCtrPersistence) {
         this.repCtrPersistence = repCtrPersistence;
     }
+
+
 }

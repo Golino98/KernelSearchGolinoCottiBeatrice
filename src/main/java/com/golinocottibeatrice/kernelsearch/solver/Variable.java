@@ -71,8 +71,4 @@ public class Variable {
     public int getKnapsackCapacity() {
         return knapsackCapacity;
     }
-
-    public String toString() {
-        return this.getName() + " -> Value: " + this.getValue() + " - Used: " + this.timesUsed + " times\n";
-    }
 }

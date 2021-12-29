@@ -22,6 +22,7 @@ public class Configuration {
     private String runName = "";
 
     // Funzionalità aggiuntive
+    private boolean ejectEnabled;
     private int ejectThreshold;
     private boolean repCtrEnabled;
     private int repCtrThreshold;
@@ -177,5 +178,13 @@ public class Configuration {
 
     public void setRepCtrPersistence(int repCtrPersistence) {
         this.repCtrPersistence = repCtrPersistence;
+    }
+
+    public boolean isEjectEnabled() {
+        return ejectEnabled;
+    }
+
+    public void setEjectEnabled(boolean ejectEnabled) {
+        this.ejectEnabled = ejectEnabled;
     }
 }
