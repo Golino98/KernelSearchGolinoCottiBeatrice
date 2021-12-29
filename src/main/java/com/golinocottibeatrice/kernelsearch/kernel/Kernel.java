@@ -56,8 +56,7 @@ public class Kernel {
      */
     public void updateUsages(Solution solution) {
         List<Variable> activeInSolution = solution.getVariables().stream()
-                .filter(variable -> variable.getValue()>=1)
-                .collect(Collectors.toList());
+                .filter(variable -> variable.getValue() >= 1).toList();
 
         this.variables.forEach(variable -> {
             if (activeInSolution.stream().anyMatch(v -> v.getName().equals(variable.getName()))) {

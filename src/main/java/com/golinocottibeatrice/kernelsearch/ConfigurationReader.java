@@ -3,7 +3,6 @@ package com.golinocottibeatrice.kernelsearch;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.stream.Collectors;
 
 /**
  * Lettore per la configurazione contenuta in un file txt.

@@ -51,18 +51,6 @@ public class FileUtil {
     }
 
     /**
-     * Consente di comporre il path di un file di log, unendo il path di una directory
-     * al nome del file di log, a cui viene aggiunta l'estensione appropriata.
-     *
-     * @param dir      La directory del file di log.
-     * @param fileName Il nome del file di log.
-     * @return Il path del file di log.
-     */
-    public static String getLogPath(String dir, String fileName) {
-        return getPath(dir, fileName, LOG_EXT);
-    }
-
-    /**
      * Consente di comporre il path di un file di sol, unendo il path di una directory
      * al nome del file di sol, a cui viene aggiunta l'estensione appropriata.
      *

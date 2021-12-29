@@ -106,7 +106,7 @@ public class Start {
 
     private KernelSearch buildKernelSearch(SearchConfiguration searchConfig) {
         if (searchConfig.getEjectThreshold() > 0)
-            return new KernelSearch_Eject(searchConfig);
+            return new KernelSearchEject(searchConfig);
         else
             return new KernelSearch(searchConfig);
     }

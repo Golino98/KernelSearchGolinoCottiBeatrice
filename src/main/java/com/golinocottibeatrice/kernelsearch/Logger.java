@@ -43,10 +43,6 @@ public class Logger {
         out.print(FORMAT_RELAX);
     }
 
-    public void kernelStart() {
-        out.print(FORMAT_KERNEL);
-    }
-
     public void kernelStart(int kernelSize) {
         out.printf(FORMAT_KERNEL_SIZE, kernelSize);
     }
@@ -69,10 +65,6 @@ public class Logger {
 
     public void iterationStart(int i) {
         out.printf(FORMAT_ITERATION, i);
-    }
-
-    public void bucketStart(int count) {
-        out.printf(FORMAT_SOLVE_BUCKET, count);
     }
 
     public void bucketStart(int count, int bucketSize) {

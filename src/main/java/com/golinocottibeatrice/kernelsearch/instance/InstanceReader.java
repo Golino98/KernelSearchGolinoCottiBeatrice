@@ -40,7 +40,7 @@ public class InstanceReader {
         var name = FileUtil.getFileName(path);
 
         var br = Files.newBufferedReader(path);
-        var lines = br.lines().collect(Collectors.toList());
+        var lines = br.lines().toList();
 
         // La prima linea contiene il numero di knapsacks
         var nKnapsacks = Integer.parseInt(lines.get(0));

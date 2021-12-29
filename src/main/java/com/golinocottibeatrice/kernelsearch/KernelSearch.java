@@ -50,7 +50,7 @@ public class KernelSearch {
      * @throws GRBException Errore di Gurobi.
      */
     public SearchResult start() throws GRBException {
-        startTime=System.nanoTime();
+        startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
 
         solveRelaxation();
@@ -112,7 +112,8 @@ public class KernelSearch {
     }
 
     protected void solveBuckets() throws GRBException {
-        int count = 0; int count_solutions = 0;
+        int count = 0;
+        int countSolutions = 0;
 
         for (var b : buckets) {
             count++;
@@ -121,7 +122,7 @@ public class KernelSearch {
             Solution solution = model.solve();
 
             if (!solution.isEmpty()) {
-                count_solutions++;
+                countSolutions++;
                 bestSolution = solution;
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
@@ -129,7 +130,7 @@ public class KernelSearch {
                 var selected = model.getSelectedVariables(b.getVariables());
                 selected.forEach(variable -> this.kernel.addItem(variable));
 
-                this.executeEject(selected, solution, count_solutions);
+                this.executeEject(selected, solution, countSolutions);
 
                 model.write();
             } else {
@@ -149,8 +150,8 @@ public class KernelSearch {
     }
 
     protected double elapsedTime() {
-        var time = (double)(System.nanoTime()-startTime);
-        return time/1_000_000_000;
+        var time = (double) (System.nanoTime() - startTime);
+        return time / 1_000_000_000;
     }
 
     // Restituisce il tempo rimamente per l'esecuzione
@@ -184,5 +185,6 @@ public class KernelSearch {
     /**
      * If an eject procedure is used then this function resets the usages of the variables in the kernel
      */
-    protected void resetUsages() {}
+    protected void resetUsages() {
+    }
 }
