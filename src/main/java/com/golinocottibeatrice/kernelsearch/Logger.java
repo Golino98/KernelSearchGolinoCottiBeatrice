@@ -13,10 +13,12 @@ public class Logger {
     public static final String BLUE = "\u001B[34m";
 
     private static final String SEPARATOR = "\n--------------------------------------------";
-    private static final String INSTANCE = CYAN + "\nInstance:     " + RESET + "%s\n";
-    private static final String START_TIME = CYAN + "Start time:   " + RESET + "%02d:%02d:%02d UTC";
-    private static final String REP_ENABLED = CYAN + "\nRep. counter: " + RESET + "enabled (thr=%d,per=%d)\n";
-    private static final String REP_DISABLED = CYAN + "\nRep. counter: " + RESET + "disabled\n";
+    private static final String INSTANCE = CYAN + "\nInstance:     " + RESET + "%s";
+    private static final String START_TIME = CYAN + "\nStart time:   " + RESET + "%02d:%02d:%02d UTC";
+    private static final String EJECT_ENABLED = CYAN + "\nKernel eject: " + RESET + "enabled (thld=%d)";
+    private static final String EJECT_DISABLED = CYAN + "\nkernel eject: " + RESET + "disabled";
+    private static final String REP_ENABLED = CYAN + "\nRep. counter: " + RESET + "enabled (thld=%d,pers=%d)";
+    private static final String REP_DISABLED = CYAN + "\nRep. counter: " + RESET + "disabled";
     private static final String RELAXATION = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
     private static final String KERNEL = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
     private static final String ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
@@ -40,6 +42,14 @@ public class Logger {
         out.print(SEPARATOR);
         out.printf(INSTANCE, instance);
         out.printf(START_TIME, time.getHour(), time.getMinute(), time.getSecond());
+    }
+
+    public void ejectStatus(boolean enabled, int threshold) {
+        if (enabled) {
+            out.printf(EJECT_ENABLED, threshold);
+        } else {
+            out.print(EJECT_DISABLED);
+        }
     }
 
     public void repCtrStatus(boolean enabled, int threshold, int persistence) {

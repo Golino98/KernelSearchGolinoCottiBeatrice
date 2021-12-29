@@ -63,6 +63,7 @@ public class KernelSearch {
     public SearchResult start() throws GRBException {
         startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
+        log.ejectStatus(config.isEjectEnabled(), config.getEjectThreshold());
         log.repCtrStatus(config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
 
         solveRelaxation();
