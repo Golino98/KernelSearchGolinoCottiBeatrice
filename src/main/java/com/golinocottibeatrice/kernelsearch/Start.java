@@ -139,6 +139,9 @@ public class Start {
         searchConfig.setBucketBuilder(getBucketBuilder());
         searchConfig.setKernelBuilder(getKernelBuilder());
         searchConfig.setEjectThreshold(this.config.getEjectThreshold());
+        searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
+        searchConfig.setRepCtrThreshold(config.getRepCtrThreshold());
+        searchConfig.setRepCtrPersistence(config.getRepCtrPersistence());
 
         return searchConfig;
     }

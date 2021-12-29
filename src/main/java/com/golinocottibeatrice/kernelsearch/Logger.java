@@ -13,12 +13,12 @@ public class Logger {
     public static final String BLUE = "\u001B[34m";
 
     private static final String SEPARATOR = "\n--------------------------------------------";
-    private static final String FORMAT_START = CYAN + "\nInstance:   " + RESET + "%s\n" + CYAN + "Start time: " + RESET + "%02d:%02d:%02d UTC";
+    private static final String FORMAT_START = CYAN + "\nInstance:     " + RESET + "%s\n" + CYAN + "Start time:   " + RESET + "%02d:%02d:%02d UTC";
+    private static final String FORMAT_REP_EN = CYAN + "\nRep. counter: " + RESET + "enabled (h=%d,k=%d)\n";
+    private static final String FORMAT_REP_DIS = CYAN + "\nRep. counter: " + RESET + "disabled\n";
     private static final String FORMAT_RELAX = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
-    private static final String FORMAT_KERNEL = PURPLE + "\n\n[Solving kernel]\n" + RESET;
     private static final String FORMAT_KERNEL_SIZE = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
     private static final String FORMAT_ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
-    private static final String FORMAT_SOLVE_BUCKET = BLUE + "\n<Bucket %2d> " + RESET;
     private static final String FORMAT_SOLVE_BUCKET_SIZE = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
     private static final String FORMAT_NEW_SOLUTION = "OBJ=%06.2f - TIME: +%fs";
     private static final String FORMAT_NEW_SOLUTION_SIZE = "SEL_VARS=%d (K_SIZE=%d) - OBJ=%06.2f - TIME: +%fs";
@@ -37,6 +37,14 @@ public class Logger {
         var time = startTime.atZone(ZoneOffset.UTC).toLocalTime();
         out.print(SEPARATOR);
         out.printf(FORMAT_START, instance, time.getHour(), time.getMinute(), time.getSecond());
+    }
+
+    public void repCtrStatus(boolean enabled, int h, int k) {
+        if (enabled) {
+            out.printf(FORMAT_REP_EN, h, k);
+        } else {
+            out.print(FORMAT_REP_DIS);
+        }
     }
 
     public void relaxStart() {

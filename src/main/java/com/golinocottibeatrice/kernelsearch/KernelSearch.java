@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class KernelSearch {
     // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
     // sotto il cui viene fermato il programma
-    protected static final int TIME_THRESHOLD = 2;
+    private static final int TIME_THRESHOLD = 2;
 
     protected final SearchConfiguration config;
     protected final Logger log;
@@ -31,6 +31,12 @@ public class KernelSearch {
     protected List<Variable> variables;
     // Miglior soluzione trovata
     protected Solution bestSolution;
+    // La soluzione attuale, che potrebbe non essere la migliore trovata.
+    protected Solution currentSolution;
+    protected boolean disableCutoff;
+
+    // Funzionalità aggiuntive
+    private RepetitionCounter repetitionCounter;
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -42,6 +48,11 @@ public class KernelSearch {
         instance = config.getInstance();
         log = config.getLogger();
         solver = config.getSolver();
+
+        if (config.isRepCtrEnabled()) {
+            repetitionCounter = new RepetitionCounter(
+                    config.getRepCtrThreshold(), config.getRepCtrPersistence(), -1);
+        }
     }
 
     /**
@@ -52,6 +63,7 @@ public class KernelSearch {
     public SearchResult start() throws GRBException {
         startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
+        log.repCtrStatus(config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
 
         solveRelaxation();
 
@@ -114,16 +126,30 @@ public class KernelSearch {
     protected void solveBuckets() throws GRBException {
         int count = 0;
         int countSolutions = 0;
+        // Se impostato a true, vengono accettate tutte le soluzioni,
+        // anche quelle che peggiorano il valore della funzione obiettivo.
+        // Sempre uguale a true se il counter delle ripetizioni è disabilitato.
+        disableCutoff = !config.isRepCtrEnabled();
+        currentSolution = bestSolution;
 
         for (var b : buckets) {
             count++;
 
             Model model = this.buildModel(b, count);
             Solution solution = model.solve();
+            if (config.isRepCtrEnabled()) {
+                // Il counter mi dice se sto trovando ripetutamente lo stesso valore.
+                // Se questo è il caso, nelle prossime iterazioni accetta qualsiasi soluzione
+                // viene trovata, anche se non migliora la funzione obiettivo.
+                disableCutoff = repetitionCounter.value(solution.getObjective());
+            }
 
             if (!solution.isEmpty()) {
                 countSolutions++;
-                bestSolution = solution;
+                currentSolution = solution;
+                if (solution.getObjective() >= bestSolution.getObjective()) {
+                    bestSolution = solution;
+                }
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
@@ -173,8 +199,11 @@ public class KernelSearch {
         model.addBucketConstraint(b.getVariables());
 
         if (!bestSolution.isEmpty()) {
-            // Se la soluzione iniziale non è vuota, imponi che l'eventuale nuova soluzione sia migliore
-            model.addObjConstraint(bestSolution.getObjective());
+            // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
+            // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
+            if (!disableCutoff) {
+                model.addObjConstraint(currentSolution.getObjective());
+            }
             // Imposta la soluzione da cui il modello parte.
             model.readSolution(bestSolution);
         }
@@ -182,9 +211,7 @@ public class KernelSearch {
         return model;
     }
 
-    /**
-     * If an eject procedure is used then this function resets the usages of the variables in the kernel
-     */
+    //If an eject procedure is used then this function resets the usages of the variables in the kernel
     protected void resetUsages() {
     }
 }

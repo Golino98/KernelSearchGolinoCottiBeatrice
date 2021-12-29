@@ -32,6 +32,11 @@ public class SearchConfiguration {
         this.ejectThreshold = ejectThreshold;
     }
 
+    // Funzionalità aggiuntive
+    private boolean repCtrEnabled;
+    private int repCtrThreshold;
+    private int repCtrPersistence;
+
     public int getTimeLimit() {
         return timeLimit;
     }
@@ -126,5 +131,29 @@ public class SearchConfiguration {
 
     public void setSolver(Solver solver) {
         this.solver = solver;
+    }
+
+    public boolean isRepCtrEnabled() {
+        return repCtrEnabled;
+    }
+
+    public void setRepCtrEnabled(boolean repCtrEnabled) {
+        this.repCtrEnabled = repCtrEnabled;
+    }
+
+    public int getRepCtrThreshold() {
+        return repCtrThreshold;
+    }
+
+    public void setRepCtrThreshold(int repCtrThreshold) {
+        this.repCtrThreshold = repCtrThreshold;
+    }
+
+    public int getRepCtrPersistence() {
+        return repCtrPersistence;
+    }
+
+    public void setRepCtrPersistence(int repCtrPersistence) {
+        this.repCtrPersistence = repCtrPersistence;
     }
 }
