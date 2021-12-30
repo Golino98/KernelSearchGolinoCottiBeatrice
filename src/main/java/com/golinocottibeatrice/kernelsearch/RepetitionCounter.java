@@ -23,6 +23,7 @@ public class RepetitionCounter {
     private static final String INVALID_PARAMETERS = "Invalid value for h or k: they must both be > 0";
     private final int h;
     private final int k;
+    private final double initial;
 
     private int counter = 1;
     private int resetCounter;
@@ -41,6 +42,7 @@ public class RepetitionCounter {
         }
         this.h = h;
         this.k = k;
+        this.initial = initial;
         this.lastValue = initial;
     }
 
@@ -54,7 +56,7 @@ public class RepetitionCounter {
         if (resetCounter > 0) {
             resetCounter--;
             counter = 1;
-            lastValue = 0;
+            lastValue = initial;
             return true;
         }
 

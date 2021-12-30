@@ -125,6 +125,7 @@ public class Start {
     private SearchConfiguration buildSearchConfig() {
         SearchConfiguration searchConfig = new SearchConfiguration();
 
+
         searchConfig.setLogger(new Logger(System.out));
         searchConfig.setTimeLimit(config.getTimeLimit());
         searchConfig.setTimeLimitKernel(config.getTimeLimitKernel());
