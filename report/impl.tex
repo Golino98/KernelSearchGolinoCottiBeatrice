@@ -1,15 +1,16 @@
 \chapter{Implementation}
 
-The Java source code for the kernel searchwas originally provided during the course,
+The Java source code for the kernel search was originally provided during the course,
 and it implements in Java a simple iterative kernel search (as explained in~\ref{sec:iter}),
 using GUROBI as the MIP solver.
+It also includes the improvements describe in~\ref{sec:improving-efficiency}.
+
 The code was initially modified to implement the MKP model described in~\ref{sec:model},
 and it was then refactored to improve its quality and efficiency.
 The algorithm itself and the parameters were not changed at this time.\\
 
 The code along with its documentation can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice}.
-
 
 The project the latest version of GUROBI available at the time of writing, which is the 9.5.
 Its configuration is the following:
@@ -28,12 +29,5 @@ The kernel search instead is configured with the following parameters:
     In most instances, the last bucket built will contain fewer items than the previous ones, because the remaining
     variables will be inferior to the bucket size.
     \item \textit{Number of iterations}: 2
-\end{itemize}
-
-The default timelimits are:
-\begin{itemize}
-    \item \textit{Global time limit}: 30 seconds
-    \item \textit{Time limit for the kernel}: 5 seconds
-    \item \textit{Time limit for each bucket}: 5 seconds
 \end{itemize}
 
