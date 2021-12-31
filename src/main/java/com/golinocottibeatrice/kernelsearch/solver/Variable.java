@@ -71,4 +71,8 @@ public class Variable {
     public int getKnapsackCapacity() {
         return knapsackCapacity;
     }
+
+    public String toString() {
+        return name;
+    }
 }

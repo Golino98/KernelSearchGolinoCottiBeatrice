@@ -27,6 +27,7 @@ public class Configuration {
     private boolean repCtrEnabled;
     private int repCtrThreshold;
     private int repCtrPersistence;
+    private double overlapRatio;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -186,5 +187,13 @@ public class Configuration {
 
     public void setEjectEnabled(boolean ejectEnabled) {
         this.ejectEnabled = ejectEnabled;
+    }
+
+    public void setOverlapRatio(double parseDouble) {
+        this.overlapRatio = parseDouble;
+    }
+
+    public double getOverlapRatio() {
+        return this.overlapRatio;
     }
 }

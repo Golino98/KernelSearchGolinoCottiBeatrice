@@ -63,7 +63,6 @@ public class ConfigurationReader {
                 case "SORTER" -> config.setVariableSorter(Integer.parseInt(value));
                 case "KERNELSIZE" -> config.setKernelSize(Double.parseDouble(value));
                 case "BUCKETSIZE" -> config.setBucketSize(Double.parseDouble(value));
-                case "BUCKETBUILDER" -> config.setBucketBuilder(Integer.parseInt(value));
                 case "TIMELIMITKERNEL" -> config.setTimeLimitKernel(Integer.parseInt(value));
                 case "NUMITERATIONS" -> config.setNumIterations(Integer.parseInt(value));
                 case "TIMELIMITBUCKET" -> config.setTimeLimitBucket(Integer.parseInt(value));
@@ -71,6 +70,9 @@ public class ConfigurationReader {
                 case "INSTPATH" -> config.setInstPath(value);
                 case "LOGDIR" -> config.setLogDir(value);
                 case "RUNNAME" -> config.setRunName(value);
+
+                case "BUCKETBUILDER" -> config.setBucketBuilder(Integer.parseInt(value));
+                case "OVERLAP_RATIO" -> config.setOverlapRatio(Double.parseDouble(value));
 
                 case "ENABLE_EJECT" -> config.setEjectEnabled(Boolean.parseBoolean(value));
                 case "EJECT_THRESHOLD" -> config.setEjectThreshold(Integer.parseInt(value));

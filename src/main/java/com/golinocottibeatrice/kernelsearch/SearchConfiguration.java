@@ -29,6 +29,7 @@ public class SearchConfiguration {
     private boolean repCtrEnabled;
     private int repCtrThreshold;
     private int repCtrPersistence;
+    private double overlapRatio;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -166,5 +167,12 @@ public class SearchConfiguration {
         this.repCtrPersistence = repCtrPersistence;
     }
 
+    public void setOverlapRatio(double ratio) {
+        this.overlapRatio = ratio;
+    }
+
+    public double getOverlapRatio() {
+        return this.overlapRatio;
+    }
 
 }

@@ -27,10 +27,13 @@ public class KernelSearch {
 
     protected final Instance instance;
     protected long startTime;
+
     // Variabili del problema
     protected List<Variable> variables;
+
     // Miglior soluzione trovata
     protected Solution bestSolution;
+
     // La soluzione attuale, che potrebbe non essere la migliore trovata.
     protected Solution currentSolution;
     protected boolean disableCutoff;
@@ -155,7 +158,10 @@ public class KernelSearch {
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(variable -> this.kernel.addItem(variable));
+                selected.forEach(variable -> {
+                    if (!this.kernel.contains(variable))
+                        this.kernel.addItem(variable);
+                });
 
                 this.executeEject(selected, solution, countSolutions);
 
@@ -202,7 +208,7 @@ public class KernelSearch {
         if (!bestSolution.isEmpty()) {
             // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
             // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
-            if (!disableCutoff) {
+            if (disableCutoff) {
                 model.addObjConstraint(currentSolution.getObjective());
             }
             // Imposta la soluzione da cui il modello parte.

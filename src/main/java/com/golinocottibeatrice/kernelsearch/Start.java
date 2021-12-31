@@ -2,6 +2,7 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
 import com.golinocottibeatrice.kernelsearch.bucket.DefaultBucketBuilder;
+import com.golinocottibeatrice.kernelsearch.bucket.OverlapBucketBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
 import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
@@ -141,6 +142,7 @@ public class Start {
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
         searchConfig.setRepCtrThreshold(config.getRepCtrThreshold());
         searchConfig.setRepCtrPersistence(config.getRepCtrPersistence());
+        searchConfig.setOverlapRatio(config.getOverlapRatio());
 
         return searchConfig;
     }
@@ -159,9 +161,9 @@ public class Start {
 
     // Restituisce il builder dei bucket selezionato nel file di config.
     private BucketBuilder getBucketBuilder() {
-        //noinspection SwitchStatementWithTooFewBranches
         return switch (config.getBucketBuilder()) {
             case 0 -> new DefaultBucketBuilder();
+            case 1 -> new OverlapBucketBuilder();
             default -> throw new IllegalStateException(UNRECOGNIZED_BUCKET_BUILDER);
         };
     }
