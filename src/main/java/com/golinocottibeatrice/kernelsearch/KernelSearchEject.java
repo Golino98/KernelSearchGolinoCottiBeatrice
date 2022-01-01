@@ -2,10 +2,12 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.solver.Solution;
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
+import gurobi.GRBException;
 
 import java.util.List;
 
 public class KernelSearchEject extends KernelSearch {
+    private int visitedSolutions; // total number of visited solutions
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -21,18 +23,39 @@ public class KernelSearchEject extends KernelSearch {
      *
      * @param selected        list of variables selected from the bucket
      * @param solution        the current solution
-     * @param count_solutions number of solutions visited in the current iteration
      */
     @Override
-    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+    protected void executeEject(List<Variable> selected, Solution solution) {
         this.kernel.updateUsages(solution);
-        int removedVars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
+        int removedVars = this.kernel.checkForEject(this.config.getEjectThreshold(), this.visitedSolutions);
 
         log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime(), removedVars);
     }
 
     @Override
-    protected void resetUsages() {
-        this.kernel.resetUsages();
+    protected void placeInKernel(List<Variable> selected) {
+        this.visitedSolutions++;
+
+        selected.forEach(variable -> {
+            if (!this.kernel.contains(variable)) {
+                this.kernel.addItem(variable, this.visitedSolutions);
+            }
+        });
+    }
+
+    @Override
+    protected void iterateBuckets() throws GRBException {
+        this.visitedSolutions = 0;
+
+        for (int i = 0; i < config.getNumIterations(); i++) {
+            if (getRemainingTime() <= TIME_THRESHOLD) {
+                log.timeLimit();
+                return;
+            }
+
+            log.iterationStart(i);
+
+            solveBuckets();
+        }
     }
 }

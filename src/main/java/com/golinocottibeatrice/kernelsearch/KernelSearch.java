@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class KernelSearch {
     // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
     // sotto il cui viene fermato il programma
-    private static final int TIME_THRESHOLD = 2;
+    protected static final int TIME_THRESHOLD = 2;
 
     protected final SearchConfiguration config;
     protected final Logger log;
@@ -121,7 +121,6 @@ public class KernelSearch {
             }
 
             log.iterationStart(i);
-            this.resetUsages();
 
             solveBuckets();
         }
@@ -129,7 +128,7 @@ public class KernelSearch {
 
     protected void solveBuckets() throws GRBException {
         int count = 0;
-        int countSolutions = 0;
+
         // Se impostato a true, vengono accettate tutte le soluzioni,
         // anche quelle che peggiorano il valore della funzione obiettivo.
         // Sempre uguale a true se il counter delle ripetizioni è disabilitato.
@@ -149,7 +148,7 @@ public class KernelSearch {
             }
 
             if (!solution.isEmpty()) {
-                countSolutions++;
+                //countSolutions++;
                 currentSolution = solution;
                 if (solution.getObjective() >= bestSolution.getObjective()) {
                     bestSolution = solution;
@@ -158,12 +157,10 @@ public class KernelSearch {
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
                 // aggiungile al kernel, e rimuovile dal bucket
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(variable -> {
-                    if (!this.kernel.contains(variable))
-                        this.kernel.addItem(variable);
-                });
 
-                this.executeEject(selected, solution, countSolutions);
+                this.placeInKernel(selected);
+
+                this.executeEject(selected, solution);
 
                 model.write();
             } else {
@@ -178,7 +175,14 @@ public class KernelSearch {
         }
     }
 
-    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+    protected void placeInKernel(List<Variable> selected) {
+        selected.forEach(variable -> {
+            if (!this.kernel.contains(variable))
+                this.kernel.addItem(variable);
+        });
+    }
+
+    protected void executeEject(List<Variable> selected, Solution solution) {
         log.solution(selected.size(), kernel.size(), solution.getObjective(), elapsedTime());
     }
 
@@ -216,9 +220,5 @@ public class KernelSearch {
         }
 
         return model;
-    }
-
-    //If an eject procedure is used then this function resets the usages of the variables in the kernel
-    protected void resetUsages() {
     }
 }

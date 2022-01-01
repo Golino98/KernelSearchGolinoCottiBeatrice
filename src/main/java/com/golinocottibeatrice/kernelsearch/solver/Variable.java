@@ -10,9 +10,11 @@ public class Variable {
     private final Item item;
     private final int knapsackCapacity;
     private int timesUsed = 0;
+    private int initialSolutionCount; // Eject procedure
     private double value;
     private double rc;
-    private Boolean fromBucket=true;
+    private Boolean fromBucket=true; // true -> variable is in a bucket
+                                     // false -> variable was in the kernel from the start
 
     Variable(String name, Item item, int knapCapacity) {
         this.name = name;
@@ -28,12 +30,13 @@ public class Variable {
         this.fromBucket = fromBucket;
     }
 
-    public void resetTimesUsed() {
+    public void resetTimesUsed(int solutionsCount) {
+        this.initialSolutionCount = solutionsCount;
         this.timesUsed = 0;
     }
 
-    public int getTimesUsed() {
-        return this.timesUsed;
+    private int getTimesUsed() {
+        return this.initialSolutionCount + this.timesUsed;
     }
 
     public void increaseTimesUsed() {
@@ -74,5 +77,9 @@ public class Variable {
 
     public String toString() {
         return name;
+    }
+
+    public boolean exceedsThreshold(int threshold, int solutions_count) {
+        return (solutions_count-this.getTimesUsed()) - this.getTimesUsed() < threshold;
     }
 }

@@ -21,12 +21,21 @@ public class Kernel {
     }
 
     /**
+     * Aggiunge un {@link Variable} alla lista e inizializza il contatore della eject.
+     *
+     * @param v {@link Variable} da aggiungere alla lista.
+     */
+    public void addItem(Variable v, int solutionsCount) {
+        v.resetTimesUsed(solutionsCount);
+        variables.add(v);
+    }
+
+    /**
      * Aggiunge un {@link Variable} alla lista.
      *
      * @param v {@link Variable} da aggiungere alla lista.
      */
     public void addItem(Variable v) {
-        v.resetTimesUsed();
         variables.add(v);
     }
 
@@ -55,8 +64,11 @@ public class Kernel {
      * @param solution the current solution used for the update
      */
     public void updateUsages(Solution solution) {
-        List<Variable> activeInSolution = solution.getVariables().stream()
-                .filter(variable -> variable.getValue() >= 1).toList();
+        List<Variable> activeInSolution =
+                solution.getVariables()
+                        .stream()
+                        .filter(variable -> variable.getValue() >= 1)
+                        .toList();
 
         this.variables.forEach(variable -> {
             if (activeInSolution.stream().anyMatch(v -> v.getName().equals(variable.getName()))) {
@@ -75,8 +87,7 @@ public class Kernel {
     public int checkForEject(int threshold, int solutions_count) {
         List<Variable> new_variables = this.variables.stream()
                 .filter(variable ->
-                        !variable.isFromBucket() ||
-                        (solutions_count-variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
+                        !variable.isFromBucket() || variable.exceedsThreshold(threshold, solutions_count))
                 .collect(Collectors.toList());
 
         int removed_vars = this.variables.size() - new_variables.size();
@@ -84,9 +95,5 @@ public class Kernel {
         this.variables = new_variables;
 
         return removed_vars;
-    }
-
-    public void resetUsages() {
-        this.variables.forEach(Variable::resetTimesUsed);
     }
 }
