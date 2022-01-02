@@ -1,5 +1,4 @@
-\chapter{Improvements}
-
+\chapter{Improvements}\label{ch:improvements}
 In this section we will describe the various changes
 that we applied to the default kernel search implementation,
 with the objective of improving its performance
@@ -12,11 +11,51 @@ The effectiveness of the tuning is demonstrated using the selected instances
 described in~\ref{subsec:inst} as benchmark.
 
 
-\section{Variable Sorting}
-Description of the various sorting methods tried, both the good and the bad ones.
+%\section{Variable Sorting}
+
+%\section{Ejection of Variables from the Kernel}
 
 
-\section{Ejection of Variables from the Kernel}
+\section{Repetition Counter}
+An observation we could make is that when solving buckets,
+after a certain number of iterations the algorithm
+repeatedly finds new solutions with the same objective value,
+and sometimes it even struggles to find new solutions at all.
+In other words, the algorithm gets stuck in \textit{local optima},
+from which it's hard to escape.
 
+Our hypothesis is that there are two causes for this:
+\begin{enumerate}
+    \item The GUROBI solver cannot find a (better) solution for the sub-problem,
+    either due to the infeasibility of the problem or because of
+    the time limit set for solving each bucket.
+    \item The kernel search algorithm, during its improvement phase,
+    only accepts a new solution (thus updating the kernel)
+    if it improves upon, or is at least equal, to the incumbent one.
+    This is done by adding a cutoff constraint, as explained in~\ref{sec:improving-efficiency}.
+\end{enumerate}
 
-\section{Diversification of Solutions}
+In order to mitigate this problem we introduced a \textit{repetition counter}
+that, during the improvement phase of kernel search,
+removes the cutoff constraint for \textit{k} buckets
+when the same solution (or no solution) is found for \textit{h} times.
+
+The idea is that this method allows to select if the focus should be on
+\textit{diversification} or \textit{intensification},
+by appropriately setting parameters \textit{h} and \textit{k}.
+
+A low value for \textit{h} and a high one for \textit{k} allow for
+diversification, by adding to the kernel variables that otherwise
+may never be selected, and could allow to escape the local optimum.
+
+On the opposite, a high value for \textit{h} and a low one for \textit{k}
+switch to focus on intensification, by giving priority to finding
+better solutions.
+
+After experimenting with different values for \textit{h} and \textit{k},
+we found that keeping them more or less equal allowed for
+a reasonable balance between diversification and intensification.
+In particular we found that \(h=3\) and \(k=3\) worked quite well
+with the test instances we selected.
+
+%\section{Iterative Kernel Search}
