@@ -4,13 +4,12 @@ import com.golinocottibeatrice.kernelsearch.solver.Solution;
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Rappresenta il kernel set del problema.
  */
 public class Kernel {
-    private Map<String, Variable> variables;
+    private final Map<String, Variable> variables;
 
     /**
      * Crea un nuovo kernel set vuoto.
@@ -86,7 +85,7 @@ public class Kernel {
                 tbRemoved.add(v_name);
         });
 
-        tbRemoved.forEach(v_name -> this.variables.remove(v_name));
+        tbRemoved.forEach(this.variables::remove);
 
         return initial_count - this.variables.size();
     }
