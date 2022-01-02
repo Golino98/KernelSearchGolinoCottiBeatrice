@@ -45,17 +45,21 @@
 
 \begin{document}
     \input{title} %Frontespizio
+    \hyphenpenalty=2000 % Rende meno probabile lo spezzamento delle parole a capo
 
+    \frontmatter
+    \pagenumbering{Roman} % Numeri romani maiuscoli per numero pagina per indice e intro
     \tableofcontents % Indice
-    \hyphenpenalty=3000 % Rende meno probabile lo spezzamento delle parole a capo
+    \input{intro} % Introduzione
 
-    % I capitoli veri e propri sono su pagine a parte
-    \input{intro}
+    \mainmatter
     \input{mkp}
     \input{kernel}
     \input{impl}
     \input{test}
     \input{imprv}
+
+    \backmatter
     \printbibliography[
         heading=bibintoc % Inserisci bibliografia nell'indice
     ]
