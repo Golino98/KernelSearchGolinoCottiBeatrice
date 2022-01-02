@@ -7,6 +7,7 @@ import com.golinocottibeatrice.kernelsearch.solver.*;
 import gurobi.GRBException;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,14 +156,18 @@ public class KernelSearch {
                 }
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
-                // aggiungile al kernel, e rimuovile dal bucket
+                // aggiungile al kernel
                 var selected = model.getSelectedVariables(b.getVariables());
 
-                this.placeInKernel(selected);
+                if (selected.stream().allMatch(v -> this.kernel.contains(v))) {
+                    log.noSolution(elapsedTime());
+                } else {
+                    this.placeInKernel(selected);
 
-                this.executeEject(selected, solution);
+                    this.executeEject(selected, solution);
 
-                model.write();
+                    model.write();
+                }
             } else {
                 log.noSolution(elapsedTime());
             }
@@ -177,8 +182,7 @@ public class KernelSearch {
 
     protected void placeInKernel(List<Variable> selected) {
         selected.forEach(variable -> {
-            if (!this.kernel.contains(variable))
-                this.kernel.addItem(variable);
+            this.kernel.addItem(variable);
         });
     }
 

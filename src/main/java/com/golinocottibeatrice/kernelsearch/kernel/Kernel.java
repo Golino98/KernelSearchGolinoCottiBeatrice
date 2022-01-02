@@ -3,21 +3,20 @@ package com.golinocottibeatrice.kernelsearch.kernel;
 import com.golinocottibeatrice.kernelsearch.solver.Solution;
 import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Rappresenta il kernel set del problema.
  */
 public class Kernel {
-    private List<Variable> variables;
+    private Map<String, Variable> variables;
 
     /**
      * Crea un nuovo kernel set vuoto.
      */
     public Kernel() {
-        variables = new ArrayList<>();
+        variables = new HashMap<>();
     }
 
     /**
@@ -27,7 +26,7 @@ public class Kernel {
      */
     public void addItem(Variable v, int solutionsCount) {
         v.resetTimesUsed(solutionsCount);
-        variables.add(v);
+        variables.put(v.getName(), v);
     }
 
     /**
@@ -36,7 +35,7 @@ public class Kernel {
      * @param v {@link Variable} da aggiungere alla lista.
      */
     public void addItem(Variable v) {
-        variables.add(v);
+        variables.put(v.getName(), v);
     }
 
     /**
@@ -45,7 +44,7 @@ public class Kernel {
      * @param v {@link Variable} di cui verificare la presenza all'interno della lista.
      */
     public boolean contains(Variable v) {
-        return variables.stream().anyMatch(v2 -> v2.getName().equals(v.getName()));
+        return this.variables.containsKey(v.getName());
     }
 
     /**
@@ -56,25 +55,19 @@ public class Kernel {
     }
 
     public List<Variable> getVariables() {
-        return this.variables;
+        return this.variables.values().stream().toList();
     }
 
     /**
      * Updates the 'timesUsed' attribute for the variables in the Kernel
+     *
      * @param solution the current solution used for the update
      */
     public void updateUsages(Solution solution) {
-        List<Variable> activeInSolution =
-                solution.getVariables()
-                        .stream()
-                        .filter(variable -> variable.getValue() >= 1)
-                        .toList();
-
-        this.variables.forEach(variable -> {
-            if (activeInSolution.stream().anyMatch(v -> v.getName().equals(variable.getName()))) {
-                variable.increaseTimesUsed();
-            }
-        });
+        solution.getVariables()
+                .stream()
+                .filter(v -> v.getValue() >= 1)
+                .forEach(v -> this.variables.get(v.getName()).increaseTimesUsed());
     }
 
     /**
@@ -85,15 +78,16 @@ public class Kernel {
      * @return total of variables removed from the kernel
      */
     public int checkForEject(int threshold, int solutions_count) {
-        List<Variable> new_variables = this.variables.stream()
-                .filter(variable ->
-                        !variable.isFromBucket() || variable.exceedsThreshold(threshold, solutions_count))
-                .collect(Collectors.toList());
+        int initial_count = this.variables.size();
+        List<String> tbRemoved = new ArrayList<>();
 
-        int removed_vars = this.variables.size() - new_variables.size();
+        this.variables.forEach((v_name, v_value) -> {
+            if (v_value.isFromBucket() && v_value.exceedsThreshold(threshold, solutions_count))
+                tbRemoved.add(v_name);
+        });
 
-        this.variables = new_variables;
+        tbRemoved.forEach(v_name -> this.variables.remove(v_name));
 
-        return removed_vars;
+        return initial_count - this.variables.size();
     }
 }
