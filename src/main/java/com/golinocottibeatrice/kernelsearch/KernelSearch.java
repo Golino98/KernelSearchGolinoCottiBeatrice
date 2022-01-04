@@ -127,10 +127,6 @@ public class KernelSearch {
     protected void solveBuckets() throws GRBException {
         int count = 0;
         int countSolutions = 0;
-        // Se impostato a true, vengono accettate tutte le soluzioni,
-        // anche quelle che peggiorano il valore della funzione obiettivo.
-        // Sempre uguale a true se il counter delle ripetizioni è disabilitato.
-        disableCutoff = !config.isRepCtrEnabled();
         currentSolution = bestSolution;
 
         for (var b : buckets) {
@@ -199,14 +195,14 @@ public class KernelSearch {
         model.disableVariables(toDisable);
         model.addBucketConstraint(b.getVariables());
 
-        if (!bestSolution.isEmpty()) {
+        if (!currentSolution.isEmpty()) {
             // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
             // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
             if (!disableCutoff) {
                 model.addObjConstraint(currentSolution.getObjective());
             }
             // Imposta la soluzione da cui il modello parte.
-            model.readSolution(bestSolution);
+            model.readSolution(currentSolution);
         }
 
         return model;
