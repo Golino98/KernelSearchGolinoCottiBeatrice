@@ -84,14 +84,34 @@ a reasonable balance between diversification and intensification.
 In particular we found that \(h=3\) and \(k=3\) worked quite well
 with the test instances we selected.
 
-\subsection{Improvements}
+\subsection{Reset counter when new optimum is found}
 A small enhancement we have applied to this mechanism
 is to reset the counter to its initial status
-whenever the algorithm finds a new solution
+whenever the Kernel Search finds a new solution
 that is better than any other found before.
 
-This is significant because the default method
-completely ignores the value of the solutions found
+This is significant because the default repetition counter
+method completely ignores the value of the solutions found
 during the \textit{k} cycles.
+
+
+\section{Item Dominance}
+In~\cite{mkp:2019} an improvement for the MKP model is suggested:
+given two items \textit{j} and \textit{k}, if \(w_{j} \leq w_{k}\)
+and \(p_{j} \geq p_{k}\), then it is said that \textit{j dominates k}.
+This means that when an item is excluded from the solution,
+all items dominated by it can also be excluded.
+
+The simplest way to implement this method is to preliminarly sort all
+items according to non-increasing weight, breaking ties by
+non-decreasing profit.
+For each item \(k\), items \(j \coloneqq k+1,\dots,n\) are parsed,
+and if \(p_{j} \geq p_{k}\) then the pair \((j,k)\) is added to a
+dominance list \(D\).
+Then, the following constraints are added to the model:
+\begin{equation}
+    \label{eq:itemdom}
+    \sum_{i=1}^{m} x_{ij} \geq \sum_{i=1}^{m} x_{ik} \qquad (j,k) \in D
+\end{equation}
 
 %\section{Iterative Kernel Search}
