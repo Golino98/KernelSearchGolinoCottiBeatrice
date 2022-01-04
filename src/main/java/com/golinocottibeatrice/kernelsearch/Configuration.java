@@ -27,6 +27,7 @@ public class Configuration {
     private boolean repCtrEnabled;
     private int repCtrThreshold;
     private int repCtrPersistence;
+    private boolean itemDomEnabled;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -186,5 +187,13 @@ public class Configuration {
 
     public void setEjectEnabled(boolean ejectEnabled) {
         this.ejectEnabled = ejectEnabled;
+    }
+
+    public boolean isItemDomEnabled() {
+        return itemDomEnabled;
+    }
+
+    public void setItemDomEnabled(boolean itemDomEnabled) {
+        this.itemDomEnabled = itemDomEnabled;
     }
 }

@@ -77,6 +77,7 @@ public class ConfigurationReader {
                 case "ENABLE_REPCTR" -> config.setRepCtrEnabled(Boolean.parseBoolean(value));
                 case "REPCTR_THRESHOLD" -> config.setRepCtrThreshold(Integer.parseInt(value));
                 case "REPCTR_PERSISTENCE" -> config.setRepCtrPersistence(Integer.parseInt(value));
+                case "ENABLE_ITEMDOM" -> config.setItemDomEnabled(Boolean.parseBoolean(value));
                 default -> throw new IllegalStateException(UNRECOGNIZED_PARAMETER_NAME);
             }
         }

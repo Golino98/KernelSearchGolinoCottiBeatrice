@@ -4,9 +4,11 @@ import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;
+import com.golinocottibeatrice.kernelsearch.util.Pair;
 import gurobi.GRBException;
 
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,6 +39,7 @@ public class KernelSearch {
 
     // Funzionalità aggiuntive
     private RepetitionCounter repetitionCounter;
+    private List<Pair> dominanceList = new ArrayList<>();
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -53,6 +56,10 @@ public class KernelSearch {
             repetitionCounter = new RepetitionCounter(
                     config.getRepCtrThreshold(), config.getRepCtrPersistence(), -1);
         }
+
+        if (config.isItemDomEnabled()) {
+            dominanceList = new DominanceListBuilder(instance).build();
+        }
     }
 
     /**
@@ -65,6 +72,7 @@ public class KernelSearch {
         log.start(instance.getName(), Instant.now());
         log.ejectStatus(config.isEjectEnabled(), config.getEjectThreshold());
         log.repCtrStatus(config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
+        log.itemDomStatus(config.isItemDomEnabled());
 
         solveRelaxation();
 
@@ -86,6 +94,7 @@ public class KernelSearch {
 
     protected void solveRelaxation() throws GRBException {
         var model = solver.createModel(instance, config.getTimeLimit(), true);
+        model.addDominanceConstraint(dominanceList);
         log.relaxStart();
 
         var solution = model.solve();
@@ -98,6 +107,8 @@ public class KernelSearch {
     protected void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), getRemainingTime());
         var model = solver.createModel(instance, timeLimit);
+
+        model.addDominanceConstraint(dominanceList);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         model.disableVariables(toDisable);
@@ -191,6 +202,8 @@ public class KernelSearch {
 
         var timeLimit = Math.min(config.getTimeLimitBucket(), getRemainingTime());
         var model = solver.createModel(instance, timeLimit);
+
+        model.addDominanceConstraint(dominanceList);
 
         // Disabilita le variabili che non sono ne nel kernel ne nel bucket
         var toDisable = variables.stream()

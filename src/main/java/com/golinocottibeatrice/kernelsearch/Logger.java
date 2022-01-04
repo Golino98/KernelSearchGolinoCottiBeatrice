@@ -19,6 +19,8 @@ public class Logger {
     private static final String EJECT_DISABLED = CYAN + "\nkernel eject: " + RESET + "disabled";
     private static final String REP_ENABLED = CYAN + "\nRep. counter: " + RESET + "enabled (thld=%d,pers=%d)";
     private static final String REP_DISABLED = CYAN + "\nRep. counter: " + RESET + "disabled";
+    private static final String ITEMDOM_ENABLED = CYAN + "\nItem dom.   : " + RESET + "enabled";
+    private static final String ITEMDOM_DISABLED = CYAN + "\nItem dom.    : " + RESET + "disabled";
     private static final String RELAXATION = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
     private static final String KERNEL = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
     private static final String ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
@@ -57,6 +59,14 @@ public class Logger {
             out.printf(REP_ENABLED, threshold, persistence);
         } else {
             out.print(REP_DISABLED);
+        }
+    }
+
+    public void itemDomStatus(boolean enabled) {
+        if (enabled) {
+            out.print(ITEMDOM_ENABLED);
+        } else {
+            out.print(ITEMDOM_DISABLED);
         }
     }
 

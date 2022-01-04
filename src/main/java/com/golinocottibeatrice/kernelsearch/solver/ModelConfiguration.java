@@ -2,6 +2,9 @@ package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import gurobi.GRBEnv;
+import gurobi.GRBVar;
+
+import java.util.List;
 
 /**
  * Rappresenta la configurazione di un modello.
@@ -12,6 +15,8 @@ class ModelConfiguration {
     private Instance instance;
     private long timeLimit;
     private boolean isLpRelaxation;
+    private GRBVar[][] grbVars;
+    private List<Variable> variables;
 
     public GRBEnv getEnv() {
         return env;
@@ -51,5 +56,21 @@ class ModelConfiguration {
 
     public void setSolPath(String solPath) {
         this.solPath = solPath;
+    }
+
+    public GRBVar[][] getGrbVars() {
+        return grbVars;
+    }
+
+    public void setGrbVars(GRBVar[][] grbVars) {
+        this.grbVars = grbVars;
+    }
+
+    public List<Variable> getVariables() {
+        return variables;
+    }
+
+    public void setVariables(List<Variable> variables) {
+        this.variables = variables;
     }
 }

@@ -29,6 +29,7 @@ public class SearchConfiguration {
     private boolean repCtrEnabled;
     private int repCtrThreshold;
     private int repCtrPersistence;
+    private boolean itemDomEnabled;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -167,4 +168,11 @@ public class SearchConfiguration {
     }
 
 
+    public boolean isItemDomEnabled() {
+        return itemDomEnabled;
+    }
+
+    public void setItemDomEnabled(boolean itemDomEnabled) {
+        this.itemDomEnabled = itemDomEnabled;
+    }
 }

@@ -1,5 +1,6 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
+import com.golinocottibeatrice.kernelsearch.util.Pair;
 import gurobi.*;
 
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ public class Model {
 
     private final GRBModel model;
     private final ModelConfiguration config;
-    private final List<Variable> variables;
 
     /**
      * Crea un nuovo modello.
@@ -27,9 +27,8 @@ public class Model {
      * @param model  Il modello GUROBI.
      * @param config La configurazione del modello.
      */
-    Model(GRBModel model, List<Variable> variables, ModelConfiguration config) throws GRBException {
+    Model(GRBModel model, ModelConfiguration config) throws GRBException {
         this.model = config.isLpRelaxation() ? model.relax() : model;
-        this.variables = variables;
         this.config = config;
 
         model.set(GRB.DoubleParam.TimeLimit, config.getTimeLimit());
@@ -50,14 +49,14 @@ public class Model {
         }
 
         var objective = model.get(GRB.DoubleAttr.ObjVal);
-        for (var v : variables) {
+        for (var v : config.getVariables()) {
             var grbVar = model.getVarByName(v.getName());
             var rc = config.isLpRelaxation() ? grbVar.get(GRB.DoubleAttr.RC) : 0;
             var value = grbVar.get(GRB.DoubleAttr.X);
             v.setRc(rc);
             v.setValue(value);
         }
-        return new Solution(objective, variables);
+        return new Solution(objective, config.getVariables());
     }
 
     /**
@@ -106,6 +105,19 @@ public class Model {
      */
     public void addObjConstraint(double obj) throws GRBException {
         model.getEnv().set(GRB.DoubleParam.Cutoff, obj);
+    }
+
+    public void addDominanceConstraint(List<Pair> dominanceList) throws GRBException {
+        for (var item : dominanceList) {
+            var lhs = new GRBLinExpr();
+            var rhs = new GRBLinExpr();
+            for (var i = 0; i < config.getInstance().getNumKnapsacks(); i++) {
+                lhs.addTerm(1, config.getGrbVars()[i][item.getJ()]);
+                rhs.addTerm(1, config.getGrbVars()[i][item.getK()]);
+            }
+            var name = String.format("ITEM_DOMINANCE_%d_%d", item.getJ(), item.getK());
+            model.addConstr(lhs, GRB.GREATER_EQUAL, rhs, name);
+        }
     }
 
     /**

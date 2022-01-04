@@ -141,6 +141,7 @@ public class Start {
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
         searchConfig.setRepCtrThreshold(config.getRepCtrThreshold());
         searchConfig.setRepCtrPersistence(config.getRepCtrPersistence());
+        searchConfig.setItemDomEnabled(config.isItemDomEnabled());
 
         return searchConfig;
     }

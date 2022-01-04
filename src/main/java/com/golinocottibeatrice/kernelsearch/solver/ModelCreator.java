@@ -1,9 +1,13 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
+import com.golinocottibeatrice.kernelsearch.instance.Item;
+import com.golinocottibeatrice.kernelsearch.util.Pair;
 import gurobi.*;
 
+import java.sql.Array;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -43,9 +47,12 @@ class ModelCreator {
         createSelectionContraints();
         setObjectiveFunction();
 
+        config.setVariables(modelVars);
+        config.setGrbVars(grbVars);
+
         // Necessario per applicare le modifiche effettuate al modello.
         model.update();
-        return new Model(model, modelVars, config);
+        return new Model(model, config);
     }
 
     // Crea le di variabili binarie x(i,j)
@@ -58,7 +65,7 @@ class ModelCreator {
             for (int item = 0; item < ni; item++) {
                 var name = String.format(FORMAT_VAR_NAME, knapsack + 1, item + 1);
                 grbVars[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
-                modelVars.add(new Variable(name, instance.getItem(item),instance.getCapacity(knapsack)));
+                modelVars.add(new Variable(name, instance.getItem(item), instance.getCapacity(knapsack)));
             }
         }
     }

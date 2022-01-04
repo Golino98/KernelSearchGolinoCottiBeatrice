@@ -33,6 +33,7 @@ public class Instance {
         return name;
     }
 
+
     public int getNumKnapsacks() {
         return capacities.size();
     }
@@ -43,6 +44,14 @@ public class Instance {
 
     public int getCapacity(int i) {
         return capacities.get(i);
+    }
+
+    public List<Integer> getCapacities() {
+        return capacities;
+    }
+
+    public List<Item> getItems() {
+        return items;
     }
 
     public Item getItem(int i) {
