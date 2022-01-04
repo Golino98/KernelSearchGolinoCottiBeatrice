@@ -13,6 +13,32 @@ described in~\ref{subsec:inst} as benchmark.
 
 %\section{Variable Sorting}
 
+
+\section{Kernel Construction Criteria}
+A recurring problem we have identified when running more complex
+instances (such as the one in \texttt{FK\_4}) is that,
+from the very beginning, the kernel contains quite a lot of variables,
+which makes the solving of the kernel problem and the buckets sub-problems slow.
+
+This means that a starting point to improve the performance of the Kernel Search
+could be to optimize the management of the kernel set,
+possibily starting from the \textit{kernel construction criterion},
+which by default is to include the first \textit{C} sorted variables.
+
+We have experimented with the following criteria:
+\begin{enumerate}
+    \item Select the variables that have a greater than 0 in the LP relaxation;
+    \item Select the variables that have a value equal to 1 in the LP relaxation;
+    \item Select the variables that have a value greater than a threshold in the LP relaxation.
+\end{enumerate}
+
+However, after running benchmark to compare these criteria
+with the default one, the results demonstrated that the default criterion
+consistently gave better results.
+It is however worth noting that the criterion 2 and 3 (with a proper threshold),
+gave results that were quite close to the ones with the default criteria,
+while using much less time.
+
 %\section{Ejection of Variables from the Kernel}
 
 
@@ -57,5 +83,15 @@ we found that keeping them more or less equal allowed for
 a reasonable balance between diversification and intensification.
 In particular we found that \(h=3\) and \(k=3\) worked quite well
 with the test instances we selected.
+
+\subsection{Improvements}
+A small enhancement we have applied to this mechanism
+is to reset the counter to its initial status
+whenever the algorithm finds a new solution
+that is better than any other found before.
+
+This is significant because the default method
+completely ignores the value of the solutions found
+during the \textit{k} cycles.
 
 %\section{Iterative Kernel Search}

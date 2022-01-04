@@ -11,7 +11,7 @@ public class KernelBuilderIntValues implements KernelBuilder{
         Kernel kernel = new Kernel();
 
         for (var v : variables) {
-            if (v.getValue() >= 1) {
+            if (v.getValue() == 1) {
                 kernel.addItem(v);
             }else{
                 break;
