@@ -73,4 +73,13 @@ public class RepetitionCounter {
         lastValue = value;
         return counter > h;
     }
+
+    /**
+     * Resetta il counter.
+     */
+    public void reset() {
+        counter = 1;
+        resetCounter = 0;
+        lastValue = initial;
+    }
 }

@@ -132,8 +132,8 @@ public class KernelSearch {
         for (var b : buckets) {
             count++;
 
-            Model model = this.buildModel(b, count);
-            Solution solution = model.solve();
+            var model = this.buildModel(b, count);
+            var solution = model.solve();
             if (config.isRepCtrEnabled()) {
                 // Il counter mi dice se sto trovando ripetutamente lo stesso valore.
                 // Se questo è il caso, nelle prossime iterazioni accetta qualsiasi soluzione
@@ -146,6 +146,9 @@ public class KernelSearch {
                 currentSolution = solution;
                 if (solution.getObjective() >= bestSolution.getObjective()) {
                     bestSolution = solution;
+                    // Se viene trovato un ottimo globale, resetta il counter
+                    repetitionCounter.reset();
+                    disableCutoff = false;
                 }
 
                 // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
