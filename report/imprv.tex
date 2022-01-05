@@ -39,7 +39,17 @@ It is however worth noting that the criterion 2 and 3 (with a proper threshold),
 gave results that were quite close to the ones with the default criteria,
 while using much less time.
 
-%\section{Ejection of Variables from the Kernel}
+
+\section{Ejection of Variables from the Kernel}
+As an alternative to improve the efficiency in solving the kernel set
+we have developed a \textit{kernel eject} method,
+which consists in removing from the kernel variables
+that do not appear in the solution of \textit{n}
+consecutive bucket sub-problems.
+
+When the variables are removed from the kernel
+not deleted from the model, but they are returned to their original bucket.
+If they originally were in the kernel, they are inserted into the first bucket.
 
 
 \section{Repetition Counter}
