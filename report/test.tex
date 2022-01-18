@@ -71,8 +71,9 @@ An example of the structure of an instance is shown below:
     \end{split}
 \]
 
-For most of the instances with the exact solution calculated by the authors of the paper, we were able to
-find the exact solution using a GUROBI solver with the following configuration:
+The execution times required to solve the instances to the optimum were not provided to us.
+For a few of the instances we were able to find the exact solution
+using a GUROBI solver with the following configuration:
 
 \begin{itemize}
     \item \textit{Presolve}: 2 (aggressive presolve)
@@ -81,7 +82,8 @@ find the exact solution using a GUROBI solver with the following configuration:
     \item \textit{MIPGap}: \num{1e-12}
 \end{itemize}
 
-The code can be found at \url{https://github.com/Golino98/EsattoMKP}
+Most of the instances used all the available time without reaching the optimum.
+The code and the results can be found at \url{https://github.com/Golino98/EsattoMKP}.
 
 \subsection{Selected Instances}\label{subsec:inst}
 To simplify the testing of the changes to the kernel search algorithm,
@@ -95,9 +97,6 @@ that couldn't be solved.
 
 \input{tables/exact_opt.tex}
 \input{tables/exact_noopt.tex}
-
-
-\section{Performance of the exact algorithm}
 
 
 \section{Performance of the default kernel search}
