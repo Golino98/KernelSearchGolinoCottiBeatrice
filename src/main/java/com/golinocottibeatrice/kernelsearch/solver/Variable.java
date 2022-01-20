@@ -1,6 +1,7 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.instance.Item;
+import com.golinocottibeatrice.kernelsearch.instance.Knapsack;
 
 /**
  * Rappresenta una variabile x(i,j) del problema.
@@ -8,16 +9,16 @@ import com.golinocottibeatrice.kernelsearch.instance.Item;
 public class Variable {
     private final String name;
     private final Item item;
-    private final int knapsackCapacity;
+    private final Knapsack knapsack;
     private int timesUsed = 0;
     private double value;
     private double rc;
     private Boolean fromBucket=true;
 
-    Variable(String name, Item item, int knapCapacity) {
+    Variable(String name, Item item, Knapsack knapsack) {
         this.name = name;
         this.item = item;
-        this.knapsackCapacity = knapCapacity;
+        this.knapsack = knapsack;
     }
 
     public Boolean isFromBucket() {
@@ -69,6 +70,6 @@ public class Variable {
     }
 
     public int getKnapsackCapacity() {
-        return knapsackCapacity;
+        return knapsack.getCapacity();
     }
 }

@@ -7,12 +7,18 @@ package com.golinocottibeatrice.kernelsearch.instance;
  * il coefficiente di costo ridotto.
  */
 public class Item {
+    private final int index;
     private final int weight;
     private final int profit;
 
-    Item(int weight, int profit) {
+    Item(int index, int weight, int profit) {
+        this.index = index;
         this.weight = weight;
         this.profit = profit;
+    }
+
+    public int getIndex() {
+        return index;
     }
 
     public int getWeight() {
@@ -22,4 +28,5 @@ public class Item {
     public int getProfit() {
         return profit;
     }
+
 }

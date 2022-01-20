@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Lettore del file contenente l'istanza del problema multiple knapsack.
@@ -47,23 +46,25 @@ public class InstanceReader {
         // La seconda linea contiene il numero di oggetti
         var nItems = Integer.parseInt(lines.get(1));
 
-        var capacities = new ArrayList<Integer>(nKnapsacks);
+        var knapsacks = new ArrayList<Knapsack>(nKnapsacks);
         // Le righe dalla terza alla nKnapsacks+1 contengono le capacità
         // subList è inclusivo a destra e esclusivo a sinistra
-        for (var line : lines.subList(2, nKnapsacks + 2)) {
-            capacities.add(Integer.parseInt(line));
+        var knapsackLines = lines.subList(2, nKnapsacks + 2);
+        for (var i = 0; i < knapsackLines.size(); i++) {
+            knapsacks.add(new Knapsack(i, Integer.parseInt(knapsackLines.get(i))));
         }
 
         var items = new ArrayList<Item>(nItems);
         // Le righe dalla nKnapsacks+2 alla nItems+nKnapsacks+1 contengono gli oggetti
-        for (var line : lines.subList(nKnapsacks + 2, nItems + nKnapsacks + 2)) {
-            var splitLine = line.split(SEPARATOR);
+        var itemLines = lines.subList(nKnapsacks + 2, nItems + nKnapsacks + 2);
+        for (var i = 0; i < itemLines.size(); i++) {
+            var splitLine = itemLines.get(i).split(SEPARATOR);
             var weight = Integer.parseInt(splitLine[0]);
             var profit = Integer.parseInt(splitLine[1]);
-            items.add(new Item(weight, profit));
+            items.add(new Item(i, weight, profit));
         }
 
         br.close();
-        return new Instance(name,capacities, items);
+        return new Instance(name, knapsacks, items);
     }
 }

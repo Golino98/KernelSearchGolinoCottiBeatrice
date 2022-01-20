@@ -1,14 +1,14 @@
 package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
+import com.golinocottibeatrice.kernelsearch.dominance.DominanceList;
+import com.golinocottibeatrice.kernelsearch.dominance.DominanceListBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;
-import com.golinocottibeatrice.kernelsearch.util.Pair;
 import gurobi.GRBException;
 
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -39,7 +39,7 @@ public class KernelSearch {
 
     // Funzionalità aggiuntive
     private RepetitionCounter repetitionCounter;
-    private List<Pair> dominanceList = new ArrayList<>();
+    private DominanceList dominanceList;
 
     /**
      * Crea una nuova istanza di kernel search.

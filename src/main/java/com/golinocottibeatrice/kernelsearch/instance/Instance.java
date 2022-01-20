@@ -42,31 +42,11 @@ public class Instance {
         return items.size();
     }
 
-    public int getCapacity(int i) {
-        return knapsacks.get(i).getCapacity();
-    }
-
-    public Knapsack getKnapsack(int i) {
-        return knapsacks.get(i);
-    }
-
     public List<Knapsack> getKnapsacks() {
         return knapsacks;
     }
 
     public List<Item> getItems() {
         return items;
-    }
-
-    public Item getItem(int i) {
-        return items.get(i);
-    }
-
-    public int getWeight(int i) {
-        return getItem(i).getWeight();
-    }
-
-    public int getProfit(int i) {
-        return getItem(i).getProfit();
     }
 }

@@ -1,6 +1,6 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
-import com.golinocottibeatrice.kernelsearch.util.Pair;
+import com.golinocottibeatrice.kernelsearch.dominance.DominanceList;
 import gurobi.*;
 
 import java.util.ArrayList;
@@ -107,8 +107,29 @@ public class Model {
         model.getEnv().set(GRB.DoubleParam.Cutoff, obj);
     }
 
-    public void addDominanceConstraint(List<Pair> dominanceList) throws GRBException {
-        for (var item : dominanceList) {
+    public void addDominanceConstraint(DominanceList dominanceList) throws GRBException {
+        for (var pair : dominanceList) {
+            var lhs = new GRBLinExpr();
+            var rhs = new GRBLinExpr();
+            var j = pair.getJ();
+            var k = pair.getK();
+
+            for (var i = 0; i < config.getInstance().getNumKnapsacks(); i++) {
+                lhs.addTerm(1, config.getGrbVars()[i][j.getIndex()]);
+                rhs.addTerm(1, config.getGrbVars()[i][k.getIndex()]);
+            }
+            var name = String.format("ITEM_DOMINANCE_%d_%d", j.getIndex(), k.getIndex());
+            model.addConstr(lhs, GRB.GREATER_EQUAL, rhs, name);
+        }
+    }
+
+    /*
+    public void addReductionConstraints(Map<Knapsack, List<Item>> reduction) throws GRBException {
+        for (var i : reduction.keySet()) {
+            for (var j : reduction.get(i)) {
+                var ctr = new GRBLinExpr();
+                ctr.addTerm(1,config.getGrbVars()[i.][j]);
+            }
             var lhs = new GRBLinExpr();
             var rhs = new GRBLinExpr();
             for (var i = 0; i < config.getInstance().getNumKnapsacks(); i++) {
@@ -118,7 +139,7 @@ public class Model {
             var name = String.format("ITEM_DOMINANCE_%d_%d", item.getJ(), item.getK());
             model.addConstr(lhs, GRB.GREATER_EQUAL, rhs, name);
         }
-    }
+    }*/
 
     /**
      * Inizializza le variabili del modello.

@@ -1,13 +1,9 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
-import com.golinocottibeatrice.kernelsearch.instance.Item;
-import com.golinocottibeatrice.kernelsearch.util.Pair;
 import gurobi.*;
 
-import java.sql.Array;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,35 +57,35 @@ class ModelCreator {
         var ni = instance.getNumItems();
         grbVars = new GRBVar[nk][ni];
 
-        for (var knapsack = 0; knapsack < nk; knapsack++) {
-            for (int item = 0; item < ni; item++) {
-                var name = String.format(FORMAT_VAR_NAME, knapsack + 1, item + 1);
-                grbVars[knapsack][item] = model.addVar(0, 1, 0, GRB.BINARY, name);
-                modelVars.add(new Variable(name, instance.getItem(item), instance.getCapacity(knapsack)));
+        for (var knapsack : instance.getKnapsacks()) {
+            for (var item : instance.getItems()) {
+                var name = String.format(FORMAT_VAR_NAME, knapsack.getIndex() + 1, item.getIndex() + 1);
+                grbVars[knapsack.getIndex()][item.getIndex()] = model.addVar(0, 1, 0, GRB.BINARY, name);
+                modelVars.add(new Variable(name, item, knapsack));
             }
         }
     }
 
     // Sommatoria per j=1..n di w(j)*x(i,j)<=c(i) per i=1..m
     private void createCapacityContraints() throws GRBException {
-        for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
+        for (var knapsack : instance.getKnapsacks()) {
             var constraint = new GRBLinExpr();
-            for (int item = 0; item < instance.getNumItems(); item++) {
-                constraint.addTerm(instance.getWeight(item), grbVars[knapsack][item]);
+            for (var item : instance.getItems()) {
+                constraint.addTerm(item.getWeight(), grbVars[knapsack.getIndex()][item.getIndex()]);
             }
-            var name = String.format(FORMAT_CAPACITY, knapsack + 1);
-            model.addConstr(constraint, GRB.LESS_EQUAL, instance.getCapacity(knapsack), name);
+            var name = String.format(FORMAT_CAPACITY, knapsack.getIndex() + 1);
+            model.addConstr(constraint, GRB.LESS_EQUAL, knapsack.getCapacity(), name);
         }
     }
 
     // Sommatoria per i=1..m di x(i,j) <=1 per j=1..n
     private void createSelectionContraints() throws GRBException {
-        for (int item = 0; item < instance.getNumItems(); item++) {
+        for (var item : instance.getItems()) {
             var constraint = new GRBLinExpr();
-            for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
-                constraint.addTerm(1, grbVars[knapsack][item]);
+            for (var knapsack : instance.getKnapsacks()) {
+                constraint.addTerm(1, grbVars[knapsack.getIndex()][item.getIndex()]);
             }
-            var name = String.format(FORMAT_SELECTION, item + 1);
+            var name = String.format(FORMAT_SELECTION, item.getIndex() + 1);
             model.addConstr(constraint, GRB.LESS_EQUAL, 1, name);
         }
     }
@@ -97,9 +93,9 @@ class ModelCreator {
     // Max della sommatoria per i=1..m di sommatoria per j=1..n di p(j)*x(i,j)
     private void setObjectiveFunction() throws GRBException {
         var objective = new GRBLinExpr();
-        for (int knapsack = 0; knapsack < instance.getNumKnapsacks(); knapsack++) {
-            for (int item = 0; item < instance.getNumItems(); item++) {
-                objective.addTerm(instance.getProfit(item), grbVars[knapsack][item]);
+        for (var knapsack : instance.getKnapsacks()) {
+            for (var item : instance.getItems()) {
+                objective.addTerm(item.getProfit(), grbVars[knapsack.getIndex()][item.getIndex()]);
             }
         }
         model.setObjective(objective, GRB.MAXIMIZE);
