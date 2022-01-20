@@ -28,4 +28,8 @@ public class Packing {
     public boolean isEmpty() {
         return packing.isEmpty();
     }
+
+    public void putAll(Packing p) {
+        packing.putAll(p.packing);
+    }
 }

@@ -3,7 +3,7 @@ package com.golinocottibeatrice.kernelsearch.dominance;
 import com.golinocottibeatrice.kernelsearch.instance.Item;
 
 /**
- * Rappresenta una coppia di valori.
+ * Rappresenta una coppia di valori della dominance list.
  */
 public class DominancePair {
     private final Item j;
@@ -15,7 +15,7 @@ public class DominancePair {
     }
 
     public Item getJ() {
-        return k;
+        return j;
     }
 
     public Item getK() {

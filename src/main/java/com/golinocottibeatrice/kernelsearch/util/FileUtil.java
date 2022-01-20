@@ -9,8 +9,6 @@ import java.nio.file.Paths;
  * Contiene metodi di utilità per operare su file.
  */
 public class FileUtil {
-    // Estensione dei file di log
-    private static final String LOG_EXT = ".log";
     // Estensione dei file di soluzione
     private static final String SOL_EXT = ".sol";
     // Pattern per identificare la sola estensione di un file
@@ -59,19 +57,6 @@ public class FileUtil {
      * @return Il path del file di sol.
      */
     public static String getSolPath(String dir, String fileName) {
-        return getPath(dir, fileName, SOL_EXT);
-    }
-
-    /**
-     * Consente di comporre il path di un file, unendo il path di una directory
-     * al nome del file, a cui viene aggiunta un'estensione.
-     *
-     * @param dir      La directory del file.
-     * @param fileName Il nome del file.
-     * @param ext      L'estensione da dare al file.
-     * @return Il path del file.
-     */
-    private static String getPath(String dir, String fileName, String ext) {
-        return Paths.get(dir, fileName + ext).toString();
+        return Paths.get(dir, fileName + FileUtil.SOL_EXT).toString();
     }
 }

@@ -15,8 +15,8 @@ public class InstanceReduction {
         this.items = new ArrayList<>(instance.getItems());
     }
 
-    public void reduce() {
-        var packing = new HashMap<Knapsack, List<Item>>();
+    public Packing reduce() {
+        var packing = new Packing();
         var I = new LinkedList<Knapsack>();
         var sizeI = 0;
 
@@ -38,9 +38,12 @@ public class InstanceReduction {
                 if (!newPacking.isEmpty()) {
                     I = new LinkedList<>();
                     items.removeAll(J);
+
+                    packing.putAll(newPacking);
                 }
             }
         }
 
+        return packing;
     }
 }
