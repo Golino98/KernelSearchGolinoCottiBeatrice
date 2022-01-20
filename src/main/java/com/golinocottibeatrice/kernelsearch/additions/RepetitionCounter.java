@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch;
+package com.golinocottibeatrice.kernelsearch.additions;
 
 /**
  * Rappresenta un counter che viene incrementato ogni volta che

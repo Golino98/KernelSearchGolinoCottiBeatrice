@@ -1,8 +1,9 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.additions.RepetitionCounter;
 import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
-import com.golinocottibeatrice.kernelsearch.dominance.DominanceList;
-import com.golinocottibeatrice.kernelsearch.dominance.DominanceListBuilder;
+import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
+import com.golinocottibeatrice.kernelsearch.additions.DominanceListBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;

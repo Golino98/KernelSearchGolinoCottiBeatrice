@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch.dominance;
+package com.golinocottibeatrice.kernelsearch.additions;
 
 import com.golinocottibeatrice.kernelsearch.instance.Item;
 

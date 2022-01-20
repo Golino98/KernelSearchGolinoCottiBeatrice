@@ -1,6 +1,6 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
-import com.golinocottibeatrice.kernelsearch.dominance.DominanceList;
+import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
 import gurobi.*;
 
 import java.util.ArrayList;

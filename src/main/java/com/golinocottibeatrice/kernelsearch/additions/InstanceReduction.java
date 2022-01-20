@@ -1,4 +1,4 @@
-package com.golinocottibeatrice.kernelsearch.reduction;
+package com.golinocottibeatrice.kernelsearch.additions;
 
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.instance.Item;

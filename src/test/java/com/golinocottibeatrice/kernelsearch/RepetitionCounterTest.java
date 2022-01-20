@@ -1,5 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.additions.RepetitionCounter;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
