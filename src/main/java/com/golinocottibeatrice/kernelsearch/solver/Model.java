@@ -1,7 +1,6 @@
 package com.golinocottibeatrice.kernelsearch.solver;
 
 import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
-import com.golinocottibeatrice.kernelsearch.additions.ItemsPacking;
 import gurobi.*;
 
 import java.util.ArrayList;
@@ -68,7 +67,12 @@ public class Model {
      */
     public void disableVariable(Variable v) throws GRBException {
         var name = String.format(FORMAT_FIX_VAR, v.getName());
-        model.addConstr(model.getVarByName(v.getName()), GRB.EQUAL, 0, name);
+        var n = model.getVarByName(v.getName());
+        if (n == null) {
+            var s = model.getVars();
+            System.out.println("a");
+        }
+        model.addConstr(n, GRB.EQUAL, 0, name);
     }
 
     /**
@@ -121,16 +125,6 @@ public class Model {
             }
             var name = String.format("ITEM_DOMINANCE_%d_%d", j.getIndex(), k.getIndex());
             model.addConstr(lhs, GRB.GREATER_EQUAL, rhs, name);
-        }
-    }
-
-    public void addReductionConstraints(ItemsPacking packing) throws GRBException {
-        for (var k : packing.keySet()) {
-            for (var i : packing.get(k)) {
-                var ctr = new GRBLinExpr();
-                ctr.addTerm(1, config.getGrbVars()[k.getIndex()][i.getIndex()]);
-                model.addConstr(ctr, GRB.EQUAL, 1, "FIX_X_" + k.getIndex() + "_" + i.getIndex());
-            }
         }
     }
 

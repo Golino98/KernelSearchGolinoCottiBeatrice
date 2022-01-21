@@ -5,6 +5,8 @@ import com.golinocottibeatrice.kernelsearch.bucket.Bucket;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;
+import gurobi.GRB;
+import gurobi.GRBEnv;
 import gurobi.GRBException;
 
 import java.time.Instant;
@@ -39,7 +41,6 @@ public class KernelSearch {
     // Funzionalità aggiuntive
     private RepetitionCounter repetitionCounter;
     private DominanceList dominanceList = new DominanceList();
-    private ItemsPacking itemsPacking = new ItemsPacking();
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -60,8 +61,6 @@ public class KernelSearch {
         if (config.isItemDomEnabled()) {
             dominanceList = new DominanceListBuilder(instance).build();
         }
-
-        itemsPacking = new InstanceReduction(instance).reduce();
     }
 
     /**
@@ -76,7 +75,10 @@ public class KernelSearch {
         log.repCtrStatus(config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
         log.itemDomStatus(config.isItemDomEnabled());
 
-        solveRelaxation();
+        GRBEnv env = new GRBEnv();
+        env.set(GRB.IntParam.OutputFlag, 0);
+        variables = new SingleKnapsackHeuristic(instance, env).run();
+        //solveRelaxation();
 
         config.getVariableSorter().sort(variables);
 
@@ -111,7 +113,6 @@ public class KernelSearch {
         var model = solver.createModel(instance, timeLimit);
 
         model.addDominanceConstraints(dominanceList);
-        model.addReductionConstraints(itemsPacking);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
         model.disableVariables(toDisable);
@@ -161,7 +162,9 @@ public class KernelSearch {
                 if (solution.getObjective() >= bestSolution.getObjective()) {
                     bestSolution = solution;
                     // Se viene trovato un ottimo globale, resetta il counter
-                    repetitionCounter.reset();
+                    if (config.isRepCtrEnabled()) {
+                        repetitionCounter.reset();
+                    }
                     disableCutoff = false;
                 }
 
@@ -207,7 +210,6 @@ public class KernelSearch {
         var model = solver.createModel(instance, timeLimit);
 
         model.addDominanceConstraints(dominanceList);
-        model.addReductionConstraints(itemsPacking);
 
         // Disabilita le variabili che non sono ne nel kernel ne nel bucket
         var toDisable = variables.stream()

@@ -20,6 +20,10 @@ public class Kernel {
         variables = new ArrayList<>();
     }
 
+    public Kernel(List<Variable> variables) {
+        this.variables = variables;
+    }
+
     /**
      * Aggiunge un {@link Variable} alla lista.
      *
@@ -52,6 +56,7 @@ public class Kernel {
 
     /**
      * Updates the 'timesUsed' attribute for the variables in the Kernel
+     *
      * @param solution the current solution used for the update
      */
     public void updateUsages(Solution solution) {
@@ -68,7 +73,7 @@ public class Kernel {
     /**
      * Esegue eject procedure. Rimuove variabile se #volte non usata - #volte usata >= threshold
      *
-     * @param threshold the threshold defined for the eject procedure
+     * @param threshold       the threshold defined for the eject procedure
      * @param solutions_count numero di soluzioni create durante esecuzione di questa iterazione
      * @return total of variables removed from the kernel
      */
@@ -76,7 +81,7 @@ public class Kernel {
         List<Variable> new_variables = this.variables.stream()
                 .filter(variable ->
                         !variable.isFromBucket() ||
-                        (solutions_count-variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
+                                (solutions_count - variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
                 .collect(Collectors.toList());
 
         int removed_vars = this.variables.size() - new_variables.size();

@@ -59,7 +59,7 @@ class ModelCreator {
 
         for (var knapsack : instance.getKnapsacks()) {
             for (var item : instance.getItems()) {
-                var name = String.format(FORMAT_VAR_NAME, knapsack.getIndex() + 1, item.getIndex() + 1);
+                var name = String.format(FORMAT_VAR_NAME, knapsack.getIndex(), item.getIndex());
                 grbVars[knapsack.getIndex()][item.getIndex()] = model.addVar(0, 1, 0, GRB.BINARY, name);
                 modelVars.add(new Variable(name, item, knapsack));
             }
@@ -73,7 +73,7 @@ class ModelCreator {
             for (var item : instance.getItems()) {
                 constraint.addTerm(item.getWeight(), grbVars[knapsack.getIndex()][item.getIndex()]);
             }
-            var name = String.format(FORMAT_CAPACITY, knapsack.getIndex() + 1);
+            var name = String.format(FORMAT_CAPACITY, knapsack.getIndex());
             model.addConstr(constraint, GRB.LESS_EQUAL, knapsack.getCapacity(), name);
         }
     }
@@ -85,7 +85,7 @@ class ModelCreator {
             for (var knapsack : instance.getKnapsacks()) {
                 constraint.addTerm(1, grbVars[knapsack.getIndex()][item.getIndex()]);
             }
-            var name = String.format(FORMAT_SELECTION, item.getIndex() + 1);
+            var name = String.format(FORMAT_SELECTION, item.getIndex());
             model.addConstr(constraint, GRB.LESS_EQUAL, 1, name);
         }
     }

@@ -1,7 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.additions.BinPacking;
-import com.golinocottibeatrice.kernelsearch.additions.InstanceReduction;
+import com.golinocottibeatrice.kernelsearch.additions.SingleKnapsackHeuristic;
 import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
 import com.golinocottibeatrice.kernelsearch.bucket.DefaultBucketBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
@@ -14,6 +13,8 @@ import com.golinocottibeatrice.kernelsearch.solver.Solver;
 import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
 import com.golinocottibeatrice.kernelsearch.sorter.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
+import gurobi.GRB;
+import gurobi.GRBEnv;
 import gurobi.GRBException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -87,13 +88,6 @@ public class Start {
         }
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
-            var result = new InstanceReduction(instance).reduce();
-            if (result.isEmpty()) {
-                System.out.println("N");
-            } else {
-                System.out.println("Y");
-            }
-            /*
             searchConfig.setInstance(instance);
             var result = buildKernelSearch(searchConfig).start();
 
@@ -104,7 +98,6 @@ public class Start {
                         result.getTimeElapsed(),
                         result.timeLimitReached());
             }
-             */
         }
 
         // Libera le risorse usate.

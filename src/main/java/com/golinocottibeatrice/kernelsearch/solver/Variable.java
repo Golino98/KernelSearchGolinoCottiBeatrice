@@ -13,20 +13,49 @@ public class Variable {
     private int timesUsed = 0;
     private double value;
     private double rc;
-    private Boolean fromBucket=true;
+    private boolean fromBucket = true;
 
-    Variable(String name, Item item, Knapsack knapsack) {
+    public Variable(String name, Item item, Knapsack knapsack) {
         this.name = name;
         this.item = item;
         this.knapsack = knapsack;
     }
 
-    public Boolean isFromBucket() {
-        return fromBucket;
+    public Variable(String name, Item item, Knapsack knapsack, double value) {
+        this(name, item, knapsack);
+        this.value = value;
     }
 
-    public void setFromBucket(Boolean fromBucket) {
-        this.fromBucket = fromBucket;
+    public String getName() {
+        return name;
+    }
+
+    public int getWeight() {
+        return item.getWeight();
+    }
+
+    public int getProfit() {
+        return item.getProfit();
+    }
+
+    public int getKnapsackCapacity() {
+        return knapsack.getCapacity();
+    }
+
+    public double getValue() {
+        return value;
+    }
+
+    public void setValue(double value) {
+        this.value = value;
+    }
+
+    public double getRC() {
+        return rc;
+    }
+
+    public void setRc(double rc) {
+        this.rc = rc;
     }
 
     public void resetTimesUsed() {
@@ -41,35 +70,11 @@ public class Variable {
         this.timesUsed++;
     }
 
-    public String getName() {
-        return name;
+    public boolean isFromBucket() {
+        return fromBucket;
     }
 
-    public double getValue() {
-        return value;
-    }
-
-    public int getWeight() {
-        return item.getWeight();
-    }
-
-    public int getProfit() {
-        return item.getProfit();
-    }
-
-    public double getRC() {
-        return rc;
-    }
-
-    public void setValue(double value) {
-        this.value = value;
-    }
-
-    public void setRc(double rc) {
-        this.rc = rc;
-    }
-
-    public int getKnapsackCapacity() {
-        return knapsack.getCapacity();
+    public void setFromBucket(boolean fromBucket) {
+        this.fromBucket = fromBucket;
     }
 }
