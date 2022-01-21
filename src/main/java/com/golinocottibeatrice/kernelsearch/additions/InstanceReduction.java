@@ -15,35 +15,31 @@ public class InstanceReduction {
         this.items = new ArrayList<>(instance.getItems());
     }
 
-    public Packing reduce() {
-        var packing = new Packing();
+    public ItemsPacking reduce() {
+        var fullPacking = new ItemsPacking();
         var I = new LinkedList<Knapsack>();
-        var sizeI = 0;
 
         for (var i : knapsacks) {
             I.add(i);
-            sizeI += i.getCapacity();
 
             var J = new LinkedList<Item>();
-            var sizeJ = 0;
             for (var j : items) {
                 if (j.getWeight() <= Collections.max(I.stream().map(Knapsack::getCapacity).toList())) {
                     J.add(j);
-                    sizeJ += j.getWeight();
                 }
             }
 
-            if (sizeJ <= sizeI) {
-                var newPacking = new BinPacking(I, J).pack();
-                if (!newPacking.isEmpty()) {
+            if (J.stream().mapToInt(Item::getWeight).sum() <= I.stream().mapToInt(Knapsack::getCapacity).sum()) {
+                var packing = new BinPacking(I, J).pack();
+                if (!packing.isEmpty()) {
                     I = new LinkedList<>();
                     items.removeAll(J);
 
-                    packing.putAll(newPacking);
+                    fullPacking.putAll(packing);
                 }
             }
         }
 
-        return packing;
+        return fullPacking;
     }
 }

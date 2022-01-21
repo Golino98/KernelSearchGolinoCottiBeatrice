@@ -14,20 +14,23 @@ public class BinPacking {
         this.items = items;
     }
 
-    public Packing pack() {
-        var packing = new Packing();
+    public ItemsPacking pack() {
+        var packing = new ItemsPacking();
         items.sort(Comparator.comparing(Item::getWeight).reversed());
 
         for (var i : items) {
+            var found = false;
             for (var k : knapsacks) {
-                packing.add(k);
                 if (packing.getResidualCapacity(k) >= i.getWeight()) {
-                    packing.pack(i, k);
+                    found = true;
+                    packing.pack(k, i);
                 }
+            }
+            if (!found) {
+                return new ItemsPacking();
             }
         }
 
         return packing;
     }
-
 }
