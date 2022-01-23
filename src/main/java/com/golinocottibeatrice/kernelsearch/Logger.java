@@ -39,8 +39,8 @@ public class Logger {
         this.out = out;
     }
 
-    public void start(String instance, Instant startTime) {
-        var time = startTime.atZone(ZoneOffset.UTC).toLocalTime();
+    public void start(String instance) {
+        var time = Instant.now().atZone(ZoneOffset.UTC).toLocalTime();
 
         out.print(SEPARATOR);
         out.printf(INSTANCE, instance);

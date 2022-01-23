@@ -6,13 +6,9 @@ import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.Kernel;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import com.golinocottibeatrice.kernelsearch.util.Timer;
-import gurobi.GRB;
-import gurobi.GRBEnv;
 import gurobi.GRBException;
 
-import java.time.Instant;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Implementa il metodo della kernel search, usando GUROBI come risolutore.
@@ -62,7 +58,7 @@ public class KernelSearch {
     public SearchResult start() throws GRBException {
         timer.start();
 
-        log.start(instance.getName(), Instant.now());
+        log.start(instance.getName());
         log.ejectStatus(config.isEjectEnabled(), config.getEjectThreshold());
         log.repCtrStatus(config.isRepCtrEnabled(), repCtr.getH(), repCtr.getK());
         log.itemDomStatus(config.isItemDomEnabled());
@@ -92,7 +88,7 @@ public class KernelSearch {
 
     // Risolve il rilassato dell'istanza
     protected void solveRelaxation() throws GRBException {
-        var model = solver.createModel(instance, config.getTimeLimit(), true);
+        var model = solver.createRelaxed(instance, config.getTimeLimit());
         model.addDominanceConstraints(dominanceList);
 
         log.relaxStart();
@@ -104,11 +100,8 @@ public class KernelSearch {
     }
 
     protected void runHeuristic() throws GRBException {
-        GRBEnv env = new GRBEnv();
-        env.set(GRB.IntParam.OutputFlag, 0);
-
         log.heuristicStart();
-        var solution = new SingleKnapsackHeuristic(instance, env).run();
+        var solution = new SingleKnapsackHeuristic(instance, config.getGrbEnv()).run();
         log.solution(solution.getObjective(), timer.elapsedTime());
 
         variables = solution.getVariables();
@@ -120,7 +113,7 @@ public class KernelSearch {
 
         model.addDominanceConstraints(dominanceList);
 
-        var toDisable = variables.stream().filter(v -> !kernel.contains(v)).collect(Collectors.toList());
+        var toDisable = variables.stream().filter(v -> !kernel.contains(v)).toList();
         model.disableVariables(toDisable);
 
         log.kernelStart(kernel.size());
@@ -203,7 +196,7 @@ public class KernelSearch {
 
         // Disabilita le variabili che non sono ne nel kernel ne nel bucket
         var toDisable = variables.stream()
-                .filter(v -> !kernel.contains(v) && !b.contains(v)).collect(Collectors.toList());
+                .filter(v -> !kernel.contains(v) && !b.contains(v)).toList();
         model.disableVariables(toDisable);
         model.addBucketConstraint(b.getVariables());
 

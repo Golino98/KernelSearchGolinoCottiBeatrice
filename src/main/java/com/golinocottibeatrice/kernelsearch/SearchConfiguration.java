@@ -7,6 +7,7 @@ import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
 import com.golinocottibeatrice.kernelsearch.solver.Solver;
 import com.golinocottibeatrice.kernelsearch.sorter.VariableSorter;
+import gurobi.GRBEnv;
 
 public class SearchConfiguration {
     // Limiti di tempo
@@ -24,6 +25,7 @@ public class SearchConfiguration {
     private Instance instance;
     private Logger logger;
     private Solver solver;
+    private GRBEnv grbEnv;
 
     // Funzionalità aggiuntive
     private boolean ejectEnabled;
@@ -183,5 +185,13 @@ public class SearchConfiguration {
 
     public void setHeuristicEnabled(boolean heuristicEnabled) {
         isHeuristicEnabled = heuristicEnabled;
+    }
+
+    public GRBEnv getGrbEnv() {
+        return grbEnv;
+    }
+
+    public void setGrbEnv(GRBEnv grbEnv) {
+        this.grbEnv = grbEnv;
     }
 }

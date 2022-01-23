@@ -7,6 +7,8 @@ import com.golinocottibeatrice.kernelsearch.kernel.*;
 import com.golinocottibeatrice.kernelsearch.solver.*;
 import com.golinocottibeatrice.kernelsearch.sorter.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
+import gurobi.GRB;
+import gurobi.GRBEnv;
 import gurobi.GRBException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -25,15 +27,21 @@ public class Start {
     private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
 
     private final Configuration config;
+    private final GRBEnv env;
 
     /**
      * Crea una nuova istanza di Starter con la configurazione letta da file.
      *
      * @param configPath Il path della configurazione.
      */
-    public Start(String configPath) throws IOException {
+    public Start(String configPath) throws IOException, GRBException {
         var path = configPath.isEmpty() ? DEFAULT_CONFIG_PATH : configPath;
         config = new ConfigurationReader(path).read();
+        env = new GRBEnv();
+        env.set(GRB.IntParam.OutputFlag, 0);
+        env.set(GRB.IntParam.Threads, config.getNumThreads());
+        env.set(GRB.IntParam.Presolve, config.getPresolve());
+        env.set(GRB.DoubleParam.MIPGap, config.getMipGap());
     }
 
     public static void main(String... args) {
@@ -77,7 +85,7 @@ public class Start {
         }
 
         // Libera le risorse usate.
-        searchConfig.getSolver().dispose();
+        env.dispose();
         printer.close();
     }
 
@@ -85,38 +93,27 @@ public class Start {
         return searchConfig.isEjectEnabled() ? new KernelSearchEject(searchConfig) : new KernelSearch(searchConfig);
     }
 
-
-    // Costruisce la configurazione del solver.
-    private SolverConfiguration buildSolverConfig() {
-        var solverConfig = new SolverConfiguration();
-
-        solverConfig.setLogDir(config.getLogDir());
-        solverConfig.setNumThreads(config.getNumThreads());
-        solverConfig.setPresolve(config.getPresolve());
-        solverConfig.setMipGap(config.getMipGap());
-
-        return solverConfig;
-    }
-
     // Crea la configurazione della Kernel Search sulla base della config letta da file.
-    private SearchConfiguration buildSearchConfig() throws GRBException {
+    private SearchConfiguration buildSearchConfig() {
         SearchConfiguration searchConfig = new SearchConfiguration();
 
-        searchConfig.setSolver(new Solver(buildSolverConfig()));
+        searchConfig.setSolver(new Solver(env, config.getLogDir()));
         searchConfig.setLogger(new Logger(System.out));
+        searchConfig.setVariableSorter(getVariableSorter());
+        searchConfig.setBucketBuilder(getBucketBuilder());
+        searchConfig.setKernelBuilder(getKernelBuilder());
+        searchConfig.setRepetitionCounter(getRepetitionCounter());
+        searchConfig.setGrbEnv(env);
+
         searchConfig.setTimeLimit(config.getTimeLimit());
         searchConfig.setTimeLimitKernel(config.getTimeLimitKernel());
         searchConfig.setTimeLimitBucket(config.getTimeLimitBucket());
         searchConfig.setNumIterations(config.getNumIterations());
         searchConfig.setKernelSize(config.getKernelSize());
         searchConfig.setBucketSize(config.getBucketSize());
-        searchConfig.setVariableSorter(getVariableSorter());
-        searchConfig.setBucketBuilder(getBucketBuilder());
-        searchConfig.setKernelBuilder(getKernelBuilder());
         searchConfig.setEjectEnabled(config.isEjectEnabled());
         searchConfig.setEjectThreshold(config.getEjectThreshold());
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
-        searchConfig.setRepetitionCounter(getRepetitionCounter());
         searchConfig.setItemDomEnabled(config.isItemDomEnabled());
         searchConfig.setHeuristicEnabled(config.isHeuristicEnabled());
 
