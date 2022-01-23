@@ -7,84 +7,50 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RepetitionCounterTest {
     @Test
-    void sameObjCounterOneResetOne() {
-        var counter = new RepetitionCounter(1, 1, 0);
+    void h0k0() {
+        var counter = new RepetitionCounter(0, 0);
 
-        assertFalse(counter.value(1));
-        // Dopo il primo numero dovrebbe ritornare true per 1 chiamata
-        assertTrue(counter.value(1));
-        assertFalse(counter.value(2));
+        // All'inizio torna false
+        assertFalse(counter.check());
 
-        // Adesso dovrebbe ritornare ancora una volta true
-        assertTrue(counter.value(3));
+        counter.increment();
+        // Dopo un incremento restituisce sempre false
+        assertFalse(counter.check());
+        assertFalse(counter.check());
     }
 
     @Test
-    void sameObjCounter3Reset1() {
-        var counter = new RepetitionCounter(3, 1, 0);
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
+    void h1k1() {
+        var counter = new RepetitionCounter(1, 1);
 
-        // Dovrebbe ritornare true esattamente per una chiamata
-        assertTrue(counter.value(1));
-        assertFalse(counter.value(1));
+        // All'inizio torna false
+        assertFalse(counter.check());
+
+        counter.increment();
+        // Dopo il primo incremento dovrebbe ritornare true fino al prossimo incremento.
+        assertTrue(counter.check());
+        assertTrue(counter.check());
+
+        counter.increment();
+        // Adesso dovrebbe ritornare false
+        assertFalse(counter.check());
+        assertFalse(counter.check());
     }
 
     @Test
-    void allDiffObj() {
-        var counter = new RepetitionCounter(3, 3, 0);
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(2));
-        assertFalse(counter.value(3));
+    void h2k2() {
+        var counter = new RepetitionCounter(2, 2);
 
-        assertFalse(counter.value(4));
-    }
+        // All'inizio torna false
+        assertFalse(counter.check());
 
-    @Test
-    void oneDiffObj() {
-        var counter = new RepetitionCounter(3, 3, 0);
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(3));
+        counter.increment();
+        // Dopo il primo incremento dovrebbe ritornare false
+        assertFalse(counter.check());
 
-        assertFalse(counter.value(1));
-    }
-
-    @Test
-    void resetAllEqual() {
-        var counter = new RepetitionCounter(3, 3, 0);
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-
-        // Dovrebbe ritornare true per 3 chiamate
-        assertTrue(counter.value(1));
-        assertTrue(counter.value(1));
-        assertTrue(counter.value(1));
-
-        // Poi torna ad essere false
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-    }
-
-    @Test
-    void resetDifferent() {
-        var counter = new RepetitionCounter(3, 3, 0);
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-        assertFalse(counter.value(1));
-
-        // Ritorna true per 3 chiamate
-        assertTrue(counter.value(1));
-        assertTrue(counter.value(2));
-        assertTrue(counter.value(3));
-
-        // Poi torna ad essere false
-        assertFalse(counter.value(3));
-        assertFalse(counter.value(3));
-        assertFalse(counter.value(3));
-
-        assertTrue(counter.value(1));
+        counter.increment();
+        // Adesso dovrebbe ritornare true
+        assertTrue(counter.check());
+        assertTrue(counter.check());
     }
 }

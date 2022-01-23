@@ -1,5 +1,7 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
+import com.golinocottibeatrice.kernelsearch.additions.RepetitionCounter;
 import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
 import com.golinocottibeatrice.kernelsearch.instance.Instance;
 import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
@@ -26,10 +28,10 @@ public class SearchConfiguration {
     // Funzionalità aggiuntive
     private boolean ejectEnabled;
     private int ejectThreshold;
-    private boolean repCtrEnabled;
-    private int repCtrThreshold;
-    private int repCtrPersistence;
-    private boolean itemDomEnabled;
+    private boolean isRepCtrEnabled;
+    private RepetitionCounter repetitionCounter;
+    private boolean isItemDomEnabled;
+    private DominanceList dominanceList;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -144,35 +146,33 @@ public class SearchConfiguration {
     }
 
     public boolean isRepCtrEnabled() {
-        return repCtrEnabled;
+        return isRepCtrEnabled;
     }
 
     public void setRepCtrEnabled(boolean repCtrEnabled) {
-        this.repCtrEnabled = repCtrEnabled;
+        isRepCtrEnabled = repCtrEnabled;
     }
 
-    public int getRepCtrThreshold() {
-        return repCtrThreshold;
+    public RepetitionCounter getRepetitionCounter() {
+        return repetitionCounter;
     }
 
-    public void setRepCtrThreshold(int repCtrThreshold) {
-        this.repCtrThreshold = repCtrThreshold;
+    public void setRepetitionCounter(RepetitionCounter repetitionCounter) {
+        this.repetitionCounter = repetitionCounter;
     }
-
-    public int getRepCtrPersistence() {
-        return repCtrPersistence;
-    }
-
-    public void setRepCtrPersistence(int repCtrPersistence) {
-        this.repCtrPersistence = repCtrPersistence;
-    }
-
 
     public boolean isItemDomEnabled() {
-        return itemDomEnabled;
+        return isItemDomEnabled;
     }
 
     public void setItemDomEnabled(boolean itemDomEnabled) {
-        this.itemDomEnabled = itemDomEnabled;
+        isItemDomEnabled = itemDomEnabled;
+    }
+    public DominanceList getDominanceList() {
+        return dominanceList;
+    }
+
+    public void setDominanceList(DominanceList dominanceList) {
+        this.dominanceList = dominanceList;
     }
 }

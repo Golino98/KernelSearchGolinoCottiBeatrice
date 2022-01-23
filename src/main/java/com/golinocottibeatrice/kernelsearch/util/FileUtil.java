@@ -1,9 +1,13 @@
 package com.golinocottibeatrice.kernelsearch.util;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 /**
  * Contiene metodi di utilità per operare su file.
@@ -58,5 +62,36 @@ public class FileUtil {
      */
     public static String getSolPath(String dir, String fileName) {
         return Paths.get(dir, fileName + FileUtil.SOL_EXT).toString();
+    }
+
+    // Restituisce le istanze impostate nel file di config
+
+    /**
+     * Dato un path, restituisce il file associato al path,
+     * se esso punta ad un file semplice.
+     * Se invece punta a una cartella, restituisce i file contenuti
+     * in essa, in modo non ricorsivo.
+     *
+     * @param path Il path in cui cercare file.
+     * @return La lista dei file trovati.
+     */
+    public static List<File> getFiles(String path) {
+        var filesList = new ArrayList<File>();
+        var file = new File(path);
+
+        // Se il path è una cartella aggiungi tutti i file contenuti, altrimenti
+        // aggiungi solo il singolo file.
+        if (file.isDirectory()) {
+            for (var f : Objects.requireNonNull(file.listFiles())) {
+                if (f.isDirectory()) {
+                    continue;
+                }
+                filesList.add(f);
+            }
+        } else {
+            filesList.add(file);
+        }
+
+        return filesList;
     }
 }

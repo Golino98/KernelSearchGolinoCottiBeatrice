@@ -2,6 +2,7 @@ package com.golinocottibeatrice.kernelsearch.instance;
 
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -24,6 +25,10 @@ public class InstanceReader {
      */
     public InstanceReader(String instPath) {
         this.instPath = instPath;
+    }
+
+    public InstanceReader(File inst) {
+        this.instPath = inst.getAbsolutePath();
     }
 
     /**

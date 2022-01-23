@@ -22,6 +22,7 @@ public class Logger {
     private static final String ITEMDOM_ENABLED = CYAN + "\nItem dom.   : " + RESET + "enabled";
     private static final String ITEMDOM_DISABLED = CYAN + "\nItem dom.    : " + RESET + "disabled";
     private static final String RELAXATION = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
+    private static final String HEURISTIC = PURPLE + "\n\n[Running heuristic]\n" + RESET;
     private static final String KERNEL = PURPLE + "\n\n[Solving kernel - %d variables]\n" + RESET;
     private static final String ITERATION = PURPLE + "\n\n[Iteration %d]" + RESET;
     private static final String BUCKET = BLUE + "\n<Bucket %2d - %d variables> " + RESET;
@@ -72,6 +73,10 @@ public class Logger {
 
     public void relaxStart() {
         out.print(RELAXATION);
+    }
+
+    public void heuristicStart() {
+        out.print(HEURISTIC);
     }
 
     public void kernelStart(int kernelSize) {

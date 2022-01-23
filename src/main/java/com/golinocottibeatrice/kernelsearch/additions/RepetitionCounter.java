@@ -1,85 +1,74 @@
 package com.golinocottibeatrice.kernelsearch.additions;
 
 /**
- * Rappresenta un counter che viene incrementato ogni volta che
- * riceve in input un valore uguale al precedente.
+ * Rappresenta un counter che, quando il counter raggiunge il valore {@code h},
+ * assume valore {@code true} per i successivi {@code k} incrementi.
+ * In tutti gli altri casi resituisce il counter assume valore {@code false}.
  * <p>
- * Quando il counter raggiunge il valore {@code h},
- * ovvero riceve in input {@code h} volte lo stesso valore,
- * restituisce il valore {@code true} per le successive {@code k} chiamate.
- * In tutti gli altri casi resituisce il valore {@code false}.
- * <p>
- * Il counter viene resettato quando riceve in input un valore
- * diverso dai precedenti, oppure dopo le {@code k} volte in
- * cui restituisce {@code true}.
- * <p>
- * Durante le {@code k} iterazioni in cui restituisce {@code true},
- * non viene fatto nessun controllo sui valori che riceve in input,
- * ma viene resituito {@code true} ciecamente.
- * Il valore dell'ultimo input ricevuto viene resettato una volta passate le
- * {@code k} iterazioni.
+ * Lo stato {@code true} o {@code false} del counter può essere verificato con il metodo {@code check()}.
  */
 public class RepetitionCounter {
-    private static final String INVALID_PARAMETERS = "Invalid value for h or k: they must both be > 0";
+    private static final String INVALID_PARAMETERS = "Invalid value for h or k: they must both be >= 0";
+
     private final int h;
     private final int k;
-    private final double initial;
 
-    private int counter = 1;
+    private int counter;
     private int resetCounter;
-    private double lastValue;
 
     /**
      * Costruisce un nuovo counter.
      *
-     * @param h       Il numero di input uguali dopo il cui restiuire {@code true} per k iterazioni.
-     * @param k       Il numero di volte in cui restituire {@code true}.
-     * @param initial Il valore iniziale da tenere in memoria.
+     * @param h Il numero di incrementi dopo il cui restiuire {@code true} per k iterazioni.
+     * @param k Il numero di volte in cui restituire {@code true}.
      */
-    public RepetitionCounter(int h, int k, double initial) {
-        if (h <= 0 || k <= 0) {
+    public RepetitionCounter(int h, int k) {
+        if (h < 0 || k < 0) {
             throw new IllegalArgumentException(INVALID_PARAMETERS);
         }
+
         this.h = h;
         this.k = k;
-        this.initial = initial;
-        this.lastValue = initial;
     }
 
     /**
-     * Inserisce un nuovo valore nel counter.
-     *
-     * @param value Il valore da confrontare con il precedente dato in input.
-     * @return {@code true} per {@code k} volte se viene dato in input lo stesso valore per {@code h} volte.
+     * Incrementa il counter.
      */
-    public boolean value(double value) {
+    public void increment() {
         if (resetCounter > 0) {
             resetCounter--;
-            counter = 1;
-            lastValue = initial;
-            return true;
+            counter = 0;
+            return;
         }
 
-        if (value == lastValue) {
-            counter++;
-        } else {
-            counter = 1;
-        }
-
+        counter++;
         if (counter >= h) {
             resetCounter = k;
         }
+    }
 
-        lastValue = value;
-        return counter > h;
+    /**
+     * Controlla il valore booleano del counter.
+     *
+     * @return {@code true} se sono stati raggiunti h incrementi, {@code false} altrimenti
+     */
+    public boolean check() {
+        return resetCounter > 0;
     }
 
     /**
      * Resetta il counter.
      */
     public void reset() {
-        counter = 1;
+        counter = 0;
         resetCounter = 0;
-        lastValue = initial;
+    }
+
+    public int getH() {
+        return h;
+    }
+
+    public int getK() {
+        return k;
     }
 }

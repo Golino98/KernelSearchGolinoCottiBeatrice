@@ -1,30 +1,22 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.additions.SingleKnapsackHeuristic;
-import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
-import com.golinocottibeatrice.kernelsearch.bucket.DefaultBucketBuilder;
-import com.golinocottibeatrice.kernelsearch.instance.Instance;
-import com.golinocottibeatrice.kernelsearch.instance.InstanceReader;
-import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilder;
-import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderIntValues;
-import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderPercentage;
-import com.golinocottibeatrice.kernelsearch.kernel.KernelBuilderPositive;
-import com.golinocottibeatrice.kernelsearch.solver.Solver;
-import com.golinocottibeatrice.kernelsearch.solver.SolverConfiguration;
+import com.golinocottibeatrice.kernelsearch.additions.DisabledRepetitionCounter;
+import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
+import com.golinocottibeatrice.kernelsearch.additions.DominanceListBuilder;
+import com.golinocottibeatrice.kernelsearch.additions.RepetitionCounter;
+import com.golinocottibeatrice.kernelsearch.bucket.*;
+import com.golinocottibeatrice.kernelsearch.instance.*;
+import com.golinocottibeatrice.kernelsearch.kernel.*;
+import com.golinocottibeatrice.kernelsearch.solver.*;
 import com.golinocottibeatrice.kernelsearch.sorter.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
-import gurobi.GRB;
-import gurobi.GRBEnv;
 import gurobi.GRBException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Gestisce l'avvio della kernel search.
@@ -35,17 +27,16 @@ public class Start {
     private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
     private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
 
-    private final String configPath;
-    private Configuration config;
-    private CSVPrinter printer;
+    private final Configuration config;
 
     /**
      * Crea una nuova istanza di Starter con la configurazione letta da file.
      *
      * @param configPath Il path della configurazione.
      */
-    public Start(String configPath) {
-        this.configPath = configPath.isEmpty() ? DEFAULT_CONFIG_PATH : configPath;
+    public Start(String configPath) throws IOException {
+        var path = configPath.isEmpty() ? DEFAULT_CONFIG_PATH : configPath;
+        config = new ConfigurationReader(path).read();
     }
 
     public static void main(String... args) {
@@ -71,40 +62,26 @@ public class Start {
      * @throws GRBException Errore di GUROBI.
      */
     public void start() throws IOException, GRBException {
-        config = new ConfigurationReader(configPath).read();
-
         // Crea la cartella di log, se non esiste già.
         FileUtil.createDirectories(config.getLogDir());
 
-        var solver = new Solver(buildSolverConfig());
         var searchConfig = buildSearchConfig();
-        // Il solver viene settato qua perchè bisogna fare il dispose() alla fine dell'esecuzione.
-        searchConfig.setSolver(solver);
+        var printer = getPrinter();
 
-        var shouldPrint = !config.getRunName().isEmpty();
-        if (shouldPrint) {
-            var out = new FileWriter(config.getLogDir() + "/" + config.getRunName() + ".csv");
-            printer = new CSVPrinter(out, CSVFormat.DEFAULT);
-        }
         // Per ogni istanza, avvia una kernel search.
         for (var instance : getInstances()) {
             searchConfig.setInstance(instance);
+            searchConfig.setDominanceList(getDominanceList(instance));
+
             var result = buildKernelSearch(searchConfig).start();
 
-            if (shouldPrint) {
-                printer.printRecord(
-                        instance.getName(),
-                        result.getObjective(),
-                        result.getTimeElapsed(),
-                        result.timeLimitReached());
-            }
+            printer.printRecord(instance.getName(), result.getObjective(),
+                    result.getTimeElapsed(), result.timeLimitReached());
         }
 
         // Libera le risorse usate.
-        solver.dispose();
-        if (shouldPrint) {
-            printer.close();
-        }
+        searchConfig.getSolver().dispose();
+        printer.close();
     }
 
     private KernelSearch buildKernelSearch(SearchConfiguration searchConfig) {
@@ -125,10 +102,10 @@ public class Start {
     }
 
     // Crea la configurazione della Kernel Search sulla base della config letta da file.
-    private SearchConfiguration buildSearchConfig() {
+    private SearchConfiguration buildSearchConfig() throws GRBException {
         SearchConfiguration searchConfig = new SearchConfiguration();
 
-
+        searchConfig.setSolver(new Solver(buildSolverConfig()));
         searchConfig.setLogger(new Logger(System.out));
         searchConfig.setTimeLimit(config.getTimeLimit());
         searchConfig.setTimeLimitKernel(config.getTimeLimitKernel());
@@ -140,10 +117,9 @@ public class Start {
         searchConfig.setBucketBuilder(getBucketBuilder());
         searchConfig.setKernelBuilder(getKernelBuilder());
         searchConfig.setEjectEnabled(config.isEjectEnabled());
-        searchConfig.setEjectThreshold(this.config.getEjectThreshold());
+        searchConfig.setEjectThreshold(config.getEjectThreshold());
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
-        searchConfig.setRepCtrThreshold(config.getRepCtrThreshold());
-        searchConfig.setRepCtrPersistence(config.getRepCtrPersistence());
+        searchConfig.setRepetitionCounter(getRepetitionCounter());
         searchConfig.setItemDomEnabled(config.isItemDomEnabled());
 
         return searchConfig;
@@ -180,22 +156,38 @@ public class Start {
         };
     }
 
+    private CSVPrinter getPrinter() throws IOException {
+        Writer out;
+        if (config.getRunName().isEmpty()) {
+            out = Writer.nullWriter();
+        } else {
+            out = new FileWriter(config.getLogDir() + "/" + config.getRunName() + ".csv");
+        }
+
+        return new CSVPrinter(out, CSVFormat.DEFAULT);
+    }
+
+    private RepetitionCounter getRepetitionCounter() {
+        if (config.isRepCtrEnabled()) {
+            return new RepetitionCounter(config.getRepCtrThreshold(), config.getRepCtrPersistence());
+        }
+        return new DisabledRepetitionCounter();
+    }
+
+    private DominanceList getDominanceList(Instance instance) {
+        if (config.isItemDomEnabled()) {
+            return new DominanceListBuilder(instance).build();
+        }
+
+        return new DominanceList();
+    }
+
     // Restituisce le istanze impostate nel file di config
     private List<Instance> getInstances() throws IOException {
         var instances = new ArrayList<Instance>();
-        var inst = new File(config.getInstPath());
 
-        // Se il path è una cartella aggiungi tutte le istanze contenute, altrimenti
-        // aggiungi solo l'istanza singola.
-        if (inst.isDirectory()) {
-            for (var instPath : Objects.requireNonNull(inst.listFiles())) {
-                if (instPath.isDirectory()) {
-                    continue;
-                }
-                instances.add(new InstanceReader(instPath.getAbsolutePath()).read());
-            }
-        } else {
-            instances.add(new InstanceReader(config.getInstPath()).read());
+        for (var file : FileUtil.getFiles(config.getInstPath())) {
+            instances.add(new InstanceReader(file).read());
         }
 
         return instances;

@@ -36,11 +36,10 @@ public class KernelSearch {
     protected Solution bestSolution;
     // La soluzione attuale, che potrebbe non essere la migliore trovata.
     protected Solution currentSolution;
-    protected boolean disableCutoff;
 
     // Funzionalità aggiuntive
-    private RepetitionCounter repetitionCounter;
-    private DominanceList dominanceList = new DominanceList();
+    private final RepetitionCounter repCtr;
+    private final DominanceList dominanceList;
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -53,14 +52,8 @@ public class KernelSearch {
         log = config.getLogger();
         solver = config.getSolver();
 
-        if (config.isRepCtrEnabled()) {
-            repetitionCounter = new RepetitionCounter(
-                    config.getRepCtrThreshold(), config.getRepCtrPersistence(), -1);
-        }
-
-        if (config.isItemDomEnabled()) {
-            dominanceList = new DominanceListBuilder(instance).build();
-        }
+        repCtr = config.getRepetitionCounter();
+        dominanceList = config.getDominanceList();
     }
 
     /**
@@ -72,13 +65,11 @@ public class KernelSearch {
         startTime = System.nanoTime();
         log.start(instance.getName(), Instant.now());
         log.ejectStatus(config.isEjectEnabled(), config.getEjectThreshold());
-        log.repCtrStatus(config.isRepCtrEnabled(), config.getRepCtrThreshold(), config.getRepCtrPersistence());
+        log.repCtrStatus(config.isRepCtrEnabled(), repCtr.getH(), repCtr.getK());
         log.itemDomStatus(config.isItemDomEnabled());
 
-        GRBEnv env = new GRBEnv();
-        env.set(GRB.IntParam.OutputFlag, 0);
-        variables = new SingleKnapsackHeuristic(instance, env).run();
         //solveRelaxation();
+        runHeuristic();
 
         config.getVariableSorter().sort(variables);
 
@@ -93,19 +84,31 @@ public class KernelSearch {
         this.iterateBuckets();
         log.end(bestSolution.getObjective(), elapsedTime());
 
-        return new SearchResult(bestSolution, elapsedTime(), elapsedTime() + TIME_THRESHOLD >= config.getTimeLimit());
+        return new SearchResult(bestSolution, elapsedTime(),
+                elapsedTime() + TIME_THRESHOLD >= config.getTimeLimit());
     }
 
     protected void solveRelaxation() throws GRBException {
         var model = solver.createModel(instance, config.getTimeLimit(), true);
         model.addDominanceConstraints(dominanceList);
-        log.relaxStart();
 
+        log.relaxStart();
         var solution = model.solve();
         log.solution(solution.getObjective(), elapsedTime());
 
         variables = solution.getVariables();
         model.dispose();
+    }
+
+    protected void runHeuristic() throws GRBException {
+        GRBEnv env = new GRBEnv();
+        env.set(GRB.IntParam.OutputFlag, 0);
+
+        log.heuristicStart();
+        var solution = new SingleKnapsackHeuristic(instance, env).run();
+        log.solution(solution.getObjective(), elapsedTime());
+
+        variables = solution.getVariables();
     }
 
     protected void solveKernel() throws GRBException {
@@ -149,27 +152,22 @@ public class KernelSearch {
 
             var model = this.buildModel(b, count);
             var solution = model.solve();
-            if (config.isRepCtrEnabled()) {
-                // Il counter mi dice se sto trovando ripetutamente lo stesso valore.
-                // Se questo è il caso, nelle prossime iterazioni accetta qualsiasi soluzione
-                // viene trovata, anche se non migliora la funzione obiettivo.
-                disableCutoff = repetitionCounter.value(solution.getObjective());
+            // Se il valore trovato è uguale al precedente, incrementa counter
+            if (solution.getObjective() == currentSolution.getObjective()) {
+                repCtr.increment();
             }
 
             if (!solution.isEmpty()) {
                 countSolutions++;
                 currentSolution = solution;
-                if (solution.getObjective() >= bestSolution.getObjective()) {
+                if (solution.getObjective() > bestSolution.getObjective()) {
                     bestSolution = solution;
                     // Se viene trovato un ottimo globale, resetta il counter
-                    if (config.isRepCtrEnabled()) {
-                        repetitionCounter.reset();
-                    }
-                    disableCutoff = false;
+                    repCtr.reset();
                 }
 
-                // Prendi le variabili del bucket che compaiono nella nuova soluzione trovata,
-                // aggiungile al kernel, e rimuovile dal bucket
+                // Prendi le variabili del bucket che compaiono
+                // nella nuova soluzione trovata e aggiungile al kernel
                 var selected = model.getSelectedVariables(b.getVariables());
                 selected.forEach(variable -> this.kernel.addItem(variable));
 
@@ -220,7 +218,7 @@ public class KernelSearch {
         if (!currentSolution.isEmpty()) {
             // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
             // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
-            if (!disableCutoff) {
+            if (repCtr.check()) {
                 model.addObjConstraint(currentSolution.getObjective());
             }
             // Imposta la soluzione da cui il modello parte.

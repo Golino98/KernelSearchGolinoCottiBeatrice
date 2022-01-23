@@ -67,12 +67,7 @@ public class Model {
      */
     public void disableVariable(Variable v) throws GRBException {
         var name = String.format(FORMAT_FIX_VAR, v.getName());
-        var n = model.getVarByName(v.getName());
-        if (n == null) {
-            var s = model.getVars();
-            System.out.println("a");
-        }
-        model.addConstr(n, GRB.EQUAL, 0, name);
+        model.addConstr(model.getVarByName(v.getName()), GRB.EQUAL, 0, name);
     }
 
     /**
