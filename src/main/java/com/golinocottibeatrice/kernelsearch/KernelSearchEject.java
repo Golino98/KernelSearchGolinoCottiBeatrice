@@ -28,7 +28,7 @@ public class KernelSearchEject extends KernelSearch {
         this.kernel.updateUsages(solution);
         int removedVars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
 
-        log.solution(selected.size(), kernel.size(), solution.getObjective(), timer.elapsedTime(), removedVars);
+        log.solution(selected.size(), removedVars, kernel.size(), solution.getObjective(), timer.elapsedTime());
     }
 
     @Override

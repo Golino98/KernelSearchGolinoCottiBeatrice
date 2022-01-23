@@ -7,8 +7,8 @@ import java.util.ArrayList;
  * che quindi ha valore della funzione obiettivo uguale a 0
  * e lista delle variabili vuota.
  */
-class EmptySolution extends Solution {
-    EmptySolution() {
+public class EmptySolution extends Solution {
+    public EmptySolution() {
         super(0,new ArrayList<>());
     }
 

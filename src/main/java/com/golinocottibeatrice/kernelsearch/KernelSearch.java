@@ -30,9 +30,9 @@ public class KernelSearch {
     // Variabili del problema
     protected List<Variable> variables;
     // Miglior soluzione trovata
-    protected Solution bestSolution;
+    protected Solution bestSolution = new EmptySolution();
     // La soluzione attuale, che potrebbe non essere la migliore trovata.
-    protected Solution currentSolution;
+    protected Solution currentSolution = new EmptySolution();
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -62,6 +62,7 @@ public class KernelSearch {
         log.ejectStatus(config.isEjectEnabled(), config.getEjectThreshold());
         log.repCtrStatus(config.isRepCtrEnabled(), repCtr.getH(), repCtr.getK());
         log.itemDomStatus(config.isItemDomEnabled());
+        log.heuristicStatus(config.isHeuristicEnabled());
 
         if (config.isHeuristicEnabled()) {
             runHeuristic();
@@ -101,10 +102,10 @@ public class KernelSearch {
 
     protected void runHeuristic() throws GRBException {
         log.heuristicStart();
-        var solution = new SingleKnapsackHeuristic(instance, config.getGrbEnv()).run();
-        log.solution(solution.getObjective(), timer.elapsedTime());
+        bestSolution = new SingleKnapsackHeuristic(instance, config.getGrbEnv()).run();
+        log.solution(bestSolution.getObjective(), timer.elapsedTime());
 
-        variables = solution.getVariables();
+        variables = bestSolution.getVariables();
     }
 
     protected void solveKernel() throws GRBException {
@@ -117,8 +118,11 @@ public class KernelSearch {
         model.disableVariables(toDisable);
 
         log.kernelStart(kernel.size());
-        bestSolution = model.solve();
-        log.solution(bestSolution.getObjective(), timer.elapsedTime());
+        currentSolution = model.solve();
+        if (currentSolution.getObjective() >= bestSolution.getObjective()) {
+            bestSolution = currentSolution;
+        }
+        log.solution(currentSolution.getObjective(), timer.elapsedTime());
 
         model.write();
         model.dispose();
@@ -141,7 +145,6 @@ public class KernelSearch {
     protected void solveBuckets() throws GRBException {
         int count = 0;
         int countSolutions = 0;
-        currentSolution = bestSolution;
 
         for (var b : buckets) {
             if (timer.timeLimitReached()) {
@@ -203,7 +206,7 @@ public class KernelSearch {
         if (!currentSolution.isEmpty()) {
             // Vincolo di cutoff che impone che devo per forza avere una soluzione che migliora quella attuale.
             // Attivato solo se NON devo accettare tutte le soluzioni che trovo.
-            if (repCtr.check()) {
+            if (!repCtr.check()) {
                 model.addObjConstraint(currentSolution.getObjective());
             }
             // Imposta la soluzione da cui il modello parte.
