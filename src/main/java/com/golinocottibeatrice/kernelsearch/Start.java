@@ -1,11 +1,8 @@
 package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.additions.*;
-import com.golinocottibeatrice.kernelsearch.bucket.*;
 import com.golinocottibeatrice.kernelsearch.instance.*;
-import com.golinocottibeatrice.kernelsearch.kernel.*;
 import com.golinocottibeatrice.kernelsearch.solver.*;
-import com.golinocottibeatrice.kernelsearch.sorter.*;
 import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import gurobi.GRB;
 import gurobi.GRBEnv;
@@ -22,9 +19,6 @@ import java.util.List;
  */
 public class Start {
     private static final String DEFAULT_CONFIG_PATH = "./config.txt";
-    private static final String UNRECOGNIZED_KERNEL_BUILDER = "Unrecognized kernel builder.";
-    private static final String UNRECOGNIZED_BUCKET_BUILDER = "Unrecognized bucket builder.";
-    private static final String UNRECOGNIZED_ITEM_SORTER = "Unrecognized item sorter.";
 
     private final Configuration config;
     private final GRBEnv env;
@@ -37,6 +31,7 @@ public class Start {
     public Start(String configPath) throws IOException, GRBException {
         var path = configPath.isEmpty() ? DEFAULT_CONFIG_PATH : configPath;
         config = new ConfigurationReader(path).read();
+
         env = new GRBEnv();
         env.set(GRB.IntParam.OutputFlag, 0);
         env.set(GRB.IntParam.Threads, config.getNumThreads());
@@ -97,13 +92,15 @@ public class Start {
     private SearchConfiguration buildSearchConfig() {
         SearchConfiguration searchConfig = new SearchConfiguration();
 
+        searchConfig.setGrbEnv(env);
         searchConfig.setSolver(new Solver(env, config.getLogDir()));
         searchConfig.setLogger(new Logger(System.out));
-        searchConfig.setVariableSorter(getVariableSorter());
-        searchConfig.setBucketBuilder(getBucketBuilder());
-        searchConfig.setKernelBuilder(getKernelBuilder());
+
+        searchConfig.setVariableSorter(DependenciesFactory.getVariableSorter(config.getVariableSorter()));
+        searchConfig.setBucketBuilder(DependenciesFactory.getBucketBuilder(config.getBucketBuilder()));
+        searchConfig.setKernelBuilder(DependenciesFactory.getKernelBuilder(config.getKernelBuilder()));
+
         searchConfig.setRepetitionCounter(getRepetitionCounter());
-        searchConfig.setGrbEnv(env);
 
         searchConfig.setTimeLimit(config.getTimeLimit());
         searchConfig.setTimeLimitKernel(config.getTimeLimitKernel());
@@ -118,37 +115,6 @@ public class Start {
         searchConfig.setHeuristicEnabled(config.isHeuristicEnabled());
 
         return searchConfig;
-    }
-
-    // Restituisce il sorter delle variabili selezionato nel file di config.
-    private VariableSorter getVariableSorter() {
-        return switch (config.getVariableSorter()) {
-            case 0 -> new VariableSorterByValueAndAbsoluteRC();
-            case 1 -> new VariableSorterByAbsoluteRCAndValue();
-            case 2 -> new VariableSorterByProfitDivideWeight();
-            case 3 -> new VariableSorterRandom();
-            case 4 -> new VariableSorterByValueProfitWeightAndRC();
-            default -> throw new IllegalStateException(UNRECOGNIZED_ITEM_SORTER);
-        };
-    }
-
-    // Restituisce il builder dei bucket selezionato nel file di config.
-    private BucketBuilder getBucketBuilder() {
-        //noinspection SwitchStatementWithTooFewBranches
-        return switch (config.getBucketBuilder()) {
-            case 0 -> new DefaultBucketBuilder();
-            default -> throw new IllegalStateException(UNRECOGNIZED_BUCKET_BUILDER);
-        };
-    }
-
-    // Restituisce il builder del kernel selezionato nel file di config.
-    private KernelBuilder getKernelBuilder() {
-        return switch (config.getKernelBuilder()) {
-            case 0 -> new KernelBuilderPositive();
-            case 1 -> new KernelBuilderPercentage();
-            case 2 -> new KernelBuilderIntValues();
-            default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
-        };
     }
 
     private CSVPrinter getPrinter() throws IOException {
