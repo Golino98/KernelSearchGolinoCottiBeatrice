@@ -19,10 +19,6 @@ import java.util.stream.Collectors;
  * I parametri di configurazione vengono letti da un'istanza di {@link SearchConfiguration}.
  */
 public class KernelSearch {
-    // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
-    // sotto il cui viene fermato il programma
-    private static final int TIME_THRESHOLD = 2;
-
     protected final SearchConfiguration config;
     protected final Logger log;
     protected final Solver solver;
@@ -71,26 +67,30 @@ public class KernelSearch {
         log.repCtrStatus(config.isRepCtrEnabled(), repCtr.getH(), repCtr.getK());
         log.itemDomStatus(config.isItemDomEnabled());
 
-        //solveRelaxation();
-        runHeuristic();
+        if (config.isHeuristicEnabled()) {
+            runHeuristic();
+        } else {
+            solveRelaxation();
+        }
 
+        // Sorting delle variabili
         config.getVariableSorter().sort(variables);
 
+        // Costruzione del kernel set
         kernel = config.getKernelBuilder().build(variables, config);
-        this.kernel.getVariables().forEach(variable -> variable.setFromBucket(false));
 
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()
-                .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
+                .filter(v -> !kernel.contains(v)).toList(), config);
 
-        this.solveKernel();
-        this.iterateBuckets();
+        solveKernel();
+        iterateBuckets();
+
         log.end(bestSolution.getObjective(), timer.elapsedTime());
-
-        return new SearchResult(bestSolution, timer.elapsedTime(),
-                timer.elapsedTime() + TIME_THRESHOLD >= config.getTimeLimit());
+        return new SearchResult(bestSolution, timer.elapsedTime(), timer.timeLimitReached());
     }
 
+    // Risolve il rilassato dell'istanza
     protected void solveRelaxation() throws GRBException {
         var model = solver.createModel(instance, config.getTimeLimit(), true);
         model.addDominanceConstraints(dominanceList);
@@ -133,7 +133,7 @@ public class KernelSearch {
 
     protected void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
-            if (timer.getRemainingTime() <= TIME_THRESHOLD) {
+            if (timer.timeLimitReached()) {
                 log.timeLimit();
                 return;
             }
@@ -151,6 +151,10 @@ public class KernelSearch {
         currentSolution = bestSolution;
 
         for (var b : buckets) {
+            if (timer.timeLimitReached()) {
+                return;
+            }
+
             count++;
 
             var model = this.buildModel(b, count);
@@ -182,10 +186,6 @@ public class KernelSearch {
             }
 
             model.dispose();
-
-            if (timer.getRemainingTime() <= TIME_THRESHOLD) {
-                return;
-            }
         }
     }
 

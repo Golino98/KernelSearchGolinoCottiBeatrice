@@ -28,6 +28,7 @@ public class Configuration {
     private int repCtrThreshold;
     private int repCtrPersistence;
     private boolean itemDomEnabled;
+    private boolean heuristicEnabled;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -195,5 +196,13 @@ public class Configuration {
 
     public void setItemDomEnabled(boolean itemDomEnabled) {
         this.itemDomEnabled = itemDomEnabled;
+    }
+
+    public boolean isHeuristicEnabled() {
+        return heuristicEnabled;
+    }
+
+    public void setHeuristicEnabled(boolean heuristicEnabled) {
+        this.heuristicEnabled = heuristicEnabled;
     }
 }

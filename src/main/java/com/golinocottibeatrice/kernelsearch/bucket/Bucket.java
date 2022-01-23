@@ -9,6 +9,7 @@ public class Bucket {
     private final List<Variable> variables = new ArrayList<>();
 
     public void addVariable(Variable v) {
+        v.setFromBucket(true);
         variables.add(v);
     }
 

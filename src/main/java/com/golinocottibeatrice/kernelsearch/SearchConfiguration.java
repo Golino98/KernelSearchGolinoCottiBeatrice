@@ -32,6 +32,7 @@ public class SearchConfiguration {
     private RepetitionCounter repetitionCounter;
     private boolean isItemDomEnabled;
     private DominanceList dominanceList;
+    private boolean isHeuristicEnabled;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -174,5 +175,13 @@ public class SearchConfiguration {
 
     public void setDominanceList(DominanceList dominanceList) {
         this.dominanceList = dominanceList;
+    }
+
+    public boolean isHeuristicEnabled() {
+        return isHeuristicEnabled;
+    }
+
+    public void setHeuristicEnabled(boolean heuristicEnabled) {
+        isHeuristicEnabled = heuristicEnabled;
     }
 }

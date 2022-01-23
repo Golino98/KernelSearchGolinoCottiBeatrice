@@ -20,10 +20,6 @@ public class Kernel {
         variables = new ArrayList<>();
     }
 
-    public Kernel(List<Variable> variables) {
-        this.variables = variables;
-    }
-
     /**
      * Aggiunge un {@link Variable} alla lista.
      *
@@ -31,6 +27,7 @@ public class Kernel {
      */
     public void addItem(Variable v) {
         v.resetTimesUsed();
+        v.setFromBucket(false);
         variables.add(v);
     }
 

@@ -1,6 +1,10 @@
 package com.golinocottibeatrice.kernelsearch.util;
 
 public class Timer {
+    // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
+    // sotto il cui viene fermato il programma
+    private static final int TIME_THRESHOLD = 2;
+
     private final long timeLimit;
     private long startTime;
 
@@ -21,5 +25,9 @@ public class Timer {
     public long getRemainingTime() {
         var time = timeLimit - (long) elapsedTime();
         return time >= 0 ? time : 0;
+    }
+
+    public boolean timeLimitReached() {
+        return getRemainingTime() <= TIME_THRESHOLD;
     }
 }

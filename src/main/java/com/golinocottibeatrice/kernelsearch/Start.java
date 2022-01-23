@@ -1,9 +1,6 @@
 package com.golinocottibeatrice.kernelsearch;
 
-import com.golinocottibeatrice.kernelsearch.additions.DisabledRepetitionCounter;
-import com.golinocottibeatrice.kernelsearch.additions.DominanceList;
-import com.golinocottibeatrice.kernelsearch.additions.DominanceListBuilder;
-import com.golinocottibeatrice.kernelsearch.additions.RepetitionCounter;
+import com.golinocottibeatrice.kernelsearch.additions.*;
 import com.golinocottibeatrice.kernelsearch.bucket.*;
 import com.golinocottibeatrice.kernelsearch.instance.*;
 import com.golinocottibeatrice.kernelsearch.kernel.*;
@@ -121,6 +118,7 @@ public class Start {
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
         searchConfig.setRepetitionCounter(getRepetitionCounter());
         searchConfig.setItemDomEnabled(config.isItemDomEnabled());
+        searchConfig.setHeuristicEnabled(config.isHeuristicEnabled());
 
         return searchConfig;
     }
@@ -161,7 +159,8 @@ public class Start {
         if (config.getRunName().isEmpty()) {
             out = Writer.nullWriter();
         } else {
-            out = new FileWriter(config.getLogDir() + "/" + config.getRunName() + ".csv");
+            var fileName = String.format("%s/%s.csv", config.getLogDir(), config.getRunName());
+            out = new FileWriter(fileName);
         }
 
         return new CSVPrinter(out, CSVFormat.DEFAULT);

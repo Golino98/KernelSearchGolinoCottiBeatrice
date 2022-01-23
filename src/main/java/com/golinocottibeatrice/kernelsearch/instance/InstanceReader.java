@@ -28,7 +28,7 @@ public class InstanceReader {
     }
 
     public InstanceReader(File inst) {
-        this.instPath = inst.getAbsolutePath();
+        this(inst.getAbsolutePath());
     }
 
     /**
