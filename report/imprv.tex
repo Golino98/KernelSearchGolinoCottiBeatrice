@@ -1,5 +1,5 @@
 \chapter{Improvements}\label{ch:improvements}
-In this section we will describe the various changes
+In this section we will describe (in chronological order) the various changes
 that we applied to the default kernel search implementation,
 with the objective of improving its performance
 in solving the MKP instances.
@@ -11,10 +11,26 @@ The effectiveness of the tuning is demonstrated using the selected instances
 described in~\ref{subsec:inst} as benchmark.
 
 
-%\section{Variable Sorting}
+\section{Variable Sorting}
+As outlined in~\cite{kernel:2010} and~\cite{kernel:2012} the quality of
+the solutions found by kernel search depends heavily on the criterion used to sort the variables.
+
+In particular, in~\cite{kernel:2010}, includes
+\textit{sorting by lp relaxation value and the absolute value of the reduced cost}
+as general criterion for knapsack problems.
+The experiments we executed on the instances proved this is also true for the MKP\@.
+
+Other criteria we have tested are:
+\begin{itemize}
+    \item Sort by the ratio of profit and weight of the item, breaking ties using the reduced cost;
+    \item Sort by the ratio of profit and weight of the item, breaking ties using the value in the lp relaxation;
+    \item Sort by the maximum between the profit of the item and the ratio of profit and weight;
+    \item Sort by the ratio of the weight of the item and the capacity of the knapsack;
+    \item Sort by profit multiplied by the ratio of the weight of the item and the capacity of the knapsack;
+\end{itemize}
 
 
-\section{Kernel Construction Criteria}
+\section{Kernel Construction Criterion}
 A recurring problem we have identified when running more complex
 instances (such as the one in \texttt{FK\_4}) is that,
 from the very beginning, the kernel contains quite a lot of variables,
@@ -124,4 +140,108 @@ Then, the following constraints are added to the model:
     \sum_{i=1}^{m} x_{ij} \geq \sum_{i=1}^{m} x_{ik} \qquad (j,k) \in D
 \end{equation}
 
-%\section{Iterative Kernel Search}
+To efficienty implement this technique,the dominance list is only built once at startup
+and the constraints~\eqref{eq:itemdom} are applied when solving
+the relaxation, the kernel problem and the bucket sub-problems.
+
+
+\section{Instance Reduction}
+Another improvement for the MKP model describe in~\cite{mkp:2019} is
+\textit{instance reduction}.
+
+Let \textit{I} be any subset of knapsacks and let \textit{J} be the set of
+all items of the instance that can be packed in a knapsack of \textit{I}:
+\begin{equation}
+    J \coloneqq \{j:w_{j} \leq \max_{i \in I} \{c_{i}\}, 1 \leq j \leq n\}
+\end{equation}
+If there exists a feasible packing of the items of \textit{J} into the knapsacks
+of \textit{I}, then such packing can be fixed and sets \textit{I} and \textit{J}
+can be removed from the instance.
+
+The most efficient way to implement this property is to start
+by sorting the knapsacks by non-decreasing capacity, add the first knapsack
+to set \textit{I}, and iteratively add the next (smaller) knapsack to \textit{I}.
+At each iteration we add the appropriate items to \textit{J},
+and check if \(\sum_{j \in J} w_{j} \leq \sum_{i \in I} c_{i}\).
+This allows to avoid running the more expensive bin packing algorithm
+when it's guaranteed that there is no feasible solution.
+
+To solve the bin packing problem, in~\cite{mkp:2019} an exact method is suggested.
+However, the execution time for such an algorithm is unacceptable for this project.
+We decided anyway to try solving the bin packing problem using a modified
+version of the \textit{First-Fit-Decreasing (FFD)} heuristic.
+
+The basic version of FFD works as follows:
+Given \textit{n} items with a weight and a fixed capacity for each bin:
+\begin{enumerate}
+    \item Order the items from largest to smallest;
+    \item Open a new empty bin;
+    \item For each item, from largest to smallest, find the first bin into which the item fits, if any.
+    If such a bin is found, put the item in it.
+    Otherwise, open a new empty bin and put the item in it.
+\end{enumerate}
+
+In this algorithm the bins correspond to the knapsacks of \textit{I},
+and the items are the ones contained in \textit{J}.
+Also, the number of bins is pre-determined by the size of \textit{I},
+and each bin has a different capacity (corresponding to the capacity of the knapsack).
+
+We implemented this algorithm in the code as an additional step to be run
+before solving the kernel problem and the bucket sub-problems.
+The testing however revealed that the algorithm couldn't find any valid bin packing
+for any test instance.
+After some consideration, we supposed that even if we were to swap FFD with another
+heuristic algorithm, it would be unlikely that the bin packing found would improve
+the efficacy and efficiency of the project by much.
+Because of this reason, we decided to discard this technique.
+
+
+\section{Single Knapsack Heuristic}
+As an experiment, we tried to implement an heuristic algorithm that,
+for each knapsack, solves a \textit{0-1 knapsack problem},
+which finds the optimum items to be included in that knapsack.
+
+Given \(n\) items with a weight \(w_{j}\) and a profit \(p_{j}\),
+and a knapsack with capacity \(c\), the \textit{0-1 Knapsack Problem} finds
+the subset of items that maximises the overall profit while not overflowing
+the capacity of the knapsack.
+\begin{equation}
+    \max{z} = \sum_{j=1}^{n} p_{j} x_{j}
+\end{equation}
+\begin{equation}
+    \sum_{j=1}^{n} w_{j} x_{j} \leq c
+\end{equation}
+\begin{equation}
+    x_{j} \in \{0,1\} \qquad j=1,\dots,n
+\end{equation}
+It's worth noting that the \textit{0-1 Knapsack Problem} is equal to an MKP
+where \(m=1\);
+
+The detailed algorithm begins with defining \(J \coloneqq items of the MKP\)
+and \(X=\emptyset\) as the solution found by the heuristic.
+Then, for each knapsack \(i = 1,\dots,m\) the following steps are repeated:
+\begin{enumerate}
+    \item Solve the \textit{0-1 Knapsack Problem} that uses \(i\) as the knapsack and the items in \(J\);
+    \item Remove the items that were inserted into the knapsack from \(J\);
+    \item Add the solution found (associated to the knapsack) to \(X\);
+\end{enumerate}
+Since every item can at most be inserted into one knapsack, and the capacity of each
+knapsack is respected, \(X\) is guaranteed to be a feasible solution for the MKP\@.
+
+After preliminarily testing the heuristic by itself (outside of the kernel search framework)
+we found that the results found were extremely good, and required very little computational time.
+
+\subsection{Integration with the Kernel Search}
+To integrate the heuristic with the Kernel Search, our idea was to use the heuristic
+to find a high quality starting solution.
+Then, the kernel search tries to improve upon the solution found.
+
+To achieve this, we removed the solving of the LP relaxation, and instead
+used the solution found by the heuristic to build the kernel set and the buckets.
+
+
+- integration with other improvements
+
+
+- results
+

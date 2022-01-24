@@ -1,13 +1,13 @@
 \chapter{Kernel Search}\label{ch:kernel-search}
-Kernel Search is a heuristic framework used to solve MIP problems, originally presented in~\cite{kernel:2007}.\\
-The algorithm has been studied in a few applications, such as the multidimensional knapsack problem
-in~\cite{kernel:2010} and the portfolio selection problem in~\cite{kernel:2012}.
+Kernel Search is a heuristic framework used to solve MIP problems that was introduced in~\cite{kernel:2007}.\\
+The algorithm has been studied in a few applications, such as the \textit{Multidimensional Knapsack Problem}
+in~\cite{kernel:2010} and the \textit{Portfolio Selection Problem} in~\cite{kernel:2012}.
 
 The algorithm is based on a few observations that can often be made when solving MIP problems:
 \begin{itemize}
-    \item in the optimal solution there are only a few non-zero variables;
-    \item basic variables in the LP-relaxation are good predictors of non-zero variables in the MIP optimum;
-    \item reduced costs are good predictors of the likelihood of a non-basic variable to be in the MIP optimum.
+    \item In the optimal solution there are only a few non-zero variables;
+    \item Basic variables in the LP-relaxation are good predictors of non-zero variables in the MIP optimum;
+    \item Reduced costs are good predictors of the likelihood of a non-basic variable to be in the MIP optimum.
 \end{itemize}
 
 Kernel search needs an MIP solver such as GUROBI or CPLEX to solve a set of MIP sub-problems.
@@ -16,13 +16,13 @@ Kernel search needs an MIP solver such as GUROBI or CPLEX to solve a set of MIP 
 \section{Algorithm}
 The algorithm has two main phases: an \textit{inizialitation phase}
 that builds an initial \textit{kernel set} and a number of \textit{buckets},
-and a \textit{improvement phase} that iteratively enlarges the kernel set and improves the solution.
+and an \textit{improvement phase} that iteratively enlarges the kernel set and improves the solution.
 
 \subsection{Inizialization Phase}
-The first step of kernel search is to solve the LP relaxation of the problem.\\
+The first step of the Kernel Search is to solve the LP relaxation of the problem.\\
 Then, the set of variables of the problem is sorted according to some \textit{sorting criterion}.
 
-Once this is done, the kernel set \(\Lambda\) can be built by selecting the \textit{C}
+Once this is done, the kernel set \(\Lambda\) is built by selecting the \textit{C}
 variables in the sorted set according a \textit{kernel construction criterion},
 where \textit{C} is the size of the kernel set.
 
@@ -69,8 +69,7 @@ problem:
 
 \section{Improving Efficiency of the Basic Kernel Search}\label{sec:improving-efficiency}
 To improve the performance of the basic kernel search, two constraints can be added
-when solving each (\(\Lambda \cup B_{i}\)):
-
+when solving each MIP(\(\Lambda \cup B_{i}\)):
 \begin{equation}
     \label{eq:impr1}
     \text{value of the objective function} \geq w^{*}
@@ -79,7 +78,6 @@ when solving each (\(\Lambda \cup B_{i}\)):
     \label{eq:impr2}
     \sum_{j \in B_{i}} x_{j} \geq 1
 \end{equation}
-
 The cutoff constraint~\eqref{eq:impr1} allows only solutions that improve on the current
 objective value.
 Constraints~\eqref{eq:impr2} ensure that at least one item must be selected from the bucket \(B_{i}\):
@@ -90,9 +88,9 @@ such an item will then be included in the new kernel set.
 Iterative kernel search is a variation of the basic kernel search where buckets are scrolled more than once.
 The algorithm is as follows:
 \begin{enumerate}
-    \item Execute the basic kernel search
-    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max\{i:\bar{\Lambda}_{i} \neq \emptyset\}\)
-    \item Execute the improvement phase of the algorithm
+    \item Execute the basic kernel search;
+    \item Set \(nb \coloneqq q-1\), where \(q \coloneqq \max\{i:\bar{\Lambda}_{i} \neq \emptyset\}\);
+    \item Execute the improvement phase of the algorithm;
     \item If a new variable enters the kernel set, \(nb\) is reset to its initial value,
     the improvement phase is executed again and the algorithm is repeated from step 2.
 \end{enumerate}

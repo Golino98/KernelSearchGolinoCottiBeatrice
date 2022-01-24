@@ -1,6 +1,6 @@
 \chapter{Computational Experiments}\label{ch:computational-experiments}
 In this section we report the results of test executed on the default kernel search applied to the MKP\@.
-The main objective of these experiments was to determine the performance of the default kernel search,
+The main objective of these experiments is to determine the performance of the default kernel search,
 both in terms of quality of the solution found and time required for the execution.
 
 
@@ -9,11 +9,11 @@ The test instances for the MKP were kindly provided to us by the authors of~\cit
 There are in total 2100 test instances, organized in
 five directories of increasing complexity:
 \begin{itemize}
-    \item SMALL
-    \item FK\_1
-    \item FK\_2
-    \item FK\_3
-    \item FK\_4
+    \item SMALL;
+    \item FK\_1;
+    \item FK\_2;
+    \item FK\_3;
+    \item FK\_4.
 \end{itemize}
 SMALL contains 180 instances, while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 instances each.
 The instances in the first two directories were already solved to the optimum.
@@ -40,17 +40,17 @@ An example of the structure of an instance is shown below:
         &\begin{rcases*}
              3 \quad
         \end{rcases*}
-        \rightarrow \text{integer that indicates the value of \textit{\textbf{m} (number of knapsacks)}.}\\
+        \rightarrow \text{integer that indicates the value of \textit{m (number of knapsacks)}.}\\
         &\begin{rcases*}
              7 \quad
         \end{rcases*}
-        \rightarrow \text{integer that indicates the value of \textit{\textbf{n} (number of items)}.}\\
+        \rightarrow \text{integer that indicates the value of \textit{n (number of items)}.}\\
         &\begin{rcases*}
              908 \quad\\
              834\\
              675\\
         \end{rcases*}
-        \rightarrow \text{integers that indicate the \textbf{capacity} } c_{i} \text{ of the knapsack i with }
+        \rightarrow \text{integers that indicate the capacity } c_{i} \text{ of the knapsack i with }
         \space i=1,\dots,m.\\
         &\begin{rcases*}
              264    \quad 430 \quad\\
@@ -63,8 +63,8 @@ An example of the structure of an instance is shown below:
         \end{rcases*}
         \rightarrow
         \begin{rcases*}
-            \text{First column shows the \textbf{weight} } w_{i} \quad \\
-            \text{Second column shows the \textbf{profit} } p_{i}.
+            \text{First column shows the weight} w_{i} \quad \\
+            \text{Second column shows the profit} p_{i}.
         \end{rcases*}
         \rightarrow
         \space i=1,\dots,n.
@@ -82,13 +82,13 @@ using a GUROBI solver with the following configuration:
     \item \textit{MIPGap}: \num{1e-12}
 \end{itemize}
 
-Most of the instances used all the available time without reaching the optimum.
+Most of the instances however used all the available time without reaching the optimum.
 The code and the results can be found at \url{https://github.com/Golino98/EsattoMKP}.
 
 \subsection{Selected Instances}\label{subsec:inst}
 To simplify the testing of the changes to the kernel search algorithm,
 we only considered 40 instances: 6 solved to the optimum for each directory,
-plus 10 that we weren't able to solve to the best.
+plus 10 that were not solved to the optimum.
 
 Tables~\ref{tab:exact_opt} and~\ref{tab:exact_noopt} represent,
 respectively, the optimum values of the 30 instances solved to
