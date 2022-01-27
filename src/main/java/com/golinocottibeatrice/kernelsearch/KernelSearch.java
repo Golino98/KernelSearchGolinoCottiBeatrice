@@ -75,6 +75,7 @@ public class KernelSearch {
 
         // Costruzione del kernel set
         kernel = config.getKernelBuilder().build(variables, config);
+        kernel.getVariables().forEach(v -> v.setFromBucket(false));
 
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()

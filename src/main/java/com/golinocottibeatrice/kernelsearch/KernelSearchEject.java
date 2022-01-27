@@ -21,12 +21,12 @@ public class KernelSearchEject extends KernelSearch {
      *
      * @param selected        list of variables selected from the bucket
      * @param solution        the current solution
-     * @param count_solutions number of solutions visited in the current iteration
+     * @param countSolutions number of solutions visited in the current iteration
      */
     @Override
-    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+    protected void executeEject(List<Variable> selected, Solution solution, int countSolutions) {
         this.kernel.updateUsages(solution);
-        int removedVars = this.kernel.checkForEject(this.config.getEjectThreshold(), count_solutions);
+        int removedVars = this.kernel.checkForEject(this.config.getEjectThreshold(), countSolutions);
 
         log.solution(selected.size(), removedVars, kernel.size(), solution.getObjective(), timer.elapsedTime());
     }

@@ -27,7 +27,6 @@ public class Kernel {
      */
     public void addItem(Variable v) {
         v.resetTimesUsed();
-        v.setFromBucket(false);
         variables.add(v);
     }
 
@@ -58,7 +57,7 @@ public class Kernel {
      */
     public void updateUsages(Solution solution) {
         List<Variable> activeInSolution = solution.getVariables().stream()
-                .filter(variable -> variable.getValue() >= 1).toList();
+                .filter(variable -> variable.getValue() > 0).toList();
 
         this.variables.forEach(variable -> {
             if (activeInSolution.stream().anyMatch(v -> v.getName().equals(variable.getName()))) {
@@ -70,25 +69,23 @@ public class Kernel {
     /**
      * Esegue eject procedure. Rimuove variabile se #volte non usata - #volte usata >= threshold
      *
-     * @param threshold       the threshold defined for the eject procedure
-     * @param solutions_count numero di soluzioni create durante esecuzione di questa iterazione
+     * @param threshold      the threshold defined for the eject procedure
+     * @param solutionsCount numero di soluzioni create durante esecuzione di questa iterazione
      * @return total of variables removed from the kernel
      */
-    public int checkForEject(int threshold, int solutions_count) {
-        List<Variable> new_variables = this.variables.stream()
-                .filter(variable ->
-                        !variable.isFromBucket() ||
-                                (solutions_count - variable.getTimesUsed()) - variable.getTimesUsed() < threshold)
-                .collect(Collectors.toList());
+    public int checkForEject(int threshold, int solutionsCount) {
+        var oldSize = variables.size();
+        variables.removeIf(v -> v.isFromBucket() && violatesThreshold(solutionsCount, v.getTimesUsed(), threshold));
 
-        int removed_vars = this.variables.size() - new_variables.size();
-
-        this.variables = new_variables;
-
-        return removed_vars;
+        return variables.size() - oldSize;
     }
 
     public void resetUsages() {
         this.variables.forEach(Variable::resetTimesUsed);
+    }
+
+    private boolean violatesThreshold(int solutionsCount, int timesUsed, int threshold) {
+        var timesNotUsed = solutionsCount - timesUsed;
+        return timesNotUsed - timesUsed >= threshold;
     }
 }

@@ -1,11 +1,11 @@
 \chapter{Improvements}\label{ch:improvements}
 In this section we will describe (in chronological order) the various changes
-that we applied to the default kernel search implementation,
+that we applied to the default Kernel Search implementation,
 with the objective of improving its performance
 in solving the MKP instances.
 
-For the sake of completeness, we well also describe the all attemps at improving
-the algorithm, thus including the unsuccesful ones.
+For the sake of completeness, we well also describe the all attempts at improving
+the algorithm, thus including the unsuccesfull ones.
 
 The effectiveness of the tuning is demonstrated using the selected instances
 described in~\ref{subsec:inst} as benchmark.
@@ -13,59 +13,86 @@ described in~\ref{subsec:inst} as benchmark.
 
 \section{Variable Sorting}
 As outlined in~\cite{kernel:2010} and~\cite{kernel:2012} the quality of
-the solutions found by kernel search depends heavily on the criterion used to sort the variables.
+the solutions found by Kernel Search heavily depends on the criterion used to sort the variables.
 
-In particular, in~\cite{kernel:2010}, includes
-\textit{sorting by lp relaxation value and the absolute value of the reduced cost}
-as general criterion for knapsack problems.
-The experiments we executed on the instances proved this is also true for the MKP\@.
+In particular, in~\cite{kernel:2010}, suggests
+sorting by non-increasing \textit{lp relaxation value} and non-decreasing \textit{absolute value of the reduced cost}
+as a criterion for the \textit{Multidimensional Knapsack Problem}.
+This is the default criterion that was provided in the code, and
+the experiments we executed on the instances proved that this sorting also
+provides high quality solutions for the MKP\@.
 
 Other criteria we have tested are:
 \begin{itemize}
-    \item Sort by the ratio of profit and weight of the item, breaking ties using the reduced cost;
-    \item Sort by the ratio of profit and weight of the item, breaking ties using the value in the lp relaxation;
-    \item Sort by the maximum between the profit of the item and the ratio of profit and weight;
-    \item Sort by the ratio of the weight of the item and the capacity of the knapsack;
-    \item Sort by profit multiplied by the ratio of the weight of the item and the capacity of the knapsack;
+    \item Sort by non-increasing \textit{ratio of profit and weight},
+    breaking ties using the non-decreasing \textit{reduced cost};
+    \item Sort by non-increasing \textit{ratio of profit and weight},
+    breaking ties using the non-increasing \textit{lp relaxation value};
+    \item Sort by the non-decreasing maximum between the \textit{profit}
+    and the \textit{ratio of profit and weight};
+    \item Sort by the non-decreasing \textit{ratio of weight and capacity};
+    \item Sort by non-increasing \textit{profit} multiplied by
+    \textit{ratio of weight and capacity}.
 \end{itemize}
+
+The tests however proved that all of these sorting methods were inferior to the
+default one.
 
 
 \section{Kernel Construction Criterion}
 A recurring problem we have identified when running more complex
-instances (such as the one in \texttt{FK\_4}) is that,
+instances (such as the one in FK\_4) is that,
 from the very beginning, the kernel contains quite a lot of variables,
 which makes the solving of the kernel problem and the buckets sub-problems slow.
 
 This means that a starting point to improve the performance of the Kernel Search
 could be to optimize the management of the kernel set,
-possibily starting from the \textit{kernel construction criterion},
+possibly starting from the \textit{kernel construction criterion},
 which by default is to include the first \textit{C} sorted variables.
 
 We have experimented with the following criteria:
 \begin{enumerate}
     \item Select the variables that have a greater than 0 in the LP relaxation;
     \item Select the variables that have a value equal to 1 in the LP relaxation;
-    \item Select the variables that have a value greater than a threshold in the LP relaxation.
+    \item Select the variables that have a value greater than a threshold
+    (between 0 and 1) in the LP relaxation.
 \end{enumerate}
 
 However, after running benchmark to compare these criteria
 with the default one, the results demonstrated that the default criterion
 consistently gave better results.
 It is however worth noting that the criterion 2 and 3 (with a proper threshold),
-gave results that were quite close to the ones with the default criteria,
-while using much less time.
+gave good results while using significantly less computation time than the default criterion.
 
 
 \section{Ejection of Variables from the Kernel}
-As an alternative to improve the efficiency in solving the kernel set
-we have developed a \textit{kernel eject} method,
-which consists in removing from the kernel variables
-that do not appear in the solution of \textit{n}
-consecutive bucket sub-problems.
+As an alternative to improve the efficiency in solving the kernel set,
+we have developed a \textit{kernel eject} method, which allows to remove variables from the kernel.
+This technique is particularly useful for more complex instances, where every
+bucket sub-problem normally takes a significant amount of time to be solved.
 
-When the variables are removed from the kernel
-not deleted from the model, but they are returned to their original bucket.
-If they originally were in the kernel, they are inserted into the first bucket.
+To implement this functionality, at each iteration of the Kernel Search
+we keep a counter \(h\) for the number of solutions found.
+Each variable that isn't in the initial kernel
+is also associated with a counter \(k_{v}, v \in variables \setminus variables in the initial kernel\)
+that is incremented when the variable has a non-zero value in the solution of a bucket sub-problem.
+At the end of each iteration, for each variable \(v\), if
+\((h - k_{v}) - k_{v} <= threshold\), the variable is removed from the kernel.
+
+The values of \(h\) and \(k_{v}\) are reset at each iteration of the Kernel Search.
+
+The \textit{eject threshold} is a configuration parameter:
+a low threshold will remove more variables from the kernel, increasing efficiency,
+but sacrificing the quality of the solution found.
+A high threshold instead has a more subtle effect.
+
+When the variables are removed from the kernel they are not deleted from the model,
+but they are returned to their original bucket.
+
+Experiments on the instances demonstrated that this method significantly cuts
+the solving time of the bucket sub-problems.
+The quality of the solution found is worsened, but on the flip side
+the more iterations and buckets can be solved in the same time limit.
 
 
 \section{Repetition Counter}
@@ -81,14 +108,14 @@ Our hypothesis is that there are two causes for this:
     \item The GUROBI solver cannot find a (better) solution for the sub-problem,
     either due to the infeasibility of the problem or because of
     the time limit set for solving each bucket.
-    \item The kernel search algorithm, during its improvement phase,
+    \item The Kernel Search algorithm, during its improvement phase,
     only accepts a new solution (thus updating the kernel)
     if it improves upon, or is at least equal, to the incumbent one.
     This is done by adding a cutoff constraint, as explained in~\ref{sec:improving-efficiency}.
 \end{enumerate}
 
 In order to mitigate this problem we introduced a \textit{repetition counter}
-that, during the improvement phase of kernel search,
+that, during the improvement phase of Kernel Search,
 removes the cutoff constraint for \textit{k} buckets
 when the same solution (or no solution) is found for \textit{h} times.
 
@@ -98,7 +125,7 @@ by appropriately setting parameters \textit{h} and \textit{k}.
 
 A low value for \textit{h} and a high one for \textit{k} allow for
 diversification, by adding to the kernel variables that otherwise
-may never be selected, and could allow to escape the local optimum.
+may never be selected, and could allow escaping the local optimum.
 
 On the opposite, a high value for \textit{h} and a low one for \textit{k}
 switch to focus on intensification, by giving priority to finding
@@ -110,15 +137,20 @@ a reasonable balance between diversification and intensification.
 In particular we found that \(h=3\) and \(k=3\) worked quite well
 with the test instances we selected.
 
-\subsection{Reset counter when new optimum is found}
-A small enhancement we have applied to this mechanism
-is to reset the counter to its initial status
+\subsection{Reset Counter On New Optimum}
+A small enhancement we have applied is to reset the counter to its initial status
 whenever the Kernel Search finds a new solution
 that is better than any other found before.
 
 This is significant because the default repetition counter
 method completely ignores the value of the solutions found
 during the \textit{k} cycles.
+
+
+\section{Overlapping Buckets}
+
+
+\section{Iterative Kernel Search}
 
 
 \section{Item Dominance}
@@ -128,7 +160,7 @@ and \(p_{j} \geq p_{k}\), then it is said that \textit{j dominates k}.
 This means that when an item is excluded from the solution,
 all items dominated by it can also be excluded.
 
-The simplest way to implement this method is to preliminarly sort all
+The simplest way to implement this method is to preliminarily sort all
 items according to non-increasing weight, breaking ties by
 non-decreasing profit.
 For each item \(k\), items \(j \coloneqq k+1,\dots,n\) are parsed,
@@ -140,7 +172,7 @@ Then, the following constraints are added to the model:
     \sum_{i=1}^{m} x_{ij} \geq \sum_{i=1}^{m} x_{ik} \qquad (j,k) \in D
 \end{equation}
 
-To efficienty implement this technique,the dominance list is only built once at startup
+To efficiently implement this technique,the dominance list is only built once at startup
 and the constraints~\eqref{eq:itemdom} are applied when solving
 the relaxation, the kernel problem and the bucket sub-problems.
 
@@ -155,13 +187,13 @@ all items of the instance that can be packed in a knapsack of \textit{I}:
     J \coloneqq \{j:w_{j} \leq \max_{i \in I} \{c_{i}\}, 1 \leq j \leq n\}
 \end{equation}
 If there exists a feasible packing of the items of \textit{J} into the knapsacks
-of \textit{I}, then such packing can be fixed and sets \textit{I} and \textit{J}
+of \textit{I}, then such packing can be fixed, and sets \textit{I} and \textit{J}
 can be removed from the instance.
 
 The most efficient way to implement this property is to start
 by sorting the knapsacks by non-decreasing capacity, add the first knapsack
 to set \textit{I}, and iteratively add the next (smaller) knapsack to \textit{I}.
-At each iteration we add the appropriate items to \textit{J},
+At each iteration, we add the appropriate items to \textit{J},
 and check if \(\sum_{j \in J} w_{j} \leq \sum_{i \in I} c_{i}\).
 This allows to avoid running the more expensive bin packing algorithm
 when it's guaranteed that there is no feasible solution.
@@ -191,19 +223,19 @@ before solving the kernel problem and the bucket sub-problems.
 The testing however revealed that the algorithm couldn't find any valid bin packing
 for any test instance.
 After some consideration, we supposed that even if we were to swap FFD with another
-heuristic algorithm, it would be unlikely that the bin packing found would improve
+heuristic algorithm, it would be unlikely that the bin packing found (if any) would improve
 the efficacy and efficiency of the project by much.
 Because of this reason, we decided to discard this technique.
 
 
 \section{Single Knapsack Heuristic}
-As an experiment, we tried to implement an heuristic algorithm that,
+As an experiment, we tried to implement a heuristic algorithm that,
 for each knapsack, solves a \textit{0-1 knapsack problem},
 which finds the optimum items to be included in that knapsack.
 
 Given \(n\) items with a weight \(w_{j}\) and a profit \(p_{j}\),
 and a knapsack with capacity \(c\), the \textit{0-1 Knapsack Problem} finds
-the subset of items that maximises the overall profit while not overflowing
+the subset of items that maximizes the overall profit while not overflowing
 the capacity of the knapsack.
 \begin{equation}
     \max{z} = \sum_{j=1}^{n} p_{j} x_{j}
@@ -217,8 +249,8 @@ the capacity of the knapsack.
 It's worth noting that the \textit{0-1 Knapsack Problem} is equal to an MKP
 where \(m=1\);
 
-The detailed algorithm begins with defining \(J \coloneqq items of the MKP\)
-and \(X=\emptyset\) as the solution found by the heuristic.
+The detailed algorithm begins with defining \(J \coloneqq \text{items of the MKP}\)
+and \(X \coloneqq \emptyset\) as the (initially empty) solution found by the heuristic.
 Then, for each knapsack \(i = 1,\dots,m\) the following steps are repeated:
 \begin{enumerate}
     \item Solve the \textit{0-1 Knapsack Problem} that uses \(i\) as the knapsack and the items in \(J\);
@@ -228,20 +260,29 @@ Then, for each knapsack \(i = 1,\dots,m\) the following steps are repeated:
 Since every item can at most be inserted into one knapsack, and the capacity of each
 knapsack is respected, \(X\) is guaranteed to be a feasible solution for the MKP\@.
 
-After preliminarily testing the heuristic by itself (outside of the kernel search framework)
-we found that the results found were extremely good, and required very little computational time.
+After preliminarily testing the heuristic by itself (outside the Kernel Search framework)
+we found that the results found were excellent, and required very little computation time.
 
 \subsection{Integration with the Kernel Search}
 To integrate the heuristic with the Kernel Search, our idea was to use the heuristic
-to find a high quality starting solution.
-Then, the kernel search tries to improve upon the solution found.
+to find a high quality starting solution, which the Kernel Search tries to improve.
 
 To achieve this, we removed the solving of the LP relaxation, and instead
 used the solution found by the heuristic to build the kernel set and the buckets.
+The parameters of the Kernel Search and the methods added until now
+did not require any change to work correctly.
+
+For testing purposes, we also tried to solve the instances changing the kernel construction
+criterion and the sorting criterion, to verify if this change in the
+Kernel Search algorithm caused one of the other criterion we developed
+to become better than the default one.
+The test revealed that the criterion used by default were still the best ones.
+
+It is possible that the Kernel Search does not find a solution that improves
+upon the one found by the heuristic: this is still acceptable, because the
+heuristic finds integer and feasible solutions.
 
 
-- integration with other improvements
-
-
-- results
-
+\section{Parameter Tuning}
+The last step to improve the performance of the Kernel Search is to
+change the values of the kernel size and bucket size.

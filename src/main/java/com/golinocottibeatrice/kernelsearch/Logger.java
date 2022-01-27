@@ -21,7 +21,7 @@ public class Logger {
     private static final String REP_DISABLED = CYAN + "\nRep. counter: " + RESET + "disabled";
     private static final String ITEMDOM_ENABLED = CYAN + "\nItem dom.   : " + RESET + "enabled";
     private static final String ITEMDOM_DISABLED = CYAN + "\nItem dom.   : " + RESET + "disabled";
-    private static final String HEURISTIC_ENABLED = CYAN + "\nHeuristic  : " + RESET + "enabled";
+    private static final String HEURISTIC_ENABLED = CYAN + "\nHeuristic   : " + RESET + "enabled";
     private static final String HEURISTIC_DISABLED = CYAN + "\nHeuristic   : " + RESET + "disabled";
     private static final String RELAXATION = PURPLE + "\n\n[Solving relaxation]\n" + RESET;
     private static final String HEURISTIC = PURPLE + "\n\n[Running heuristic]\n" + RESET;
