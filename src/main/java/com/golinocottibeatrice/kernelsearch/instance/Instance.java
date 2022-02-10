@@ -33,20 +33,19 @@ public class Instance {
         return name;
     }
 
+    public List<Knapsack> getKnapsacks() {
+        return knapsacks;
+    }
 
     public int getNumKnapsacks() {
         return knapsacks.size();
     }
 
-    public int getNumItems() {
-        return items.size();
-    }
-
-    public List<Knapsack> getKnapsacks() {
-        return knapsacks;
-    }
-
     public List<Item> getItems() {
         return items;
+    }
+
+    public int getNumItems() {
+        return items.size();
     }
 }

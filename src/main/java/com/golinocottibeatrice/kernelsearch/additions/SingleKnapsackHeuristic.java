@@ -71,7 +71,11 @@ public class SingleKnapsackHeuristic {
             for (var item : x.keySet()) {
                 var value = x.get(item).get(GRB.DoubleAttr.X);
                 var name = String.format("x_%d_%d", knapsack.getIndex(), item.getIndex());
-                variables.add(new Variable(name, item, knapsack, value));
+
+                var v = new Variable(name, item, knapsack);
+                v.setValue(value);
+                variables.add(v);
+
                 if (value == 1) {
                     items.remove(item);
                 }

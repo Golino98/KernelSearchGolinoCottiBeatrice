@@ -2,7 +2,7 @@ package com.golinocottibeatrice.kernelsearch.instance;
 
 /**
  * Rappresenta un oggetto dell'istanza del problema.
- * Un oggetto è caratterizzato da un peso e da un profitto.
+ * Un oggetto è caratterizzato da un indice (ordine in cui è stato letto), un peso e da un profitto.
  * NON contiene informazioni riguardanti la risoluzione del problema, come
  * il coefficiente di costo ridotto.
  */
@@ -28,5 +28,4 @@ public class Item {
     public int getProfit() {
         return profit;
     }
-
 }

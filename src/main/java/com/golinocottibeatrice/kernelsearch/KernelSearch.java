@@ -28,11 +28,11 @@ public class KernelSearch {
     private final DominanceList dominanceList;
 
     // Variabili del problema
-    protected List<Variable> variables;
+    private List<Variable> variables;
     // Miglior soluzione trovata
-    protected Solution bestSolution = new EmptySolution();
+    private Solution bestSolution = new EmptySolution();
     // La soluzione attuale, che potrebbe non essere la migliore trovata.
-    protected Solution currentSolution = new EmptySolution();
+    private Solution currentSolution = new EmptySolution();
 
     /**
      * Crea una nuova istanza di kernel search.
@@ -89,7 +89,7 @@ public class KernelSearch {
     }
 
     // Risolve il rilassato dell'istanza
-    protected void solveRelaxation() throws GRBException {
+    private void solveRelaxation() throws GRBException {
         var model = solver.createRelaxed(instance, config.getTimeLimit());
         model.addDominanceConstraints(dominanceList);
 
@@ -101,7 +101,8 @@ public class KernelSearch {
         model.dispose();
     }
 
-    protected void runHeuristic() throws GRBException {
+    // Esegue l'euristica
+    private void runHeuristic() throws GRBException {
         log.heuristicStart();
         bestSolution = new SingleKnapsackHeuristic(instance, config.getGrbEnv()).run();
         log.solution(bestSolution.getObjective(), timer.elapsedTime());
@@ -109,10 +110,10 @@ public class KernelSearch {
         variables = bestSolution.getVariables();
     }
 
-    protected void solveKernel() throws GRBException {
+    // Risolve il kernel del problema
+    private void solveKernel() throws GRBException {
         var timeLimit = Math.min(config.getTimeLimitKernel(), timer.getRemainingTime());
         var model = solver.createModel(instance, timeLimit);
-
         model.addDominanceConstraints(dominanceList);
 
         var toDisable = variables.stream().filter(v -> !kernel.contains(v)).toList();
@@ -129,7 +130,7 @@ public class KernelSearch {
         model.dispose();
     }
 
-    protected void iterateBuckets() throws GRBException {
+    private void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
             if (timer.timeLimitReached()) {
                 log.timeLimit();
@@ -143,7 +144,7 @@ public class KernelSearch {
         }
     }
 
-    protected void solveBuckets() throws GRBException {
+    private void solveBuckets() throws GRBException {
         int count = 0;
         int countSolutions = 0;
 
@@ -186,11 +187,11 @@ public class KernelSearch {
         }
     }
 
-    protected void executeEject(List<Variable> selected, Solution solution, int count_solutions) {
+    protected void executeEject(List<Variable> selected, Solution solution, int countSolutions) {
         log.solution(selected.size(), kernel.size(), solution.getObjective(), timer.elapsedTime());
     }
 
-    protected Model buildModel(Bucket b, int count) throws GRBException {
+    private Model buildModel(Bucket b, int count) throws GRBException {
         log.bucketStart(count, b.size());
 
         var timeLimit = Math.min(config.getTimeLimitBucket(), timer.getRemainingTime());

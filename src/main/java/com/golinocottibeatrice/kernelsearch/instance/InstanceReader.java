@@ -5,6 +5,7 @@ import com.golinocottibeatrice.kernelsearch.util.FileUtil;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
@@ -16,7 +17,7 @@ public class InstanceReader {
     // Carattere usato per separare weight e profit di un item
     private static final String SEPARATOR = "\\s+";
 
-    private final String instPath;
+    private final Path path;
 
     /**
      * Crea una nuovo InstanceReader.
@@ -24,11 +25,11 @@ public class InstanceReader {
      * @param instPath Il path del file dell'istanza del problema.
      */
     public InstanceReader(String instPath) {
-        this.instPath = instPath;
+        this.path = Paths.get(instPath);
     }
 
-    public InstanceReader(File inst) {
-        this(inst.getAbsolutePath());
+    public InstanceReader(File instFile) {
+        this(instFile.getAbsolutePath());
     }
 
     /**
@@ -38,8 +39,6 @@ public class InstanceReader {
      * @throws IOException Errore nella lettura del file.
      */
     public Instance read() throws IOException {
-        var path = Paths.get(instPath);
-
         // Nome dell'istanza
         var name = FileUtil.getFileName(path);
 

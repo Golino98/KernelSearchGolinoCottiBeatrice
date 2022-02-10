@@ -5,29 +5,37 @@ import com.golinocottibeatrice.kernelsearch.solver.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Rappresenta una bucket della kernel search.
+ */
 public class Bucket {
-    private final List<Variable> variables = new ArrayList<>();
+    private final List<Variable> bucket = new ArrayList<>();
 
+    /**
+     * Aggiunge una nuova variabile al bucket.
+     *
+     * @param v La variabile da aggiungere al bucket.
+     */
     public void addVariable(Variable v) {
-        v.setFromBucket(true);
-        variables.add(v);
+        bucket.add(v);
     }
 
     public int size() {
-        return variables.size();
+        return bucket.size();
     }
 
     public List<Variable> getVariables() {
-        return variables;
+        return bucket;
     }
 
     /**
-     * @param v variabile di tipo {@link Variable} di cui controllare l'esistenza all'interno della lista variables.
-     *          Il controllo viene fatto in maniera case insensitive in modo tale da non avere problemi con le maiuscole.
-     * @return {@code true} se la variabile v è presente all'interno della lista, in caso contrario <code>false</code>
+     * Verifica se una variabile è contenuta nel bucket.
+     *
+     * @param v La variabile di cui verificare la presenza.
+     * @return {@code true} se la variabile è nel bucket, {@code false} altrimenti.
      */
     public boolean contains(Variable v) {
-        return variables.stream().anyMatch(v2 -> v2.getName().equalsIgnoreCase(v.getName()));
+        return bucket.stream().anyMatch(v::equals);
     }
 }
 

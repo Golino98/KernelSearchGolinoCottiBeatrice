@@ -4,6 +4,9 @@ import java.io.PrintStream;
 import java.time.Instant;
 import java.time.ZoneOffset;
 
+/**
+ * Logger degli eventi della kernel search.
+ */
 public class Logger {
     public static final String RESET = "\u001B[0m";
     public static final String YELLOW = "\u001B[33m";
@@ -42,10 +45,10 @@ public class Logger {
     }
 
     public void start(String instance) {
-        var time = Instant.now().atZone(ZoneOffset.UTC).toLocalTime();
-
         out.print(SEPARATOR);
         out.printf(INSTANCE, instance);
+
+        var time = Instant.now().atZone(ZoneOffset.UTC).toLocalTime();
         out.printf(START_TIME, time.getHour(), time.getMinute(), time.getSecond());
     }
 
