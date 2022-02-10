@@ -149,7 +149,7 @@ public class Start {
         var instances = new ArrayList<Instance>();
 
         for (var file : FileUtil.getFiles(config.getInstPath())) {
-            instances.add(new InstanceReader(file).read());
+            instances.add(new InstanceReader(file, config.getInstPath()).read());
         }
 
         return instances;

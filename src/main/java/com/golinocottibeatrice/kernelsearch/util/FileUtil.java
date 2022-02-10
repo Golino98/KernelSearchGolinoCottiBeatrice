@@ -24,22 +24,13 @@ public class FileUtil {
      * @param path Il file di cui ottenere il nome.
      * @return Il nome del file.
      */
-    public static String getFileName(String path) {
-        if (path.isEmpty()) {
+    public static String getFileName(Path path, Path basePath) {
+        if (path.toString().isEmpty()) {
             return "";
         }
 
-        return path.replaceAll(EXT_PATTERN, "");
-    }
-
-    /**
-     * Consente di ottenere il solo nome di un file, privato da ogni estensione.
-     *
-     * @param path Il file di cui ottenere il nome.
-     * @return Il nome del file.
-     */
-    public static String getFileName(Path path) {
-        return getFileName(path.getFileName().toString());
+        var relativePath = basePath.relativize(path);
+        return relativePath.toString().replaceAll(EXT_PATTERN, "");
     }
 
     /**
@@ -84,14 +75,19 @@ public class FileUtil {
         if (file.isDirectory()) {
             for (var f : Objects.requireNonNull(file.listFiles())) {
                 if (f.isDirectory()) {
-                    continue;
+                    filesList.addAll(getFiles(f));
+                } else {
+                    filesList.add(f);
                 }
-                filesList.add(f);
             }
         } else {
             filesList.add(file);
         }
 
         return filesList;
+    }
+
+    public static List<File> getFiles(File file) {
+        return getFiles(file.getPath());
     }
 }

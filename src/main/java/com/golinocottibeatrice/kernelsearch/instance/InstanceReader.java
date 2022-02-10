@@ -18,18 +18,17 @@ public class InstanceReader {
     private static final String SEPARATOR = "\\s+";
 
     private final Path path;
+    private final Path basePath;
 
     /**
      * Crea una nuovo InstanceReader.
      *
-     * @param instPath Il path del file dell'istanza del problema.
+     * @param instFile Il file dell'istanza del problema.
+     * @param basePath Il path di base dell'istanza, usato per costruire il nome dell'istanza.
      */
-    public InstanceReader(String instPath) {
-        this.path = Paths.get(instPath);
-    }
-
-    public InstanceReader(File instFile) {
-        this(instFile.getAbsolutePath());
+    public InstanceReader(File instFile, String basePath) {
+        this.path = Paths.get(instFile.getPath());
+        this.basePath = Paths.get(basePath);
     }
 
     /**
@@ -39,8 +38,7 @@ public class InstanceReader {
      * @throws IOException Errore nella lettura del file.
      */
     public Instance read() throws IOException {
-        // Nome dell'istanza
-        var name = FileUtil.getFileName(path);
+        var name = FileUtil.getFileName(path, basePath);
 
         var br = Files.newBufferedReader(path);
         var lines = br.lines().toList();
