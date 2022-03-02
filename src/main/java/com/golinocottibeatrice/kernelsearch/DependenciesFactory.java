@@ -15,6 +15,7 @@ public class DependenciesFactory {
             case 0 -> new KernelBuilderPositive();
             case 1 -> new KernelBuilderPercentage();
             case 2 -> new KernelBuilderIntValues();
+            case 3 -> new KernelBuilderThreshold();
             default -> throw new IllegalStateException(UNRECOGNIZED_KERNEL_BUILDER);
         };
     }
