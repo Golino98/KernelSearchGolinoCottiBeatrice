@@ -32,8 +32,8 @@ public class DependenciesFactory {
             case 0 -> new VariableSorterByValueAndAbsoluteRC();
             case 1 -> new VariableSorterByAbsoluteRCAndValue();
             case 2 -> new VariableSorterByProfitDivideWeight();
-            case 3 -> new VariableSorterRandom();
-            case 4 -> new VariableSorterByValueProfitWeightAndRC();
+            case 3 -> new VariableSorterByValueProfitWeightAndRC();
+            case 4 -> new VariableSorterRandom();
             default -> throw new IllegalStateException(UNRECOGNIZED_VAR_SORTER);
         };
     }
