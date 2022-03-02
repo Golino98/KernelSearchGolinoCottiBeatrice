@@ -113,6 +113,7 @@ public class Start {
         searchConfig.setRepCtrEnabled(config.isRepCtrEnabled());
         searchConfig.setItemDomEnabled(config.isItemDomEnabled());
         searchConfig.setHeuristicEnabled(config.isHeuristicEnabled());
+        searchConfig.setOverlapRatio(config.getOverlapRatio());
 
         return searchConfig;
     }

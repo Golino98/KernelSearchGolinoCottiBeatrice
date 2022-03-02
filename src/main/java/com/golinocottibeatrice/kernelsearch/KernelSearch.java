@@ -9,12 +9,17 @@ import com.golinocottibeatrice.kernelsearch.util.Timer;
 import gurobi.GRBException;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Implementa il metodo della kernel search, usando GUROBI come risolutore.
  * I parametri di configurazione vengono letti da un'istanza di {@link SearchConfiguration}.
  */
 public class KernelSearch {
+    // Soglia tra il tempo trascorso e il tempo massimo di esecuzione
+    // sotto il cui viene fermato il programma
+    protected static final int TIME_THRESHOLD = 2;
+
     protected final SearchConfiguration config;
     protected final Logger log;
     protected final Solver solver;
@@ -31,6 +36,8 @@ public class KernelSearch {
     private List<Variable> variables;
     // Miglior soluzione trovata
     private Solution bestSolution = new EmptySolution();
+    protected long startTime;
+
     // La soluzione attuale, che potrebbe non essere la migliore trovata.
     private Solution currentSolution = new EmptySolution();
 
@@ -79,7 +86,7 @@ public class KernelSearch {
 
         // Nei bucket vanno solo le variabili che non sono già nel kernel
         buckets = config.getBucketBuilder().build(variables.stream()
-                .filter(v -> !kernel.contains(v)).toList(), config);
+                .filter(v -> !kernel.contains(v)).collect(Collectors.toList()), config);
 
         solveKernel();
         iterateBuckets();
@@ -130,7 +137,7 @@ public class KernelSearch {
         model.dispose();
     }
 
-    private void iterateBuckets() throws GRBException {
+    protected void iterateBuckets() throws GRBException {
         for (int i = 0; i < config.getNumIterations(); i++) {
             if (timer.timeLimitReached()) {
                 log.timeLimit();
@@ -138,15 +145,15 @@ public class KernelSearch {
             }
 
             log.iterationStart(i);
-            this.resetUsages();
 
             solveBuckets();
         }
     }
 
-    private void solveBuckets() throws GRBException {
+    protected void solveBuckets() throws GRBException {
         int count = 0;
-        int countSolutions = 0;
+
+        currentSolution = bestSolution;
 
         for (var b : buckets) {
             if (timer.timeLimitReached()) {
@@ -163,7 +170,7 @@ public class KernelSearch {
             }
 
             if (!solution.isEmpty()) {
-                countSolutions++;
+                //countSolutions++;
                 currentSolution = solution;
                 if (solution.getObjective() > bestSolution.getObjective()) {
                     bestSolution = solution;
@@ -174,9 +181,10 @@ public class KernelSearch {
                 // Prendi le variabili del bucket che compaiono
                 // nella nuova soluzione trovata e aggiungile al kernel
                 var selected = model.getSelectedVariables(b.getVariables());
-                selected.forEach(variable -> this.kernel.addItem(variable));
 
-                this.executeEject(selected, solution, countSolutions);
+                this.placeInKernel(selected);
+
+                this.executeEject(selected, solution);
 
                 model.write();
             } else {
@@ -187,7 +195,14 @@ public class KernelSearch {
         }
     }
 
-    protected void executeEject(List<Variable> selected, Solution solution, int countSolutions) {
+    protected void placeInKernel(List<Variable> selected) {
+        selected.forEach(variable -> {
+            if (!this.kernel.contains(variable))
+                this.kernel.addItem(variable);
+        });
+    }
+
+    protected void executeEject(List<Variable> selected, Solution solution) {
         log.solution(selected.size(), kernel.size(), solution.getObjective(), timer.elapsedTime());
     }
 
@@ -216,9 +231,5 @@ public class KernelSearch {
         }
 
         return model;
-    }
-
-    //If an eject procedure is used then this function resets the usages of the variables in the kernel
-    protected void resetUsages() {
     }
 }

@@ -29,6 +29,7 @@ public class Configuration {
     private int repCtrPersistence;
     private boolean itemDomEnabled;
     private boolean heuristicEnabled;
+    private double overlapRatio;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -204,5 +205,13 @@ public class Configuration {
 
     public void setHeuristicEnabled(boolean heuristicEnabled) {
         this.heuristicEnabled = heuristicEnabled;
+    }
+
+    public void setOverlapRatio(double parseDouble) {
+        this.overlapRatio = parseDouble;
+    }
+
+    public double getOverlapRatio() {
+        return this.overlapRatio;
     }
 }

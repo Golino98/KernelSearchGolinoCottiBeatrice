@@ -2,6 +2,7 @@ package com.golinocottibeatrice.kernelsearch;
 
 import com.golinocottibeatrice.kernelsearch.bucket.BucketBuilder;
 import com.golinocottibeatrice.kernelsearch.bucket.DefaultBucketBuilder;
+import com.golinocottibeatrice.kernelsearch.bucket.OverlapBucketBuilder;
 import com.golinocottibeatrice.kernelsearch.kernel.*;
 import com.golinocottibeatrice.kernelsearch.sorter.*;
 
@@ -22,6 +23,7 @@ public class DependenciesFactory {
     public static BucketBuilder getBucketBuilder(int type) {
         return switch (type) {
             case 0 -> new DefaultBucketBuilder();
+            case 1 -> new OverlapBucketBuilder();
             default -> throw new IllegalStateException(UNRECOGNIZED_BUCKET_BUILDER);
         };
 

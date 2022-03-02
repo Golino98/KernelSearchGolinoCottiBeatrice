@@ -5,20 +5,30 @@ import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Rappresenta il kernel set del problema.
  */
 public class Kernel {
-    private final List<Variable> kernel = new ArrayList<>();
+    private List<Variable> kernel = new ArrayList<>();
+
+     /**
+     * Aggiunge un {@link Variable} alla lista e inizializza il contatore della eject.
+     *
+     * @param v {@link Variable} da aggiungere alla lista.
+     */
+    public void addItem(Variable v, int solutionsCount) {
+        v.resetTimesUsed(solutionsCount);
+        kernel.add(v);
+    }
 
     /**
-     * Aggiunge una {@link Variable} al kernel.
+     * Aggiunge un {@link Variable} alla lista.
      *
-     * @param v {@link Variable} da aggiungere al kernel.
+     * @param v {@link Variable} da aggiungere alla lista.
      */
     public void addItem(Variable v) {
-        v.resetTimesUsed();
         kernel.add(v);
     }
 
@@ -48,8 +58,11 @@ public class Kernel {
      * @param solution the current solution used for the update
      */
     public void updateUsages(Solution solution) {
-        var activeInSolution = solution.getVariables().stream()
-                .filter(v -> v.getValue() > 0).toList();
+        List<Variable> activeInSolution =
+                solution.getVariables()
+                        .stream()
+                        .filter(variable -> variable.getValue() >= 1)
+                        .toList();
 
         kernel.forEach(v -> {
             if (activeInSolution.stream().anyMatch(v::equals)) {
@@ -61,23 +74,20 @@ public class Kernel {
     /**
      * Esegue eject procedure. Rimuove variabile se #volte non usata - #volte usata >= threshold
      *
-     * @param threshold      the threshold defined for the eject procedure
-     * @param solutionsCount numero di soluzioni create durante esecuzione di questa iterazione
+     * @param threshold the threshold defined for the eject procedure
+     * @param solutions_count numero di soluzioni create durante esecuzione di questa iterazione
      * @return total of variables removed from the kernel
      */
-    public int checkForEject(int threshold, int solutionsCount) {
-        var oldSize = kernel.size();
-        kernel.removeIf(v -> v.isFromBucket() && violatesThreshold(solutionsCount, v.getTimesUsed(), threshold));
+    public int checkForEject(int threshold, int solutions_count) {
+        List<Variable> new_variables = this.kernel.stream()
+                .filter(variable ->
+                        !variable.isFromBucket() || variable.exceedsThreshold(threshold, solutions_count))
+                .collect(Collectors.toList());
 
-        return kernel.size() - oldSize;
-    }
+        int removed_vars = this.kernel.size() - new_variables.size();
 
-    public void resetUsages() {
-        kernel.forEach(Variable::resetTimesUsed);
-    }
+        this.kernel = new_variables;
 
-    private boolean violatesThreshold(int solutionsCount, int timesUsed, int threshold) {
-        var timesNotUsed = solutionsCount - timesUsed;
-        return timesNotUsed - timesUsed >= threshold;
+        return removed_vars;
     }
 }
