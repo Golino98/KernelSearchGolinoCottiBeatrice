@@ -1,0 +1,27 @@
+\chapter{Testing and results of the instances with different Kernel search settings}
+In this chapter we will provide the results of every possible combination of Kernel construction method with every possible variable sorting method.
+For each of them we will show the best solution found, the time elapsed in order to find it (with a maximum time limit of two minutes) and if it is the optimum solution.
+\section{Performance of Kernel Search with positive kernel builder}\label{Instances results}
+This type of kernel builder selects the variables that, in the relaxation, have a value grater then zero.
+The idea behind of this selection is that, if a variable is not selected in the relaxation, it may indicates that is not a good choice to use it in any bucket, specially in the bucket.
+
+\newpage
+\subsection{Variable sorter by value and absolute RC}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueAndAbsoluteRC}
+
+\newpage
+\subsection{Variable sorter by absolute RC and value}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByAbsoluteRCAndValue}
+
+\newpage
+\subsection{Variable sorter by profit divide weight}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByProfitDivideWeight}
+
+\newpage
+\subsection{Variable sorter by value, profit, weight and RC}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
+
+\newpage
+\subsection{Variable sorter random}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterRandom}
+
