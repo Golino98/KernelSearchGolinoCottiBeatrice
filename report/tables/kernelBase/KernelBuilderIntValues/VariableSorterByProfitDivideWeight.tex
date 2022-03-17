@@ -1,0 +1,65 @@
+    \begin{table}[!htbp]
+    \centering
+    \resizebox{0.7\columnwidth}{!}{
+        \begin{tabular}{@{}lllll@{}}
+            \toprule
+            Directory              & Instance                                   & OPT     & Time Elapsed    &Is the optimum   \\ \midrule
+            \multirow{6}{*}{SMALL}
+            & probT1\_0U\_R50\_T002\_M010\_N0040\_seed05 & 15280 & 6.2387236 & false \\  
+            & probT1\_0U\_R50\_T002\_M020\_N0060\_seed01 & 26236 & 17.8990467 & false \\  
+            & probT1\_1W\_R50\_T002\_M010\_N0040\_seed09 & 12564 & 7.140035 & false \\  
+            & probT1\_1W\_R50\_T002\_M010\_N0060\_seed10 & 19373 & 13.0762469 & false \\  
+            & probT1\_1W\_R50\_T002\_M020\_N0020\_seed10 & 3429 & 4.1454567 & false \\  
+            & probT1\_1W\_R50\_T002\_M020\_N0040\_seed10 & 11940 & 9.6078815 & false \\
+            \midrule
+            \multirow{6}{*}{FK\_1} 
+            & random10\_100\_2\_1000\_1\_10 & 29681 & 26.1963925 & false \\  
+            & random10\_60\_1\_1000\_1\_12 & 22979 & 9.913518401 & false \\  
+            & random12\_48\_3\_1000\_1\_16 & 11587 & 9.0302383 & false \\  
+            & random15\_45\_1\_1000\_1\_13 & 14966 & 9.9019589 & false \\  
+            & random15\_75\_3\_1000\_1\_16 & 18215 & 29.0124042 & false \\  
+            & random30\_60\_4\_1000\_1\_14 & 11017 & 31.0204351 & false \\ 
+            \midrule
+            \multirow{6}{*}{FK\_2} 
+            & random20\_120\_1\_1000\_1\_12 & 47624 & 39.5383879 & false \\  
+            & random20\_200\_2\_1000\_1\_14 & 53505 & 108.3723778 & false \\  
+            & random24\_96\_3\_1000\_1\_18 & 23747 & 53.7242508 & false \\  
+            & random30\_150\_2\_1000\_1\_17 & 44007 & 106.0723429 & false \\  
+            & random30\_90\_4\_1000\_1\_20 & 25974 & 57.4291844 & false \\  
+            & random60\_120\_4\_1000\_1\_19 & 20463 & 118.1081615 & true \\  
+            \midrule
+            \multirow{5}{*}{FK\_3\textbackslash notSolved} 
+            & random30\_180\_2\_1000\_1\_2 & 47624 & 118.0913816 & true \\  
+            & random36\_144\_2\_1000\_1\_20 & 42293 & 118.1048483 & true \\  
+            & random45\_135\_3\_1000\_1\_12 & 37375 & 118.1046383 & true \\  
+            & random45\_135\_4\_1000\_1\_14 & 33644 & 118.0697336 & true \\  
+            & random45\_225\_2\_1000\_1\_20 & 67517 & 118.1805767 & true \\  
+            \midrule
+            \multirow{6}{*}{FK\_3\textbackslash Solved}
+            & random30\_180\_1\_1000\_1\_20 & 75308 & 118.1711818 & true \\  
+            & random30\_300\_2\_1000\_1\_4 & 84969 & 118.0844021 & true \\  
+            & random36\_144\_3\_1000\_1\_17 & 39090 & 118.0256276 & true \\  
+            & random45\_135\_4\_1000\_1\_16 & 36925 & 118.2125285 & true \\  
+            & random45\_225\_3\_1000\_1\_15 & 56065 & 118.3643469 & true \\  
+            & random90\_180\_4\_1000\_1\_19 & 30047 & 118.5856285 & true \\  
+            \midrule
+            \multirow{5}{*}{FK\_4\textbackslash notSolved}
+            & random50\_300\_2\_1000\_1\_5 & 80040 & 118.8997029 & true \\  
+            & random60\_240\_1\_1000\_1\_17 & 94914 & 118.0032679 & true \\  
+            & random60\_240\_2\_1000\_1\_15 & 65678 & 118.0195144 & true \\  
+            & random60\_240\_3\_1000\_1\_18 & 59414 & 118.4782068 & true \\  
+            & random75\_225\_4\_1000\_1\_20 & 58276 & 118.081164 & true \\   
+            \midrule
+            \multirow{6}{*}{FK\_4\textbackslash Solved}
+            & random150\_300\_2\_1000\_1\_12 & 29212 & 120.9290468 & true \\  
+            & random50\_300\_1\_1000\_1\_16 & 119496 & 118.0255685 & true \\  
+            & random50\_500\_2\_1000\_1\_14 & 135380 & 118.9872655 & true \\  
+            & random60\_240\_3\_1000\_1\_14 & 60945 & 118.3372395 & true \\  
+            & random75\_225\_4\_1000\_1\_17 & 60410 & 118.6328125 & true \\  
+            & random75\_375\_2\_1000\_1\_5 & 101312 & 118.3644469 & true \\  
+            \bottomrule
+        \end{tabular}
+        }
+    \caption{Results of Kernel builder with integer variables sorted by profit divided by weight}
+    \label{tab:ker_int_pro_div_wei}
+\end{table}
