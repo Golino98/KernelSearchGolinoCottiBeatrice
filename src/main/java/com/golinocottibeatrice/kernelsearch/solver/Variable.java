@@ -99,7 +99,14 @@ public class Variable {
         return name;
     }
 
-    public boolean exceedsThreshold(int threshold, int solutions_count) {
-        return (solutions_count-this.getTimesUsed()) - this.getTimesUsed() < threshold;
+    /**
+     * Checks if this variable exceeds the given threshold. If false it should be removed (if the eject option is active)
+     * @param threshold the given threshold to verify
+     * @param solutions_count the total number of solutions visited
+     * @return True -> the variable respects the threshold | False -> the variable should be removed
+     */
+    public boolean respectsThreshold(int threshold, int solutions_count) {
+        int times_not_used = solutions_count-this.getTimesUsed();
+        return times_not_used - this.getTimesUsed() < threshold;
     }
 }
