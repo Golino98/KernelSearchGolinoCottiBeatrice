@@ -5,11 +5,10 @@ import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.List;
 
-public class KernelBuilderIntValues implements KernelBuilder{
-    @Override
-    public Kernel build(List<Variable> variables, SearchConfiguration config) {
-        Kernel kernel = new Kernel();
+public class KernelBuilderIntValues extends KernelBuilder{
 
+    @Override
+    Kernel fill_kernel(Kernel kernel, List<Variable> variables, SearchConfiguration config) {
         for (var v : variables) {
             if (v.getValue() == 1) {
                 kernel.addItem(v);

@@ -39,6 +39,7 @@ public class SearchConfiguration {
     private int repCtrThreshold;
     private int repCtrPersistence;
     private double overlapRatio;
+    private boolean mapImplementation;
 
     public int getTimeLimit() {
         return timeLimit;
@@ -205,5 +206,13 @@ public class SearchConfiguration {
 
     public void setGrbEnv(GRBEnv grbEnv) {
         this.grbEnv = grbEnv;
+    }
+
+    public void setMapImplementation(boolean mapImplementation) {
+        this.mapImplementation = mapImplementation;
+    }
+
+    public boolean getMapImplementation() {
+        return this.mapImplementation;
     }
 }

@@ -30,6 +30,7 @@ public class Configuration {
     private boolean itemDomEnabled;
     private boolean heuristicEnabled;
     private double overlapRatio;
+    private boolean mapImplementation;
 
     public int getBucketBuilder() {
         return bucketBuilder;
@@ -213,5 +214,13 @@ public class Configuration {
 
     public double getOverlapRatio() {
         return this.overlapRatio;
+    }
+
+    public void setMapImplementation(boolean parseBoolean) {
+        this.mapImplementation = parseBoolean;
+    }
+
+    public boolean getMapImplementation() {
+        return this.mapImplementation;
     }
 }

@@ -5,11 +5,10 @@ import com.golinocottibeatrice.kernelsearch.solver.Variable;
 
 import java.util.List;
 
-public class KernelBuilderPercentage implements KernelBuilder {
-    @Override
-    public Kernel build(List<Variable> variables, SearchConfiguration config) {
+public class KernelBuilderPercentage extends KernelBuilder {
 
-        Kernel kernel = new Kernel();
+    @Override
+    Kernel fill_kernel(Kernel kernel, List<Variable> variables, SearchConfiguration config) {
         for (var v : variables) {
             if (kernel.size() < Math.round(config.getKernelSize() * variables.size())) {
                 kernel.addItem(v);

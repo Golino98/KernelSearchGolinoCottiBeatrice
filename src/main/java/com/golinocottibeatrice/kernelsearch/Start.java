@@ -114,6 +114,7 @@ public class Start {
         searchConfig.setItemDomEnabled(config.isItemDomEnabled());
         searchConfig.setHeuristicEnabled(config.isHeuristicEnabled());
         searchConfig.setOverlapRatio(config.getOverlapRatio());
+        searchConfig.setMapImplementation(config.getMapImplementation());
 
         return searchConfig;
     }
