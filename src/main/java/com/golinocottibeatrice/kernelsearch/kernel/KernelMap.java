@@ -61,6 +61,7 @@ public class KernelMap extends Kernel{
                 .forEach(variable -> {
                     kernel.get(variable.getName()).increaseTimesUsed();
                 });
+        // fixme: get returns null
     }
 
     /**
