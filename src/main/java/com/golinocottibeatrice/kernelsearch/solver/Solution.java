@@ -35,6 +35,8 @@ public class Solution {
             }
         }
         throw new IllegalArgumentException(name);
+        // fixme: thrown for "x_1_0" during execution of 'FK_2\random20_200_2_1000_1_14' First bucket iteration 0
+        //  (both for List or Map implementation)
     }
 
     public boolean isEmpty() {
