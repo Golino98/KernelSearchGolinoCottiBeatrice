@@ -35,7 +35,7 @@ public class KernelMap extends Kernel{
      * @param v {@link Variable} di cui verificare la presenza all'interno della lista.
      */
     public boolean contains(Variable v) {
-        return kernel.containsKey(v.getName());
+        return this.kernel.containsKey(v.getName());
     }
 
     /**
@@ -59,9 +59,9 @@ public class KernelMap extends Kernel{
                 .stream()
                 .filter(variable -> variable.getValue() >= 1)
                 .forEach(variable -> {
-                    kernel.get(variable.getName()).increaseTimesUsed();
+                    if (this.contains(variable))
+                        this.kernel.get(variable.getName()).increaseTimesUsed();
                 });
-        // fixme: get returns null
     }
 
     /**
@@ -74,11 +74,7 @@ public class KernelMap extends Kernel{
     public int checkForEject(int threshold, int solutions_count) {
         int old_size = this.kernel.size();
 
-        this.kernel.keySet().forEach(key -> {
-            Variable variable = this.kernel.get(key);
-            if (variable.isFromBucket() && !variable.respectsThreshold(threshold, solutions_count))
-                this.kernel.remove(key);
-        });
+        this.kernel.entrySet().removeIf(v -> v.getValue().isFromBucket() && !v.getValue().respectsThreshold(threshold, solutions_count));
 
         return old_size - this.kernel.size();
     }

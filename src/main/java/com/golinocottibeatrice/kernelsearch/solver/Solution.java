@@ -34,7 +34,7 @@ public class Solution {
                 return v.getValue();
             }
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException(name);
     }
 
     public boolean isEmpty() {
