@@ -5,7 +5,7 @@ with the objective of improving its performance
 in solving the MKP instances.
 
 For the sake of completeness, we well also describe the all attempts at improving
-the algorithm, thus including the unsuccesfull ones.
+the algorithm, thus including the unsuccessful ones.
 
 The effectiveness of the tuning is demonstrated using the selected instances
 described in~\ref{subsec:inst} as benchmark.
@@ -36,9 +36,6 @@ Other criteria we have tested are:
     \textit{ratio of weight and capacity}.
 \end{itemize}
 
-The tests however proved that all of these sorting methods were inferior to the
-default one.
-
 
 \section{Kernel Construction Criterion}
 A recurring problem we have identified when running more complex
@@ -59,12 +56,22 @@ We have experimented with the following criteria:
     (between 0 and 1) in the LP relaxation.
 \end{enumerate}
 
-However, after running benchmark to compare these criteria
-with the default one, the results demonstrated that the default criterion
-consistently gave better results.
-It is however worth noting that the criterion 2 and 3 (with a proper threshold),
-gave good results while using significantly less computation time than the default criterion.
+The tables from \ref{tab:ker_pos_val_abs_RC} to \ref{tab:ker_tre_ran} represent the test results of the possible
+combinations of kernel construction criterion and variable sorter
+that we have introduced.
+For each of combination we include the best solution found, the time elapsed in order to find it (with a maximum time limit of two minutes) and if the time limit was reached.
 
+
+
+\section{Overlapping Buckets}
+A criterion that could improve the quality of the solution of the bucket
+sub-problems is to use partially overlapping buckets:
+this could potentially increase the possibility of related
+variables to be selected together, thus improving quality.
+
+To verify the effectiveness of this criterion, we have executed
+tests with all the possible kernel criteria and variable sorters
+to determine the most effective combination.
 
 \section{Ejection of Variables from the Kernel}
 As an alternative to improve the efficiency in solving the kernel set,
@@ -146,12 +153,6 @@ that is better than any other found before.
 This is significant because the default repetition counter
 method completely ignores the value of the solutions found
 during the \textit{k} cycles.
-
-
-\section{Overlapping Buckets}
-
-
-\section{Iterative Kernel Search}
 
 
 \section{Item Dominance}
@@ -287,3 +288,23 @@ heuristic finds integer and feasible solutions.
 \section{Parameter Tuning}
 The last step we took to improve the performance of the Kernel Search is to
 change the values of the kernel size and bucket size.
+
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueAndAbsoluteRC}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByAbsoluteRCAndValue}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByProfitDivideWeight}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByAbsoluteRCAndValue}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByProfitDivideWeight}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByValueAndAbsoluteRC}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByAbsoluteRCAndValue}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByProfitDivideWeight}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByValueAndAbsoluteRC}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByAbsoluteRCAndValue}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByProfitDivideWeight}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterRandom}\label{tab:kernel_end}
