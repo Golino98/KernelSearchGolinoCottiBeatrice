@@ -1,0 +1,65 @@
+\begin{table}[!htbp]
+    \centering
+    \resizebox{0.7\columnwidth}{!}{
+        \begin{tabular}{@{}lllll@{}}
+            \toprule
+            Directory              & Instance                                   & OPT     & Time Elapsed    &Is the optimum   \\ \midrule
+            \multirow{6}{*}{SMALL}
+           & probT1\_0U\_R50\_T002\_M010\_N0040\_seed05 & 15280 & 4.0947585 & false \\  
+        & probT1\_0U\_R50\_T002\_M020\_N0060\_seed01 & 26415 & 11.2967205 & false \\  
+        & probT1\_1W\_R50\_T002\_M010\_N0040\_seed09 & 12564 & 4.5823678 & false \\  
+        & probT1\_1W\_R50\_T002\_M010\_N0060\_seed10 & 19457 & 6.5284858 & false \\  
+        & probT1\_1W\_R50\_T002\_M020\_N0020\_seed10 & 3429 & 2.9048178 & false \\  
+        & probT1\_1W\_R50\_T002\_M020\_N0040\_seed10 & 11940 & 6.3810987 & false \\  
+            \midrule
+            \multirow{6}{*}{FK\_1} 
+             & random10\_100\_2\_1000\_1\_10 & 29703 & 20.0775482 & false \\  
+        & random10\_60\_1\_1000\_1\_12 & 22936 & 6.5785042 & false \\  
+        & random12\_48\_3\_1000\_1\_16 & 11666 & 6.8514527 & false \\  
+        & random15\_45\_1\_1000\_1\_13 & 14995 & 6.7244472 & false \\  
+        & random15\_75\_3\_1000\_1\_16 & 18230 & 19.4768765 & false \\  
+        & random30\_60\_4\_1000\_1\_14 & 11017 & 19.033953 & false \\  
+            \midrule
+            \multirow{6}{*}{FK\_2} 
+            & random20\_120\_1\_1000\_1\_12 & 47481 & 25.5013242 & false \\  
+        & random20\_200\_2\_1000\_1\_14 & 53486 & 64.4322179 & false \\  
+        & random24\_96\_3\_1000\_1\_18 & 23791 & 41.1631259 & false \\  
+        & random30\_150\_2\_1000\_1\_17 & 44050 & 66.239808 & false \\  
+        & random30\_90\_4\_1000\_1\_20 & 25996 & 36.84805 & false \\  
+        & random60\_120\_4\_1000\_1\_19 & 20463 & 118.1456567 & true \\  
+            \midrule
+            \multirow{5}{*}{FK\_3\textbackslash notSolved} 
+            & random30\_180\_2\_1000\_1\_2 & 47583 & 82.3182942 & false \\  
+        & random36\_144\_2\_1000\_1\_20 & 42277 & 80.4034946 & false \\  
+        & random45\_135\_3\_1000\_1\_12 & 37337 & 102.4126244 & false \\  
+        & random45\_135\_4\_1000\_1\_14 & 33666 & 102.2896098 & false \\  
+        & random45\_225\_2\_1000\_1\_20 & 67396 & 118.1656482 & true \\ 
+            \midrule
+            \multirow{6}{*}{FK\_3\textbackslash Solved}
+           & random30\_180\_1\_1000\_1\_20 & 75149 & 79.658418 & false \\  
+        & random30\_300\_2\_1000\_1\_4 & 84965 & 118.0904471 & true \\  
+        & random36\_144\_3\_1000\_1\_17 & 39105 & 107.85582 & false \\  
+        & random45\_135\_4\_1000\_1\_16 & 36882 & 99.8198842 & false \\  
+        & random45\_225\_3\_1000\_1\_15 & 56098 & 118.1471343 & true \\  
+        & random90\_180\_4\_1000\_1\_19 & 30047 & 118.3973158 & true \\  
+            \midrule
+            \multirow{5}{*}{FK\_4\textbackslash notSolved}
+            & random50\_300\_2\_1000\_1\_5 & 80136 & 118.2967548 & true \\  
+        & random60\_240\_1\_1000\_1\_17 & 94667 & 118.2933378 & true \\  
+        & random60\_240\_2\_1000\_1\_15 & 65663 & 118.253534799 & true \\  
+        & random60\_240\_3\_1000\_1\_18 & 59428 & 118.224818001 & true \\  
+        & random75\_225\_4\_1000\_1\_20 & 58251 & 118.379696399 & true \\  
+            \midrule
+            \multirow{6}{*}{FK\_4\textbackslash Solved}
+             & random150\_300\_2\_1000\_1\_12 & 55147 & 119.5734463 & true \\  
+        & random50\_300\_1\_1000\_1\_16 & 119541 & 118.081788801 & true \\  
+        & random50\_500\_2\_1000\_1\_14 & 135407 & 118.899998899 & true \\  
+        & random60\_240\_3\_1000\_1\_14 & 60919 & 118.100183899 & true \\  
+        & random75\_225\_4\_1000\_1\_17 & 60395 & 118.426259999 & true \\  
+        & random75\_375\_2\_1000\_1\_5 & 101292 & 118.846975001 & true \\
+            \bottomrule
+        \end{tabular}
+        }
+    \caption{Results of Kernel builder with a treshold limit. Variables are sorted by profit divided by weight. Buckets can overlap.}
+    \label{tab:ker_tre_pro_div_wei_OVERL}
+\end{table}
