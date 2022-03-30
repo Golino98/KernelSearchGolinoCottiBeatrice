@@ -153,8 +153,6 @@ public class KernelSearch {
     protected void solveBuckets() throws GRBException {
         int count = 0;
 
-        currentSolution = bestSolution;
-
         for (var b : buckets) {
             if (timer.timeLimitReached()) {
                 return;
