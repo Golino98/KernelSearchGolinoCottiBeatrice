@@ -1,106 +1,62 @@
-\chapter{Computational Experiments}\label{ch:computational-experiments}
-In this section we report the results of tests executed on the default Kernel Search applied to the MKP\@.
-The main objective of these experiments is to determine the performance of the default Kernel Search,
-both in terms of quality of the solution found and time required for the execution.
+\chapter{Testing}
+In this chapter we will report the results of the tests executed
+on the instances introduced in ~\ref{subsec:inst},
+to verify the performance of the tuned Kernel Search algorithm.
 
+\section{Default Bucket Construction Criterion}
+The objective of the first round of testing was to find the most efficient
+combination of kernel construction criterion and variable sorting criterion, using the default bucket construction criterion (non-overlapping buckets).
+Certain variable sorting criteria work really well with certain kernel construction criteria, but give bad results with others.
 
-\section{Test Instances}
-The test instances for the MKP were kindly provided to us by the authors of~\cite{mkp:2019}.\\
-There are in total 2100 test instances, organized in
-five directories of increasing complexity:
-\begin{itemize}
-    \item SMALL;
-    \item FK\_1;
-    \item FK\_2;
-    \item FK\_3;
-    \item FK\_4.
-\end{itemize}
-SMALL contains 180 instances, while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 instances each.
-The instances in the first two directories were already solved to the optimum.
-Of those in the last three folders only a few were already solved: the unsolved
-ones only had an upper and lower bound.
+In general, we discovered that the two sorting criteria that
+worked best were to sort by \textit{value, profit and weight, breaking ties using the reduced cost}, and the random sorting.
 
-\subsection{Format of the Instances}
-The instances are \texttt{.txt} files whose name of each instance contains different information,
-which allows to rapidly understand the parameters of the instance represented.
+The tables from \ref{tab:ker_pos_val_prof_wei_RC} to \ref{tab:ker_tre_ran} contain the test results of the kernel criteria introduced in \ref{sec:kernel_criteria} combined with the sorting criteria listed above.
+The test results with the other sorting criteria can be found at
+\url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/DefaultBucket}.
 
-An example of the name of an instance is the following:
-\begin{center}
-    \textit{random10\_60\_1\_1000\_1\_12}
-\end{center}
-The first word is used to indicate if the instance's values are generated randomly or if they are variables of a real
-life problem.
-The first integer represents the knapsacks number, while the second indicates then number of the items.
-The last integer is used to differentiate the instances belonging to the same class.
-This instance has 10 knapsacks and 60 items, and it's the \(12^{th}\) in its class instance.
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderPositive/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterRandom}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByValueProfitWeightAndRC}
+\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterRandom}
 
-An example of the structure of an instance is shown below:
-\[
-    \begin{split}
-        &\begin{rcases*}
-             3 \quad
-        \end{rcases*}
-        \rightarrow \text{integer that indicates the value of \textit{m (number of knapsacks)}.}\\
-        &\begin{rcases*}
-             7 \quad
-        \end{rcases*}
-        \rightarrow \text{integer that indicates the value of \textit{n (number of items)}.}\\
-        &\begin{rcases*}
-             908 \quad\\
-             834\\
-             675\\
-        \end{rcases*}
-        \rightarrow \text{integers that indicate the capacity } c_{i} \text{ of the knapsack i with }
-        \space i=1,\dots,m.\\
-        &\begin{rcases*}
-             264    \quad 430 \quad\\
-             606 \quad    945\\
-             268 \quad    409\\
-             619 \quad    591\\
-             958 \quad    839\\
-             972 \quad    818\\
-             723 \quad    71\\
-        \end{rcases*}
-        \rightarrow
-        \begin{rcases*}
-            \text{First column shows the weight} w_{i} \quad \\
-            \text{Second column shows the profit} p_{i}.
-        \end{rcases*}
-        \rightarrow
-        \space i=1,\dots,n.
-    \end{split}
-\]
+\section{Overlapping buckets}
+In this section we report the results of the tests executed with the overlapping buckets. Just like in the section before, we executed the tests for each possible combination of kernel builder criterion and variable sorting criterion.
 
-The execution times required to solve the instances to the optimum were not provided to us.
-For a few of the instances we were able to find the exact solution
-using a GUROBI solver with the following configuration:
+Tables from \ref{tab:ker_pos_val_prof_wei_RC_OVERL} to \ref{tab:ker_tre_val_pro_wei_RC_OVERL} represent the results of the tests run with the various kernel builders, and the variables sorted by \textit{value, profit and weight, breaking ties using the reduced cost}.
+All the other tests results can be found at \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/BucketOverlap}.
 
-\begin{itemize}
-    \item \textit{Presolve}: 2 (aggressive presolve)
-    \item \textit{Time limit}: 1 hour
-    \item \textit{Threads}: 12
-    \item \textit{MIPGap}: \num{1e-12}
-\end{itemize}
+\input{tables/bucketOverlap/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
+\input{tables/bucketOverlap/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
+\input{tables/bucketOverlap/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
+\input{tables/bucketOverlap/KernelBuilderThreshold/VariableSorterByValueProfitWeightAndRC}
 
-Most of the instances however used all the available time without reaching the optimum.
-The code and the results can be found at \url{https://github.com/Golino98/EsattoMKP}.
+\section{Specific Improvements}
+Using the results of the test above, we were able to determine
+for each kernel construction criterion, the most efficient combination of variable sorting criterion and bucket construction criterion (overlapping or non-overlapping buckets).
 
-\subsection{Selected Instances}\label{subsec:inst}
-To simplify the testing of the changes to the Kernel Search algorithm,
-we only considered 40 instances: 6 solved to the optimum for each directory,
-plus 10 that were not solved to the optimum.
+In the following sections, we report the performance of each improvement explained in chapter \ref{ch:improvements}, using the best possible configuration for each kernel construction criterion.
 
-Tables~\ref{tab:exact_opt} and~\ref{tab:exact_noopt} represent,
-respectively, the optimum values of the 30 instances solved to
-the optimum, and the upper and lower bound for the 10
-that couldn't be solved.
+To simplify the testing, each improvement was tested by itself: this means that a test suite was run for each improvement, where all the other improvements are disabled.
 
-\input{tables/exact_opt.tex}
-\input{tables/exact_noopt.tex}
+Once again, not all test results are reported: the complete set can be found at \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log}.
 
-\section{Tests of the default Kernel Search}
-The following table outlines the result of the Kernel Search
-algorithm with the default configuration.
-The tables includes the best solution found, the time elapsed in order to find it (with a maximum time limit of two minutes) and if the time limit was reached.
+\subsection{Kernel Set with Integer Values}
+The best configuration for this kernel construction criterion is to use overlapping bucket, and to sort variables by value, profit, weight and reduced cost.
 
-\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueAndAbsoluteRC}
+\subsection{Kernel Percentage}
+For this kernel construction criterion the best configuration uses overlapping buckets, and sorts variables by reduced cost and value. 
+
+In general, we have noticed that this configuration behaves extremely well for small instances, but quite poorly on bigger ones.
+
+\subsection{Kernel Positive}
+We have found three equally good configurations for this kernel construction criterion. The one that gave slightly better results is the one that uses non-overlapping buckets and the random sorter.
+
+It is worth noting however that, since variables are sorted randomly, the results may vary with each execution.
+
+\subsection{Kernel Threshold}
+The best configuration for the kernel construction that select variables based on a threshold is the one that uses overlapping buckets and sort by value, profit, weight and reduced cost.

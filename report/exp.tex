@@ -1,0 +1,117 @@
+\chapter{Computational Experiments}\label{ch:computational-experiments}
+In this section we report the results of tests executed on the default Kernel Search applied to the MKP\@.
+The main objective of these experiments is to determine the performance of the default Kernel Search,
+both in terms of quality of the solution found and time required for the execution.
+
+
+\section{Test Instances}
+The test instances for the MKP were kindly provided to us by the authors of~\cite{mkp:2019}.\\
+There are in total 2100 test instances, organized in
+five directories of increasing complexity:
+\begin{itemize}
+    \item SMALL;
+    \item FK\_1;
+    \item FK\_2;
+    \item FK\_3;
+    \item FK\_4.
+\end{itemize}
+SMALL contains 180 instances with \(m \in {10,20} \) and
+\(n \in {20,40,60}\), while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 
+instances each, designed with the aim of identifying critical ratios of
+\(n/m\) that produce difficult instances.
+
+The weights \(w_{j}\) are always uniformly distributed in \([\alpha, 1000]\), with \(\alpha = 1\) for the
+SMALL instances and \(\alpha = 10\) for the FK instances.
+
+Each instance belongs to one of the following four correlation classes:
+\begin{itemize}
+    \item uncorrelated: profits \(p_{j}\) are uniformly distributed in \([\alpha,1000]\);
+    \item weakly correlated: For SMALL, \(p_{j} = 0.6 w_{j} + \theta_{j}\) , with \(\theta_{j}\) uniformly random in \([1, 400]\). For FK, the \(p_{j}\) values are uniformly distributed in \([w_{j} - 100, w_{j} + 100]\), such that \(p_{j} \geq 1\);
+    \item strongly correlated: For SMALL, \(p_{j} = w_{j} + 200\), for FK, \(p_{j} = w_{j} + 10\);
+    \item subset-sum: \(p_{j} = w_{j}\).
+\end{itemize}
+
+The instances in SMALL and FK\_1 were already solved to the optimum.
+Of those in the three remaining folders only a few were already solved: 
+the unsolved ones only had an upper and lower bound.
+
+\subsection{Format of the Instances}
+The instances are contained in \texttt{.txt} files.
+
+An example of the structure of an instance is shown below:
+\[
+    \begin{split}
+        &\begin{rcases*}
+             3 \quad
+        \end{rcases*}
+        \rightarrow \text{integer that indicates the value of \textit{m (number of knapsacks)}.}\\
+        &\begin{rcases*}
+             7 \quad
+        \end{rcases*}
+        \rightarrow \text{integer that indicates the value of \textit{n (number of items)}.}\\
+        &\begin{rcases*}
+             908 \quad\\
+             834\\
+             675\\
+        \end{rcases*}
+        \rightarrow \text{integers that indicate the capacity } c_{i} \text{ of the knapsack i with }
+        \space i=1,\dots,m.\\
+        &\begin{rcases*}
+             264    \quad 430 \quad\\
+             606 \quad    945\\
+             268 \quad    409\\
+             619 \quad    591\\
+             958 \quad    839\\
+             972 \quad    818\\
+             723 \quad    71\\
+        \end{rcases*}
+        \rightarrow
+        \begin{rcases*}
+            \text{First column shows the weight} w_{i} \quad \\
+            \text{Second column shows the profit} p_{i}.
+        \end{rcases*}
+        \rightarrow
+        \space i=1,\dots,n.
+    \end{split}
+\]
+
+The execution times required to solve the instances to the optimum were not provided to us.
+For a few of the instances we were able to find the exact solution
+using a GUROBI solver with the following configuration:
+
+\begin{itemize}
+    \item \textit{Presolve}: 2 (aggressive presolve)
+    \item \textit{Time limit}: 1 hour
+    \item \textit{Threads}: 12
+    \item \textit{MIPGap}: \num{1e-12}
+\end{itemize}
+
+Most of the instances however used all the available time without reaching the optimum.
+The code and the results can be found at \url{https://github.com/Golino98/EsattoMKP}.
+
+\subsection{Selected Instances}\label{subsec:inst}
+To simplify the testing of the changes to the Kernel Search algorithm,
+we only considered 40 instances: 6 solved to the optimum for each directory,
+plus 10 that were not solved to the optimum.
+
+Tables~\ref{tab:exact_opt} and~\ref{tab:exact_noopt} represent,
+respectively, the optimum values of the 30 instances solved to
+the optimum, and the upper and lower bound for the 10
+that couldn't be solved.
+
+\input{tables/exact_opt.tex}
+\input{tables/exact_noopt.tex}
+
+\section{Performance of the default Kernel Search}
+Table \ref{tab:ker_per_val_abs_RC} outlines the result of tests executed on
+the Kernel Search algorithm with the default configuration,
+as outlined in \ref{ch:implementation}.
+The tables includes for each instance:
+\begin{itemize}
+    \item directory of the instance;
+    \item name of the instance;
+    \item the solution found;
+    \item the time elapsed;
+    \item a boolean value that specifies if the time limit (120s) was reached.
+\end{itemize}
+\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueAndAbsoluteRC}
