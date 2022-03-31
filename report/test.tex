@@ -3,60 +3,82 @@ In this chapter we will report the results of the tests executed
 on the instances introduced in ~\ref{subsec:inst},
 to verify the performance of the tuned Kernel Search algorithm.
 
+
 \section{Default Bucket Construction Criterion}
 The objective of the first round of testing was to find the most efficient
-combination of kernel construction criterion and variable sorting criterion, using the default bucket construction criterion (non-overlapping buckets).
-Certain variable sorting criteria work really well with certain kernel construction criteria, but give bad results with others.
+combination of kernel construction criterion and variable sorting criterion,
+using the default bucket construction criterion (non-overlapping buckets).
+Certain variable sorting criteria work really well with certain kernel construction criteria,
+but give bad results with others.
 
-In general, we discovered that the two sorting criteria that
-worked best were to sort by \textit{value, profit and weight, breaking ties using the reduced cost}, and the random sorting.
+We discovered that the two sorting criteria that
+worked best were to sort by \textit{value, profit and weight, breaking ties using the reduced cost},
+and the random sorting.
+Random sorting however, due to its nature, produces inconsistent results.
 
-The tables from \ref{tab:ker_pos_val_prof_wei_RC} to \ref{tab:ker_tre_ran} contain the test results of the kernel criteria introduced in \ref{sec:kernel_criteria} combined with the sorting criteria listed above.
-The test results with the other sorting criteria can be found at
+The tables from ~\ref{tab:ker_pos_val_prof_wei_RC}
+to ~\ref{tab:ker_tre_val_pro_wei_RC} contain the test results of the
+kernel construction criteria introduced in ~\ref{sec:kernel_criteria}
+combined with the sorting by value, profit, weight and reduced cost.
+
+The complete test results, including the ones with other sorting criteria, can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/DefaultBucket}.
 
 \input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
-\input{tables/kernelBase/KernelBuilderPositive/VariableSorterRandom}
 \input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
-\input{tables/kernelBase/KernelBuilderPercentage/VariableSorterRandom}
 \input{tables/kernelBase/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
-\input{tables/kernelBase/KernelBuilderIntValues/VariableSorterRandom}
 \input{tables/kernelBase/KernelBuilderThreshold/VariableSorterByValueProfitWeightAndRC}
-\input{tables/kernelBase/KernelBuilderThreshold/VariableSorterRandom}
+
 
 \section{Overlapping buckets}
-In this section we report the results of the tests executed with the overlapping buckets. Just like in the section before, we executed the tests for each possible combination of kernel builder criterion and variable sorting criterion.
+In this section we report the results of the tests executed with the overlapping buckets.
+Just like in the section before, we executed the tests for each possible combination
+of kernel builder criterion and variable sorting criterion.
 
-Tables from \ref{tab:ker_pos_val_prof_wei_RC_OVERL} to \ref{tab:ker_tre_val_pro_wei_RC_OVERL} represent the results of the tests run with the various kernel builders, and the variables sorted by \textit{value, profit and weight, breaking ties using the reduced cost}.
-All the other tests results can be found at \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/BucketOverlap}.
+Tables from ~\ref{tab:ker_pos_val_prof_wei_RC_OVERL} to ~\ref{tab:ker_tre_val_pro_wei_RC_OVERL}
+represent the results of the tests run with the various kernel builders,
+and the variables sorted by \textit{value, profit and weight, breaking ties using the reduced cost}.
+All the other tests results can be found at
+\url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/BucketOverlap}.
 
 \input{tables/bucketOverlap/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
 \input{tables/bucketOverlap/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
 \input{tables/bucketOverlap/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
 \input{tables/bucketOverlap/KernelBuilderThreshold/VariableSorterByValueProfitWeightAndRC}
 
+
 \section{Specific Improvements}
 Using the results of the test above, we were able to determine
-for each kernel construction criterion, the most efficient combination of variable sorting criterion and bucket construction criterion (overlapping or non-overlapping buckets).
+for each kernel construction criterion, the most efficient combination of variable sorting criterion and bucket
+construction criterion (overlapping or non-overlapping buckets).
 
-In the following sections, we report the performance of each improvement explained in chapter \ref{ch:improvements}, using the best possible configuration for each kernel construction criterion.
+In the following sections, we report the performance
+of each improvement explained in chapter ~\ref{ch:improvements},
+using the best possible configuration for each kernel construction criterion.
 
-To simplify the testing, each improvement was tested by itself: this means that a test suite was run for each improvement, where all the other improvements are disabled.
+To simplify the testing, each improvement was tested by itself: this means that a test suite was run for each
+improvement, where all the other improvements are disabled.
 
-Once again, not all test results are reported: the complete set can be found at \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log}.
+Once again, not all test results are reported: the complete set can be found at \url{https://github
+.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log}.
 
-\subsection{Kernel Set with Integer Values}
-The best configuration for this kernel construction criterion is to use overlapping bucket, and to sort variables by value, profit, weight and reduced cost.
+\subsection{Integer Kernel}
+The best configuration for this kernel construction criterion is to use overlapping bucket,
+and to sort variables by value, profit, weight and reduced cost.
 
-\subsection{Kernel Percentage}
-For this kernel construction criterion the best configuration uses overlapping buckets, and sorts variables by reduced cost and value. 
+\subsection{Percentage Kernel}
+For this kernel construction criterion the best configuration uses overlapping buckets,
+and sorts variables by reduced cost and value.
 
-In general, we have noticed that this configuration behaves extremely well for small instances, but quite poorly on bigger ones.
+In general, we have noticed that this configuration behaves extremely well for small instances, but quite poorly on
+bigger ones.
 
-\subsection{Kernel Positive}
-We have found three equally good configurations for this kernel construction criterion. The one that gave slightly better results is the one that uses non-overlapping buckets and the random sorter.
+\subsection{Positive Kernel}
+We have found three equally good configurations for this kernel construction criterion.
+The one that gave slightly better results is the one that uses non-overlapping buckets and the random sorter.
 
 It is worth noting however that, since variables are sorted randomly, the results may vary with each execution.
 
-\subsection{Kernel Threshold}
-The best configuration for the kernel construction that select variables based on a threshold is the one that uses overlapping buckets and sort by value, profit, weight and reduced cost.
+\subsection{Threshold Kernel}
+The best configuration for the kernel construction that select variables based on a threshold is the one that uses
+overlapping buckets and sort by value, profit, weight and reduced cost.

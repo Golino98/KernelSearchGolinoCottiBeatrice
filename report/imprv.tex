@@ -21,8 +21,10 @@ provides high quality solutions for the MKP\@.
 Other criteria we have tested are:
 \begin{itemize}
     \item Sort by non-decreasing \textit{reduced cost}, breaking ties using the non-increasing {LP relaxation value};
-    \item Sort by non-increasing \textit{ratio of profit and weight of the item}, breaking ties using the non-increasing \textit{reduced cost value};
-    \item Sort by non-increasing \textit{value of the LP relaxation} multiplied by the \textit{ratio of profit and weight},    breaking ties using the non-decreasing \textit{reduced cost};
+    \item Sort by non-increasing \textit{ratio of profit and weight of the item}, breaking ties using the
+    non-increasing \textit{reduced cost value};
+    \item Sort by non-increasing \textit{value of the LP relaxation} multiplied by the \textit{ratio of profit and
+    weight},    breaking ties using the non-decreasing \textit{reduced cost};
     \item Sort randomly.
 \end{itemize}
 
@@ -36,13 +38,14 @@ which makes the solving of the kernel problem and the buckets sub-problems slow.
 This means that a starting point to improve the performance of the Kernel Search
 could be to optimize the management of the kernel set,
 possibly starting from the \textit{kernel construction criterion},
-which by default is to include the first \textit{C} sorted variables.
+which by default is to include the first \textit{C} sorted variables
+(Percentage kernel).
 
 We have experimented with the following criteria:
 \begin{enumerate}
-    \item Select the variables that have a value greater than 0 in the LP relaxation;
-    \item Select the variables that have a value equal to 1 in the LP relaxation;
-    \item Select the variables that have a value greater than 0.6
+    \item Positive kernel: select the variables that have a value greater than 0 in the LP relaxation;
+    \item Integer kernel: Select the variables that have a value equal to 1 in the LP relaxation;
+    \item Threshold kernel: Select the variables that have a value greater than 0.6
     in the LP relaxation.
 \end{enumerate}
 
@@ -71,7 +74,8 @@ At the end of each iteration, for each variable \(v\), if
 The values of \(h\) and \(k_{v}\) are reset at each iteration of the Kernel Search.
 
 The \textit{eject threshold} is a configuration parameter:
-a low threshold will remove more variables from the kernel, increasing efficiency at the cost of the quality of the solution found.
+a low threshold will remove more variables from the kernel, increasing efficiency at the cost of the quality of the
+solution found.
 A high threshold instead has a more subtle effect.
 
 When the variables are removed from the kernel they are not deleted from the model,
@@ -205,7 +209,8 @@ before solving the kernel problem and the bucket sub-problems.
 The testing however revealed that the algorithm couldn't find any valid bin packing
 for any test instance.
 After some consideration, we supposed that even if we were to swap FFD with another
-heuristic algorithm, it would be unlikely that the bin packing found (if any) would impact the efficiency of the Kernel Search by much.
+heuristic algorithm, it would be unlikely that the bin packing found (if any) would impact the efficiency of the
+Kernel Search by much.
 Because of this reason, we decided to discard this technique.
 
 

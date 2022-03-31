@@ -16,7 +16,7 @@ five directories of increasing complexity:
     \item FK\_4.
 \end{itemize}
 SMALL contains 180 instances with \(m \in {10,20} \) and
-\(n \in {20,40,60}\), while FK\_1, FK\_2, FK\_3, FK\_4 contain 480 
+\(n \in {20,40,60}\), while FK\_1, FK\_2, FK\_3, FK\_4 contain 480
 instances each, designed with the aim of identifying critical ratios of
 \(n/m\) that produce difficult instances.
 
@@ -26,13 +26,15 @@ SMALL instances and \(\alpha = 10\) for the FK instances.
 Each instance belongs to one of the following four correlation classes:
 \begin{itemize}
     \item uncorrelated: profits \(p_{j}\) are uniformly distributed in \([\alpha,1000]\);
-    \item weakly correlated: For SMALL, \(p_{j} = 0.6 w_{j} + \theta_{j}\) , with \(\theta_{j}\) uniformly random in \([1, 400]\). For FK, the \(p_{j}\) values are uniformly distributed in \([w_{j} - 100, w_{j} + 100]\), such that \(p_{j} \geq 1\);
+    \item weakly correlated: For SMALL, \(p_{j} = 0.6 w_{j} + \theta_{j}\) , with \(\theta_{j}\) uniformly random in
+    \([1, 400]\). For FK, the \(p_{j}\) values are uniformly distributed in \([w_{j} - 100, w_{j} + 100]\), such that
+    \(p_{j} \geq 1\);
     \item strongly correlated: For SMALL, \(p_{j} = w_{j} + 200\), for FK, \(p_{j} = w_{j} + 10\);
     \item subset-sum: \(p_{j} = w_{j}\).
 \end{itemize}
 
 The instances in SMALL and FK\_1 were already solved to the optimum.
-Of those in the three remaining folders only a few were already solved: 
+Of those in the three remaining folders only a few were already solved:
 the unsolved ones only had an upper and lower bound.
 
 \subsection{Format of the Instances}
@@ -102,10 +104,11 @@ that couldn't be solved.
 \input{tables/exact_opt.tex}
 \input{tables/exact_noopt.tex}
 
+
 \section{Performance of the default Kernel Search}
-Table \ref{tab:ker_per_val_abs_RC} outlines the result of tests executed on
+Table ~\ref{tab:ker_per_val_abs_RC} outlines the result of tests executed on
 the Kernel Search algorithm with the default configuration,
-as outlined in \ref{ch:implementation}.
+as outlined in ~\ref{ch:implementation}.
 The tables includes for each instance:
 \begin{itemize}
     \item directory of the instance;
