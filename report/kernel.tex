@@ -1,6 +1,6 @@
 \chapter{Kernel Search}\label{ch:kernel-search}
-Kernel Search is a heuristic framework used to solve MIP problems that was introduced in~\cite{kernel:2007}.\\
-The algorithm has been studied in a few applications, such as the \textit{Multidimensional Knapsack Problem}
+Kernel Search is a heuristic framework used to solve MIP problems, which was introduced in~\cite{kernel:2007}.\\
+The algorithm has been studied in a few applications, including the \textit{Multidimensional Knapsack Problem}
 in~\cite{kernel:2010} and the \textit{Portfolio Selection Problem} in~\cite{kernel:2012}.
 
 The algorithm is based on a few observations that can often be made when solving MIP problems:
@@ -30,7 +30,7 @@ The next step is to solve MIP(\(\Lambda\)),
 which is the original problem restricted to only include the variables in \(\Lambda\):
 all the variables not in \(\Lambda\) are set to 0 to exclude them from the problem.\\
 The resulting solution will be called \(x^{*}\) and the optimum value \(w^{*}\).\\
-It is possible that no solution is found for MIP(\(\Lambda)\): in this case \(w^{*}\) is set to \(-\inf\).
+It is possible that no solution is found for MIP(\(\Lambda)\): in this case \(w^{*}\) is set to \(-\infty\).
 
 The variables not in \(\Lambda\) are partitioned into a certain number of buckets \textit{nb}, according
 to a \textit{bucket construction criterion}.
@@ -43,7 +43,7 @@ Once the buckets are constructed, the algorithms proceeds with the improvement p
 for each bucket \(B_{i} \ (i=1,\dots,nb)\),
 the restricted sub-problem MIP(\(\Lambda \cup B_{i}\)) is solved.
 
-Only the feasible sub-problems with an incumbent solution \(\bar{x^{*}} \geq w^{*}\) are of interest.\\
+Only the feasible sub-problems with an incumbent solution \(\bar{x^{*}} \geq w^{*}\) are considered.\\
 For such sub-problems, the set \(\bar{\Lambda}_{i} \coloneqq \{\text{selected variables in } B_{i}\}\) is built.\\
 Then the kernel set is updated: \(\Lambda \coloneqq \Lambda \cup \bar{\Lambda}_{i}\).
 Since variable are only added to the kernel, and never removed, its size increases monotonically.
@@ -78,7 +78,7 @@ when solving each MIP(\(\Lambda \cup B_{i}\)):
     \label{eq:impr2}
     \sum_{j \in B_{i}} x_{j} \geq 1
 \end{equation}
-The cutoff constraint~\eqref{eq:impr1} allows only solutions that improve on the current
+The \textit{cutoff constraint}~\eqref{eq:impr1} allows only solutions that improve on the current
 objective value.
 Constraints~\eqref{eq:impr2} ensure that at least one item must be selected from the bucket \(B_{i}\):
 such an item will then be included in the new kernel set.

@@ -1,4 +1,4 @@
-\chapter{Testing}
+\chapter{Testing}\label{ch:testing}
 In this chapter we will report the results of the tests executed
 on the instances introduced in ~\ref{subsec:inst},
 to verify the performance of the tuned Kernel Search algorithm.
@@ -17,12 +17,15 @@ and the random sorting.
 Random sorting however, due to its nature, produces inconsistent results.
 
 The tables from ~\ref{tab:ker_pos_val_prof_wei_RC}
-to ~\ref{tab:ker_tre_val_pro_wei_RC} contain the test results of the
+to ~\ref{tab:ker_tre_val_pro_wei_RC} contain the test results of all the
 kernel construction criteria introduced in ~\ref{sec:kernel_criteria}
 combined with the sorting by value, profit, weight and reduced cost.
 
 The complete test results, including the ones with other sorting criteria, can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/DefaultBucket}.
+
+In general, the performance of the criteria is comparable,
+with the integer kernel being slightly more reliable.
 
 \input{tables/kernelBase/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
 \input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
@@ -41,6 +44,9 @@ and the variables sorted by \textit{value, profit and weight, breaking ties usin
 All the other tests results can be found at
 \url{https://github.com/Golino98/KernelSearchGolinoCottiBeatrice/tree/main/log/BucketOverlap}.
 
+The performance of the overlapping buckets on average slightly better (but still very much comparable)
+to the non-overlapping ones.
+
 \input{tables/bucketOverlap/KernelBuilderPositive/VariableSorterByValueProfitWeightAndRC}
 \input{tables/bucketOverlap/KernelBuilderPercentage/VariableSorterByValueProfitWeightAndRC}
 \input{tables/bucketOverlap/KernelBuilderIntValues/VariableSorterByValueProfitWeightAndRC}
@@ -49,7 +55,8 @@ All the other tests results can be found at
 
 \section{Specific Improvements}
 Using the results of the test above, we were able to determine
-for each kernel construction criterion, the most efficient combination of variable sorting criterion and bucket
+for each kernel construction criterion the most efficient
+combination of variable sorting criterion and bucket
 construction criterion (overlapping or non-overlapping buckets).
 
 In the following sections, we report the performance

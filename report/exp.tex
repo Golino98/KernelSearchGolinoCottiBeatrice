@@ -9,11 +9,11 @@ The test instances for the MKP were kindly provided to us by the authors of~\cit
 There are in total 2100 test instances, organized in
 five directories of increasing complexity:
 \begin{itemize}
-    \item SMALL;
-    \item FK\_1;
-    \item FK\_2;
-    \item FK\_3;
-    \item FK\_4.
+    \item SMALL
+    \item FK\_1
+    \item FK\_2
+    \item FK\_3
+    \item FK\_4
 \end{itemize}
 SMALL contains 180 instances with \(m \in {10,20} \) and
 \(n \in {20,40,60}\), while FK\_1, FK\_2, FK\_3, FK\_4 contain 480
@@ -25,20 +25,20 @@ SMALL instances and \(\alpha = 10\) for the FK instances.
 
 Each instance belongs to one of the following four correlation classes:
 \begin{itemize}
-    \item uncorrelated: profits \(p_{j}\) are uniformly distributed in \([\alpha,1000]\);
-    \item weakly correlated: For SMALL, \(p_{j} = 0.6 w_{j} + \theta_{j}\) , with \(\theta_{j}\) uniformly random in
-    \([1, 400]\). For FK, the \(p_{j}\) values are uniformly distributed in \([w_{j} - 100, w_{j} + 100]\), such that
-    \(p_{j} \geq 1\);
-    \item strongly correlated: For SMALL, \(p_{j} = w_{j} + 200\), for FK, \(p_{j} = w_{j} + 10\);
-    \item subset-sum: \(p_{j} = w_{j}\).
+    \item \textit{uncorrelated}: profits \(p_{j}\) are uniformly distributed in \([\alpha,1000]\);
+    \item \textit{weakly correlated}: For SMALL, \(p_{j} = 0.6 w_{j} + \theta_{j}\) , with \(\theta_{j}\) uniformly random in
+    \([1, 400]\).
+    For FK, the \(p_{j}\) values are uniformly distributed in \([w_{j} - 100, w_{j} + 100]\), such that \(p_{j} \geq 1\);
+    \item \textit{strongly correlated}: For SMALL, \(p_{j} = w_{j} + 200\), for FK, \(p_{j} = w_{j} + 10\);
+    \item \textit{subset-sum}: \(p_{j} = w_{j}\).
 \end{itemize}
 
-The instances in SMALL and FK\_1 were already solved to the optimum.
+All the instances in SMALL and FK\_1 were already solved to the optimum.
 Of those in the three remaining folders only a few were already solved:
 the unsolved ones only had an upper and lower bound.
 
 \subsection{Format of the Instances}
-The instances are contained in \texttt{.txt} files.
+The instances are contained in plain \texttt{.txt} files.
 
 An example of the structure of an instance is shown below:
 \[
@@ -69,8 +69,8 @@ An example of the structure of an instance is shown below:
         \end{rcases*}
         \rightarrow
         \begin{rcases*}
-            \text{First column shows the weight} w_{i} \quad \\
-            \text{Second column shows the profit} p_{i}.
+            \text{First column shows the weight } w_{i} \quad \\
+            \text{Second column shows the profit } p_{i}.
         \end{rcases*}
         \rightarrow
         \space i=1,\dots,n.
@@ -109,12 +109,12 @@ that couldn't be solved.
 Table ~\ref{tab:ker_per_val_abs_RC} outlines the result of tests executed on
 the Kernel Search algorithm with the default configuration,
 as outlined in ~\ref{ch:implementation}.
-The tables includes for each instance:
+The tables include, for each instance:
 \begin{itemize}
-    \item directory of the instance;
-    \item name of the instance;
-    \item the solution found;
-    \item the time elapsed;
-    \item a boolean value that specifies if the time limit (120s) was reached.
+    \item Directory of the instance;
+    \item Name of the instance;
+    \item Solution found;
+    \item Time elapsed;
+    \item A boolean value that specifies if the time limit (120s) was reached.
 \end{itemize}
 \input{tables/kernelBase/KernelBuilderPercentage/VariableSorterByValueAndAbsoluteRC}

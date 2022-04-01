@@ -1,5 +1,5 @@
 \chapter{Improvements}\label{ch:improvements}
-In this section we will describe, in chronological order, the various changes
+In this section we will describe in chronological order the various changes
 that we applied to the default Kernel Search implementation,
 with the objective of improving its performance
 in solving the MKP instances.
@@ -28,6 +28,8 @@ Other criteria we have tested are:
     \item Sort randomly.
 \end{itemize}
 
+Generally, the efficiency of a sorting criterion depends on the kernel construction criterion used.
+
 
 \section{Kernel Construction Criterion}\label{sec:kernel_criteria}
 A recurring problem we have identified when running complex
@@ -44,9 +46,9 @@ which by default is to include the first \textit{C} sorted variables
 We have experimented with the following criteria:
 \begin{enumerate}
     \item Positive kernel: select the variables that have a value greater than 0 in the LP relaxation;
-    \item Integer kernel: Select the variables that have a value equal to 1 in the LP relaxation;
-    \item Threshold kernel: Select the variables that have a value greater than 0.6
-    in the LP relaxation.
+    \item Integer kernel: select the variables that have a value equal to 1 in the LP relaxation;
+    \item Threshold kernel: select the variables that have a LP relaxation value greater than a threshold,
+    that we have set to 0.6.
 \end{enumerate}
 
 
@@ -56,17 +58,21 @@ sub-problems is to use partially overlapping buckets:
 this could potentially increase the possibility of related
 variables to be included together in the kernel set.
 
+We implemented this feature as an alternative bucket construction criterion.
+This feature works well with certain combinations of
+kernel construction criterion and variable sorting criterion.
+
 
 \section{Ejection of Variables from the Kernel}
-As an alternative to improve the efficiency in solving the kernel set,
-we have developed a \textit{kernel eject} method, which allows to remove variables from the kernel.
+Another possible improvement for the efficiency of the Kernel Search,
+is the \textit{kernel eject} method, which allows to remove variables from the kernel.
 This technique is particularly useful for more complex instances, where every
 bucket sub-problem normally takes a significant amount of time to be solved.
 
 To implement this functionality, at each iteration of the Kernel Search
 we keep a counter \(h\) for the number of solutions found.
 Each variable that isn't in the initial kernel
-is also associated with a counter \(k_{v}, v \in variables \setminus variables in the initial kernel\)
+is also associated with a counter \(k_{v}, v \in variables \setminus\) \textit{variables in the initial kernel}
 that is incremented when the variable has a non-zero value in the solution of a bucket sub-problem.
 At the end of each iteration, for each variable \(v\), if
 \((h - k_{v}) - k_{v} <= threshold\), the variable is removed from the kernel.
@@ -162,6 +168,9 @@ To efficiently implement this technique,the dominance list is only built once at
 and the constraints~\eqref{eq:itemdom} are applied when solving
 the relaxation, the kernel problem and the bucket sub-problems.
 
+The testing proved that this method increases performance of the Kernel Search with very little
+overhead costs.
+
 
 \section{Instance Reduction}
 Another improvement for the MKP model describe in~\cite{mkp:2019} is
@@ -256,12 +265,6 @@ To achieve this, we removed the solving of the LP relaxation, and instead
 used the solution found by the heuristic to build the kernel set and the buckets.
 The parameters of the Kernel Search and the methods added until now
 did not require any change to work correctly.
-
-For testing purposes, we also tried to solve the instances changing the kernel construction
-criterion and the sorting criterion, to verify if this change in the
-Kernel Search algorithm caused one of the other criterion we developed
-to become better than the default one.
-The test revealed that the criterion used by default were still the best ones.
 
 It is possible that the Kernel Search does not find a solution that improves
 upon the one found by the heuristic: this is still acceptable, because the
