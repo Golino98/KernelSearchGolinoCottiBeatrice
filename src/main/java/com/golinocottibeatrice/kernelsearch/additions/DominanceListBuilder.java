@@ -8,7 +8,8 @@ import java.util.Comparator;
 /**
  * Creatore della dominance list dell'istanza.
  */
-public class DominanceListBuilder {
+public class
+DominanceListBuilder {
     private final Instance instance;
 
     public DominanceListBuilder(Instance instance) {
