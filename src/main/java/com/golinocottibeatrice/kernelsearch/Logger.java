@@ -1,8 +1,11 @@
 package com.golinocottibeatrice.kernelsearch;
 
+import com.golinocottibeatrice.kernelsearch.solver.Variable;
+
 import java.io.PrintStream;
 import java.time.Instant;
 import java.time.ZoneOffset;
+import java.util.List;
 
 /**
  * Logger degli eventi della kernel search.
@@ -106,6 +109,17 @@ public class Logger {
 
     public void solution(int selectedVars, int removedVars, int kernelSize, double objective, double elapsedTime) {
         out.printf(NEW_SOLUTION_SIZE_EJECT, selectedVars, removedVars, kernelSize, objective, elapsedTime);
+    }
+
+    public void solution(double objective, double elapsedTime, List<Variable> variables)
+    {
+        out.printf(NEW_SOLUTION, objective, elapsedTime);
+        for(var v : variables)
+        {
+            if(v.getValue() != 0) {
+                out.println("Var: " + v.getName() + " - " + v.getValue());
+            }
+        }
     }
 
     public void noSolution(double elapsedTime) {

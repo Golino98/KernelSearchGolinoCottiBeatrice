@@ -131,7 +131,9 @@ public class KernelSearch {
         if (currentSolution.getObjective() >= bestSolution.getObjective()) {
             bestSolution = currentSolution;
         }
-        log.solution(currentSolution.getObjective(), timer.elapsedTime());
+        //COMMENTO
+        //log.solution(currentSolution.getObjective(), timer.elapsedTime());
+        log.solution(currentSolution.getObjective(), timer.elapsedTime(), variables);
 
         model.write();
         model.dispose();
@@ -201,7 +203,9 @@ public class KernelSearch {
     }
 
     protected void executeEject(List<Variable> selected, Solution solution) {
-        log.solution(selected.size(), kernel.size(), solution.getObjective(), timer.elapsedTime());
+        //COMMENTO
+        //log.solution(selected.size(), kernel.size(), solution.getObjective(), timer.elapsedTime());
+        log.solution(currentSolution.getObjective(), timer.elapsedTime(), variables);
     }
 
     private Model buildModel(Bucket b, int count) throws GRBException {

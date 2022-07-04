@@ -7,10 +7,17 @@ import java.util.List;
 
 public class VariableSorterByAbsoluteRCAndValue implements VariableSorter {
 
-    //Potrebbe essere meglio fare
-    //variables.sort(Comparator.comparing(Variable::getRC).reversed.thenComparing(Variable::getValue));
+
+    public void sort(List<Variable> variables) {
+        variables.sort(Comparator.comparing(Variable::getRC).reversed().thenComparing(Variable::getValue));
+    }
+
+    //Fatto in maniera sbagliata.
+    //In questo modo le variabili vengono ordinate tramite i coefficienti di costo ridotto.
+    //In caso di pari valore vengono ordinate tramite valore in maniera decrescente.
+    /*
     @Override
     public void sort(List<Variable> variables) {
         variables.sort(Comparator.comparing(Variable::getRC).thenComparing(Variable::getValue).reversed());
-    }
+    }*/
 }
